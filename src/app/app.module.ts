@@ -13,17 +13,19 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AutoCompleteComponent } from './components/auto-complete/auto-complete.component'
+import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component'
 import { EasymdeModule } from 'ngx-easymde';
 import { LogComponent } from './components/log/log.component';
 import { CommandsComponent } from './components/commands/commands.component';
+import { InputComponent } from './components/prompts/input/input.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AutoCompleteComponent,
     LogComponent,
-    CommandsComponent
+    CommandsComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,

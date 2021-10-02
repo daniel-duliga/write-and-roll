@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AutoCompleteComponent } from '../auto-complete/auto-complete.component';
+import { Dice } from 'src/app/trpg/dice';
+import { AutoCompleteComponent } from '../prompts/auto-complete/auto-complete.component';
+import { InputComponent } from '../prompts/input/input.component';
 
 @Component({
   selector: 'app-commands',
@@ -9,15 +11,15 @@ import { AutoCompleteComponent } from '../auto-complete/auto-complete.component'
 })
 export class CommandsComponent implements OnInit {
   @Output() onCommandSelected: EventEmitter<string> = new EventEmitter();
-  
-  commands: any = {
-    ViewCharacterSheet: '🌟 View Character Sheet',
-    RollMove: '🎮 Roll Move',
-    RollDice: '🎲 Roll Dice',
-    RollTable: '🎱 Roll Table',
-    RollSheet: '📜 Roll Sheet',
-    ViewEntities: '🎭 View Entities',
-  };
+
+  commands = [
+    '🌟 View Character Sheet',
+    '🎮 Roll Move',
+    '🎲 Roll Dice',
+    '🎱 Roll Table',
+    '📜 Roll Sheet',
+    '🎭 View Entities',
+  ];
 
   constructor(public dialog: MatDialog) { }
 
@@ -30,14 +32,34 @@ export class CommandsComponent implements OnInit {
         width: '480px',
         data: {
           message: 'Command',
-          options: Object.keys(this.commands).map(k => this.commands[k]),
+          options: this.commands,
           callback: (command: string) => this.handleCommandSelected(command)
         },
       }
     );
   }
-  
+
   handleCommandSelected(option: string): void {
-    this.onCommandSelected.emit(option);
+    let result = option;
+    switch (option) {
+      case '🎲 Roll Dice': {
+        this.dialog.open(
+          InputComponent,
+          {
+            width: '480px',
+            data: {
+              message: 'Formula',
+              callback: (input: string) => {
+                result = JSON.stringify(Dice.rollDiceFormula(input));
+                this.onCommandSelected.emit(result);
+              }
+            },
+          }
+        )
+        break;
+      }
+      default:
+        this.onCommandSelected.emit(result);
+    }
   }
 }

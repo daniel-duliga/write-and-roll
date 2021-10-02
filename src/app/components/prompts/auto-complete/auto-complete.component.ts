@@ -12,18 +12,19 @@ import { map, startWith } from 'rxjs/operators'
 export class AutoCompleteComponent implements OnInit {
   inputControl = new FormControl();
   message: string = 'Option';
+  callback!: Function;
+  
   options: string[] = [];
   filteredOptions!: Observable<string[]>;
   selectedOption: string = '';
-  callback!: Function;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { message: string, options: string[], callback: (option: string) => void },
+    @Inject(MAT_DIALOG_DATA) public data: { message: string, callback: (option: string) => void, options: string[] },
     public dialogRef: MatDialogRef<AutoCompleteComponent>
   ) {
     this.message = data.message;
-    this.options = data.options;
     this.callback = data.callback;
+    this.options = data.options;
   }
 
   ngOnInit(): void {
