@@ -1,0 +1,9 @@
+<app-commands (onCommandSelected)="this.handleCommand($event)"></app-commands>
+<div style="height: 100vh;">
+    <easymde
+        #easymde
+        [(ngModel)]="logModel"
+        (onChange)="onLogChange($event)"
+        [options]="easyMdeOptions"
+    ></easymde>
+</div>

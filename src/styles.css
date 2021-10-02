@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* src/style.scss  */
+@import '~ngx-easymde/lib/index.scss';
+
+/* Change existing parameters here:  */
+/* @easymde-icon-url: 'icons.zip';
+@easymde-statusbar-lines: 'lines:';
+@easymde-statusbar-words: 'words:';
+@easymde-statusbar-characters: 'chars ：';
+@easymde-statusbar-counts: 'count ：'; */
+
+.EasyMDEContainer,
+.CodeMirror,
+.CodeMirror-scroll {
+    height: 100% !important;
+}
