@@ -10,8 +10,8 @@ import { EasymdeOptions } from 'ngx-easymde/src/config';
 export class LogComponent implements OnInit {
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
   easyMdeOptions: EasymdeOptions = {
-    toolbar: false,
-    status: false,
+    // toolbar: false,
+    // status: false,
   };
   logModel: any = '';
   currentLogValue: string = '';
@@ -31,5 +31,6 @@ export class LogComponent implements OnInit {
 
   handleCommand(option: string): void {
     this.logModel.replaceSelection(option);
+    this.logModel.focus();
   }
 }
