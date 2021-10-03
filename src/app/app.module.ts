@@ -9,15 +9,20 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component'
 import { EasymdeModule } from 'ngx-easymde';
-import { LogComponent } from './components/log/log.component';
+import { LogComponent } from './pages/log/log.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { InputComponent } from './components/prompts/input/input.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +30,9 @@ import { InputComponent } from './components/prompts/input/input.component';
     AutoCompleteComponent,
     LogComponent,
     CommandsComponent,
-    InputComponent
+    InputComponent,
+    SidebarComponent,
+    RandomTablesComponent
   ],
   imports: [
     BrowserModule,
@@ -40,6 +47,9 @@ import { InputComponent } from './components/prompts/input/input.component';
     MatInputModule,
     MatFormFieldModule,
     MatAutocompleteModule,
+    MatListModule,
+    MatIconModule,
+    MatTooltipModule,
 
     // Other
     EasymdeModule.forRoot()

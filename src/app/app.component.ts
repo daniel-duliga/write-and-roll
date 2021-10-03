@@ -1,9 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component';
-
-import { EasymdeComponent } from 'ngx-easymde';
-import { EasymdeOptions } from 'ngx-easymde/src/config';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',

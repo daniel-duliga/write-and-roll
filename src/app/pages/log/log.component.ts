@@ -12,6 +12,9 @@ export class LogComponent implements OnInit {
   easyMdeOptions: EasymdeOptions = {
     // toolbar: false,
     // status: false,
+    uploadImage: true,
+    spellChecker: false,
+    sideBySideFullscreen: false
   };
   logModel: any = '';
   currentLogValue: string = '';

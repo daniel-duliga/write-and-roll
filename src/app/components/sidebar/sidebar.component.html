@@ -1,0 +1,18 @@
+<div class="container" [style.width]="expanded ? '175px' : '55px'">
+    <mat-nav-list class="list">
+        <div class="top-separator"></div>
+        <a mat-list-item routerLink="/log" [routerLinkActive]="['active-link']" matTooltip="Log" [matTooltipPosition]="'after'">
+            <mat-icon>mode_edit</mat-icon>
+            <span class="item-text" *ngIf="expanded">Log</span>
+        </a>
+        <a mat-list-item routerLink="/random-tables" [routerLinkActive]="['active-link']" matTooltip="Random Tables" [matTooltipPosition]="'after'">
+            <mat-icon>backup_table</mat-icon>
+            <span class="item-text" *ngIf="expanded">Random Tables</span>
+        </a>
+        <div class="middle-separator"></div>
+        <a mat-list-item (click)="toggleExpand()">
+            <mat-icon *ngIf="!expanded">last_page</mat-icon>
+            <mat-icon *ngIf="expanded">first_page</mat-icon>
+        </a>
+    </mat-nav-list>
+</div>

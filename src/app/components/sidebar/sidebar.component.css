@@ -1,0 +1,25 @@
+.container {
+  height: calc(100vh - 45px);
+}
+
+.list {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-separator {
+    height: 52px;
+}
+
+.middle-separator {
+    height: 100%;
+}
+
+.item-text {
+    margin-left: 5px;
+}
+
+.active-link {
+    background-color: rgba(0,0,0,.04);
+}
