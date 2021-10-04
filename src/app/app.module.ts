@@ -1,3 +1,4 @@
+// Core
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,16 +14,21 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+// Third-party
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { EasymdeModule } from 'ngx-easymde';
+
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component'
-import { EasymdeModule } from 'ngx-easymde';
 import { LogComponent } from './pages/log/log.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
+import { RandomTableCreateComponent } from './components/random-tables/random-table-create/random-table-create.component';
+import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
 
 @NgModule({
   declarations: [
@@ -32,9 +38,12 @@ import { RandomTablesComponent } from './pages/random-tables/random-tables.compo
     CommandsComponent,
     InputComponent,
     SidebarComponent,
-    RandomTablesComponent
+    RandomTablesComponent,
+    RandomTableCreateComponent,
+    RandomTableListComponent,
   ],
   imports: [
+    // Core
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -51,7 +60,8 @@ import { RandomTablesComponent } from './pages/random-tables/random-tables.compo
     MatIconModule,
     MatTooltipModule,
 
-    // Other
+    // Third-party
+    CodemirrorModule,
     EasymdeModule.forRoot()
   ],
   providers: [],

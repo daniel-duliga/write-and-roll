@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RandomTableService } from 'src/app/services/random-table.service';
 
 @Component({
   selector: 'app-random-tables',
@@ -6,10 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./random-tables.component.css']
 })
 export class RandomTablesComponent implements OnInit {
-
+  
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

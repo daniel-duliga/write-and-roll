@@ -1,0 +1,13 @@
+<div class="container">
+    <mat-form-field appearance="outline" class="random-tables-form-field">
+        <input type="text" placeholder="Name" aria-label="Name" matInput class="name" [(ngModel)]="name">
+    </mat-form-field>
+    <div class="text-editor">
+        <ngx-codemirror [(ngModel)]="content" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
+        </ngx-codemirror>
+    </div>
+    <div class="buttons">
+        <button mat-raised-button class="button" (click)="this.save()">Save</button>
+        <button mat-raised-button class="button" routerLink="/random-tables">Back</button>
+    </div>
+</div>

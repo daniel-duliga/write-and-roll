@@ -1,0 +1,24 @@
+.container {
+  display: grid;
+  grid-template-rows: auto 15fr;
+  height: 100%;
+}
+
+.name {
+  height: 100%;
+}
+
+.text-editor {
+  width: 99.5%;
+  overflow: auto;
+  border: 1px solid lightgray;
+}
+
+.buttons {
+  display: flex;
+}
+
+.button {
+  height: 48px;
+  width: 100%;
+}

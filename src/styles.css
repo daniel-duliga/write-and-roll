@@ -1,10 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 /* src/style.scss  */
-@import '~ngx-easymde/lib/index.scss';
+@import "~ngx-easymde/lib/index.scss";
 
 /* Change existing parameters here:  */
 /* @easymde-icon-url: 'icons.zip';
@@ -13,8 +19,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 @easymde-statusbar-characters: 'chars ：';
 @easymde-statusbar-counts: 'count ：'; */
 
-.EasyMDEContainer,
-.CodeMirror,
-.CodeMirror-scroll {
-    height: calc(100vh - 85px) !important;
+.EasyMDEContainer .CodeMirror {
+  height: calc(100vh - 50px) !important;
+}
+
+.CodeMirror {
+  height: 100%;
+  width: 100%;
+}
+
+.random-tables-form-field .mat-form-field-wrapper {
+  margin: 0 !important;
+  padding: 0 !important;
 }

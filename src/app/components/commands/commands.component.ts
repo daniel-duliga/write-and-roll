@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Dice } from 'src/app/trpg/dice';
 import { AutoCompleteComponent } from '../prompts/auto-complete/auto-complete.component';
 import { InputComponent } from '../prompts/input/input.component';
-import { PromptsService } from '../prompts/prompts.service';
+import { PromptService } from '../../services/prompt.service';
 
 @Component({
   selector: 'app-commands',
@@ -22,7 +22,7 @@ export class CommandsComponent implements OnInit {
     // '🎭 View Entities',
   ];
 
-  constructor(private dialog: MatDialog, private promptsService: PromptsService) { }
+  constructor(private dialog: MatDialog, private promptsService: PromptService) { }
 
   ngOnInit(): void { }
 

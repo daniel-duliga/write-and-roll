@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AutoCompleteComponent } from './auto-complete/auto-complete.component';
-import { InputComponent } from './input/input.component';
+import { AutoCompleteComponent } from '../components/prompts/auto-complete/auto-complete.component';
+import { InputComponent } from '../components/prompts/input/input.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PromptsService {
+export class PromptService {
   private promptsWidth = '480px';
 
   constructor() { }

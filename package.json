@@ -20,6 +20,8 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "@ctrl/ngx-codemirror": "^5.0.1",
+    "codemirror": "^5.63.1",
     "ngx-easymde": "^0.3.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",

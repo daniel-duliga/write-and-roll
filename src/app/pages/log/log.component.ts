@@ -10,8 +10,7 @@ import { EasymdeOptions } from 'ngx-easymde/src/config';
 export class LogComponent implements OnInit {
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
   easyMdeOptions: EasymdeOptions = {
-    // toolbar: false,
-    // status: false,
+    status: false,
     uploadImage: true,
     spellChecker: false,
     sideBySideFullscreen: false

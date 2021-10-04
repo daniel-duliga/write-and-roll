@@ -1,0 +1,9 @@
+.container {
+    display: grid;
+    grid-template-rows: auto 15fr;
+    height: 100%;
+}
+
+.button {
+    height: 48px;
+}

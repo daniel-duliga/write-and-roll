@@ -10,7 +10,7 @@
             <span class="item-text" *ngIf="expanded">Random Tables</span>
         </a>
         <div class="middle-separator"></div>
-        <a mat-list-item (click)="toggleExpand()">
+        <a mat-list-item (click)="toggleExpand()" matTooltip="Expand/Collapse" [matTooltipPosition]="'after'">
             <mat-icon *ngIf="!expanded">last_page</mat-icon>
             <mat-icon *ngIf="expanded">first_page</mat-icon>
         </a>

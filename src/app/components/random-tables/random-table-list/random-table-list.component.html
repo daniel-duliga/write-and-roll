@@ -1,0 +1,19 @@
+<div class="container">
+    <mat-form-field appearance="outline" class="random-tables-form-field">
+        <input type="text" placeholder="Filter" aria-label="Filter" matInput>
+    </mat-form-field>
+    <div style="height: 99.75%; border: 1px solid lightgray; overflow: auto;">
+        <mat-action-list>
+            <button mat-list-item *ngFor="let randomTable of randomTables">
+                <div style="display: flex; width: 100%; display: grid; grid-template-columns: 15fr 1fr 1fr;">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        {{randomTable}}
+                    </div>
+                    <button mat-button>Edit</button>
+                    <button mat-button>Delete</button>
+                </div>
+            </button>
+        </mat-action-list>
+    </div>
+    <button mat-raised-button class="button" routerLink="/random-tables/create">New</button>
+</div>

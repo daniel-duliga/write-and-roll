@@ -1,5 +1,6 @@
 .container {
-  height: calc(100vh - 45px);
+  height: calc(100vh - 8px);
+  border-right: 1px solid lightgray;
 }
 
 .list {
