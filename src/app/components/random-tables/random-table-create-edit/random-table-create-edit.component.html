@@ -1,9 +1,9 @@
 <div class="container">
     <mat-form-field appearance="outline" class="random-tables-form-field">
-        <input type="text" placeholder="Name" aria-label="Name" matInput class="name" [(ngModel)]="name">
+        <input type="text" placeholder="Name" aria-label="Name" matInput class="name" [(ngModel)]="randomTable.name">
     </mat-form-field>
     <div class="text-editor">
-        <ngx-codemirror [(ngModel)]="content" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
+        <ngx-codemirror [(ngModel)]="randomTable.content" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
         </ngx-codemirror>
     </div>
     <div class="buttons">

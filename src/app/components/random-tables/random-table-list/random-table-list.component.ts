@@ -9,10 +9,18 @@ import { RandomTableService } from 'src/app/services/random-table.service';
 export class RandomTableListComponent implements OnInit {
   randomTables: string[] = [];
 
-  constructor(private randomTableService: RandomTableService) { }
+  constructor(
+    private randomTableService: RandomTableService
+    ) { }
 
   ngOnInit(): void {
     this.randomTables = this.randomTableService.getAll();
   }
 
+  delete(path: string): void {
+    if(confirm(`Are you sure you want to delete ${path}?`)) {
+      this.randomTableService.delete(path);
+      this.randomTables = this.randomTables.filter(x => x !== path);
+    }
+  }
 }

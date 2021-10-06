@@ -27,7 +27,7 @@ import { CommandsComponent } from './components/commands/commands.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
-import { RandomTableCreateComponent } from './components/random-tables/random-table-create/random-table-create.component';
+import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
 
 @NgModule({
@@ -39,7 +39,7 @@ import { RandomTableListComponent } from './components/random-tables/random-tabl
     InputComponent,
     SidebarComponent,
     RandomTablesComponent,
-    RandomTableCreateComponent,
+    RandomTableCreateEditComponent,
     RandomTableListComponent,
   ],
   imports: [

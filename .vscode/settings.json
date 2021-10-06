@@ -4,7 +4,9 @@
         "autosize",
         "codemirror",
         "Easymde",
+        "papaparse",
         "sidenav",
-        "trpg"
+        "trpg",
+        "unparse"
     ]
 }

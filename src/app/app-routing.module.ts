@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RandomTableCreateComponent } from './components/random-tables/random-table-create/random-table-create.component';
+import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
 import { LogComponent } from './pages/log/log.component';
 import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
@@ -29,8 +29,12 @@ const routes: Routes = [
         component: RandomTableListComponent
       },
       {
-        path: 'create',
-        component: RandomTableCreateComponent
+        path: 'create-edit',
+        component: RandomTableCreateEditComponent
+      },
+      {
+        path: 'create-edit/:name',
+        component: RandomTableCreateEditComponent
       }
     ]
   }

@@ -6,11 +6,11 @@
         <mat-action-list>
             <button mat-list-item *ngFor="let randomTable of randomTables">
                 <div class="item-container">
-                    <div class="item">{{randomTable}}</div>
-                    <button mat-button>Delete</button>
+                    <div class="item" [routerLink]="['/random-tables/create-edit', randomTable]">{{randomTable}}</div>
+                    <button mat-button (click)="delete(randomTable)">Delete</button>
                 </div>
             </button>
         </mat-action-list>
     </div>
-    <button mat-raised-button class="button" routerLink="/random-tables/create">New</button>
+    <button mat-raised-button class="button" routerLink="/random-tables/create-edit">New</button>
 </div>
