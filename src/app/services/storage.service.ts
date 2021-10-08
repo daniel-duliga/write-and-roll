@@ -13,7 +13,8 @@ export class StorageServiceBase {
     return Object
       .keys(localStorage)
       .filter(x => x.startsWith(this.collectionName))
-      .map(x => x.replace(`${this.collectionName}/`, ''));
+      .map(x => x.replace(`${this.collectionName}/`, ''))
+      .sort((a, b) => a.localeCompare(b));
   }
 
   get(path: string): any | null {
