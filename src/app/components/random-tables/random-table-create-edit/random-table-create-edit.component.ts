@@ -10,6 +10,7 @@ import { RandomTable } from 'src/app/wrappers/RandomTable';
 })
 export class RandomTableCreateEditComponent implements OnInit {
   randomTable: RandomTable = new RandomTable();
+  oldName: string = '';
 
   constructor(
     private randomTableService: RandomTableService,
@@ -21,6 +22,7 @@ export class RandomTableCreateEditComponent implements OnInit {
       const name = params.get('name');
       if (name) {
         this.randomTable = this.randomTableService.get(name);
+        this.oldName = this.randomTable.name;
       }
     });
   }
@@ -38,7 +40,11 @@ export class RandomTableCreateEditComponent implements OnInit {
       alert(errors);
       return;
     }
+    
     // Save
+    if (this.oldName) {
+      this.randomTableService.delete(this.oldName);
+    }
     this.randomTableService.create(this.randomTable.name, this.randomTable.rawContent);
     this.router.navigate(['random-tables']);
   }
