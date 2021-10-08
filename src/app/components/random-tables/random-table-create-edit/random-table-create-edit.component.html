@@ -3,7 +3,7 @@
         <input type="text" placeholder="Name" aria-label="Name" matInput class="name" [(ngModel)]="randomTable.name">
     </mat-form-field>
     <div class="text-editor">
-        <ngx-codemirror [(ngModel)]="randomTable.content" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
+        <ngx-codemirror [(ngModel)]="randomTable.rawContent" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
         </ngx-codemirror>
     </div>
     <div class="buttons">

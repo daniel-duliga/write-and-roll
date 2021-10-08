@@ -31,7 +31,7 @@ export class RandomTableCreateEditComponent implements OnInit {
     if (this.randomTable.name.trim() === '') {
       errors += 'Name is required.\n';
     }
-    if (this.randomTable.content.trim() === '') {
+    if (this.randomTable.rawContent.trim() === '') {
       errors += 'Content is required.\n';
     }
     if (errors !== '') {
@@ -39,7 +39,7 @@ export class RandomTableCreateEditComponent implements OnInit {
       return;
     }
     // Save
-    this.randomTableService.create(this.randomTable.name, this.randomTable.content);
+    this.randomTableService.create(this.randomTable.name, this.randomTable.rawContent);
     this.router.navigate(['random-tables']);
   }
 }

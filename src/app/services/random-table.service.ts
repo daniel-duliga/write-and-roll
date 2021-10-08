@@ -19,7 +19,7 @@ export class RandomTableService extends StorageServiceBase {
 
   get(path: string): RandomTable {
     const content = super.get(path);
-    return new RandomTable(path, this.getName(path), this.papa.unparse(content));
+    return new RandomTable(path, this.getName(path), this.papa.unparse(content), JSON.parse(content));
   }
 
   getName(path: string): string {
