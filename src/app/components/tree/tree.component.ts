@@ -10,9 +10,10 @@ import { TreeNodeWrapper } from 'src/app/components/tree/tree-node.wrapper';
 })
 export class TreeComponent implements OnInit {
   @Input() paths: string[] = [];
-  @Output() onDelete: EventEmitter<string> = new EventEmitter();
-  @Output() onEdit: EventEmitter<string> = new EventEmitter();
+  @Output() onNew: EventEmitter<boolean> = new EventEmitter();
   @Output() onAdd: EventEmitter<string> = new EventEmitter();
+  @Output() onEdit: EventEmitter<string> = new EventEmitter();
+  @Output() onDelete: EventEmitter<string> = new EventEmitter();
 
   initialPaths: string[] = [];
   filter: string = '';
@@ -32,6 +33,10 @@ export class TreeComponent implements OnInit {
   filterItems() {
     this.paths = this.initialPaths.filter(x => x.toLowerCase().includes(this.filter.toLowerCase()));
     this.initializeDataSource();
+  }
+
+  new() {
+    this.onNew.emit(true);
   }
 
   add(path: string) {

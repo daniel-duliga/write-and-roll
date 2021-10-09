@@ -1,17 +1,14 @@
 .container {
   display: grid;
-  grid-template-rows: auto 15fr;
 }
 
-.items-container {
-  height: 99.75%;
-  border: 1px solid lightgray;
+.tree {
+  height: calc(100vh - 100px);
   overflow: auto;
 }
 
 .item-container {
   width: 100%;
-  /* align-items: center; */
   display: flex;
 }
 

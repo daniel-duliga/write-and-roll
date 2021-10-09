@@ -18,6 +18,10 @@ export class RandomTableListComponent implements OnInit {
   ngOnInit() {
     this.randomTablePaths = this.randomTableService.getAllPaths();
   }
+
+  new() {
+    this.router.navigate(['/random-tables/create-edit']);
+  }
   
   add(folderPath: string) {
     this.edit(folderPath);

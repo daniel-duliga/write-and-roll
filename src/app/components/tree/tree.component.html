@@ -12,7 +12,7 @@
     </mat-form-field>
 
     <!-- Tree -->
-    <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
         
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
@@ -43,4 +43,7 @@
             </div>
         </cdk-nested-tree-node>
     </cdk-tree>
+
+    <!-- New -->
+    <button mat-raised-button class="button" (click)="new()">New</button>
 </div>
