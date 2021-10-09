@@ -4,10 +4,10 @@ import { EasymdeOptions } from 'ngx-easymde/src/config';
 
 @Component({
   selector: 'app-log',
-  templateUrl: './log.component.html',
-  styleUrls: ['./log.component.css']
+  templateUrl: './journal.component.html',
+  styleUrls: ['./journal.component.css']
 })
-export class LogComponent implements OnInit {
+export class JournalComponent implements OnInit {
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
   easyMdeOptions: EasymdeOptions = {
     status: false,

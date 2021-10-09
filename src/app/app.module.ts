@@ -22,7 +22,7 @@ import { EasymdeModule } from 'ngx-easymde';
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LogComponent } from './pages/log/log.component';
+import { JournalComponent } from './pages/journal/journal.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
@@ -37,7 +37,7 @@ import { AutoCompleteFieldComponent } from './components/fields/auto-complete-fi
   declarations: [
     AppComponent,
     AutoCompletePromptComponent,
-    LogComponent,
+    JournalComponent,
     CommandsComponent,
     InputComponent,
     SidebarComponent,
