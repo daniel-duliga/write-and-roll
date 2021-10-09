@@ -17,12 +17,14 @@
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
             <button mat-button style="width: 100%;" class="button">
-                <div class="item-container">
-                    <div class="item" (click)="edit(node.path)">
+                <div class="item-container" (click)="edit(node.path)">
+                    <div class="item">
                         <mat-icon>description</mat-icon>
                         {{node.name}}
                     </div>
-                    <button mat-button (click)="delete(node.path)">Delete</button>
+                    <button mat-icon-button (click)="delete(node.path)" class="action-button">
+                        <mat-icon>delete</mat-icon>
+                    </button>
                 </div>
             </button>
         </cdk-nested-tree-node>
@@ -32,14 +34,8 @@
             <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="button folder-button">
                 <mat-icon>folder_open</mat-icon>
                 {{node.name}}
-                <button 
-                    mat-icon-button
-                    class="folder-action-button"
-                    matTooltip="Add item"
-                    [matTooltipPosition]="'before'"
-                    (click)="add(node.path)"
-                >
-                    <mat-icon>note_add</mat-icon>
+                <button mat-icon-button class="action-button" (click)="add(node.path)">
+                    <mat-icon>add</mat-icon>
                 </button>
             </button>
             <div [class.example-tree-invisible]="!treeControl.isExpanded(node)">

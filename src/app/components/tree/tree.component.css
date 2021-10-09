@@ -10,10 +10,9 @@
 }
 
 .item-container {
-  display: flex;
   width: 100%;
-  display: grid;
-  grid-template-columns: 15fr 1fr;
+  /* align-items: center; */
+  display: flex;
 }
 
 .item {
@@ -56,6 +55,7 @@
   text-align: left;
 }
 
-.folder-action-button {
+.action-button {
   float: right;
+  margin-left: auto;
 }
