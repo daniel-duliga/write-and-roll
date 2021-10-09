@@ -15,15 +15,19 @@ export class RandomTableListComponent implements OnInit {
     private router: Router
     ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.randomTablePaths = this.randomTableService.getAllPaths();
   }
+  
+  add(folderPath: string) {
+    this.edit(folderPath);
+  }
 
-  edit(path: string): void {
+  edit(path: string) {
     this.router.navigate(['/random-tables/create-edit', path]);
   }
 
-  delete(path: string): void {
+  delete(path: string) {
     this.randomTableService.delete(path);
   }
 }

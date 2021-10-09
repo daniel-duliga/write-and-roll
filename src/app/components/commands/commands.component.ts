@@ -28,14 +28,14 @@ export class CommandsComponent implements OnInit {
     private randomTableService: RandomTableService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(){ }
 
-  showCommands(): void {
+  showCommands() {
     this.promptsService
       .openAutoCompletePrompt(this.dialog, "Command", this.handleCommandSelected.bind(this), this.commands);
   }
 
-  handleCommandSelected(option: string): void {
+  handleCommandSelected(option: string) {
     let result = option;
     switch (option) {
       case '🎲 Roll Dice': {
@@ -53,12 +53,12 @@ export class CommandsComponent implements OnInit {
     }
   }
 
-  executeRollDiceCommand(input: string): void {
+  executeRollDiceCommand(input: string) {
     const result = DiceUtil.rollDiceFormula(input).toMarkdown();
     this.onCommandSelected.emit(result);
   }
 
-  executeRollTableCommand(input: string): void {
+  executeRollTableCommand(input: string){
     const table = this.randomTableService.get(input);
     const result = TablesUtil.rollOnTable(table.jsonContent);
     this.onCommandSelected.emit(result);

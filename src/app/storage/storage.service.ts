@@ -5,7 +5,7 @@ export class StorageServiceBase {
     this.collectionName = collectionName;
   }
 
-  create(path: string, content: any): void {
+  create(path: string, content: any) {
     localStorage.setItem(`${this.collectionName}/${path}`, JSON.stringify(content));
   }
 
@@ -31,7 +31,7 @@ export class StorageServiceBase {
     return localStorage.getItem(`${this.collectionName}/${path}`);
   }
 
-  delete(path: string): void {
+  delete(path: string) {
     return localStorage.removeItem(`${this.collectionName}/${path}`);
   }
 }

@@ -10,5 +10,5 @@ export class RandomTablesComponent implements OnInit {
   
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit() { }
 }

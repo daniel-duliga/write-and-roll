@@ -11,7 +11,7 @@ export class PromptService {
 
   constructor() { }
 
-  openInputPrompt(dialog: MatDialog, message: string, callback: (selectedOption: string) => void,): void {
+  openInputPrompt(dialog: MatDialog, message: string, callback: (selectedOption: string) => void,) {
     dialog.open(
       InputComponent,
       {
@@ -24,7 +24,7 @@ export class PromptService {
     )
   }
 
-  openAutoCompletePrompt(dialog: MatDialog, message: string, callback: (selectedOption: string) => void, options: string[], ): void {
+  openAutoCompletePrompt(dialog: MatDialog, message: string, callback: (selectedOption: string) => void, options: string[], ) {
     dialog.open(
       AutoCompletePromptComponent,
       {

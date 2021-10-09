@@ -1,6 +1,6 @@
 .container {
     display: grid;
-    grid-template-rows: auto 15fr;
+    grid-template-rows: 15fr auto;
     height: 100%;
 }
 

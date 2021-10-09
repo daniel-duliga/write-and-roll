@@ -11,6 +11,7 @@ import { map, startWith } from 'rxjs/operators';
 export class AutoCompleteFieldComponent implements OnInit {
   @Input() message: string = 'Option';
   @Input() options: string[] = [];
+  @Input() initialValue: string = '';
   @Input() trackTextChange: boolean = true;
   @Output() onOptionSelected: EventEmitter<string> = new EventEmitter<string>();
   
@@ -20,14 +21,15 @@ export class AutoCompleteFieldComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.filteredOptions = this.inputControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value))
     );
+    this.selectedOption = this.initialValue;
   }
 
-  onOptionSelect(option: string): void {
+  onOptionSelect(option: string) {
     this.onOptionSelected.emit(option);
   }
 

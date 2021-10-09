@@ -18,7 +18,7 @@ export class RandomTableCreateEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.getDataFromRoute();
     this.folders = this.randomTableService.getAllFolderPaths();
   }
@@ -37,14 +37,14 @@ export class RandomTableCreateEditComponent implements OnInit {
     this.randomTable.name = name;
   }
 
-  save(): void {
+  save() {
     // Validation
     let errors = '';
     
     if (this.randomTable.name.trim() === '') {
       errors += 'Name is required.\n';
     } else if (this.randomTable.name.trim().endsWith('/')) {
-      errors += 'Name cannot end with "/"';
+      errors += 'Name cannot end with "/".\n';
     }
     
     if (this.randomTable.rawContent.trim() === '') {

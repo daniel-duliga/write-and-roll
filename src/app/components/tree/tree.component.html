@@ -1,25 +1,50 @@
-<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
-    <!-- Tree node template for leaf nodes -->
-    <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
-        <button mat-button style="width: 100%;">
-            <div class="item-container">
-                <div class="item" (click)="edit(node.path)">
-                    <mat-icon>description</mat-icon>
-                    {{node.name}}
+<div class="container">
+    <!-- Filter -->
+    <mat-form-field appearance="outline" class="random-tables-form-field">
+        <input
+            type="text"
+            placeholder="Filter"
+            aria-label="Filter"
+            matInput
+            [(ngModel)]="filter"
+            (ngModelChange)="filterItems()"
+        >
+    </mat-form-field>
+
+    <!-- Tree -->
+    <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        
+        <!-- Tree node template for leaf nodes -->
+        <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
+            <button mat-button style="width: 100%;">
+                <div class="item-container">
+                    <div class="item" (click)="edit(node.path)">
+                        <mat-icon>description</mat-icon>
+                        {{node.name}}
+                    </div>
+                    <button mat-button (click)="delete(node.path)">Delete</button>
                 </div>
-                <button mat-button (click)="delete(node.path)">Delete</button>
+            </button>
+        </cdk-nested-tree-node>
+        
+        <!-- Tree node template for expandable nodes -->
+        <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="example-tree-node">
+            <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="folder-button">
+                <mat-icon>folder_open</mat-icon>
+                {{node.name}}
+                <button 
+                    mat-icon-button
+                    class="folder-action-button"
+                    matTooltip="Add item"
+                    [matTooltipPosition]="'before'"
+                    (click)="add(node.path)"
+                >
+                    <mat-icon>note_add</mat-icon>
+                </button>
+            </button>
+            <div [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+                <ng-container cdkTreeNodeOutlet></ng-container>
             </div>
-        </button>
-    </cdk-nested-tree-node>
-    <!-- Tree node template for expandable nodes -->
-    <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="example-tree-node">
-        <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle
-            style="width: 100%; text-align: left;">
-            <mat-icon>folder_open</mat-icon>
-            {{node.name}}
-        </button>
-        <div [class.example-tree-invisible]="!treeControl.isExpanded(node)">
-            <ng-container cdkTreeNodeOutlet></ng-container>
-        </div>
-    </cdk-nested-tree-node>
-</cdk-tree>
+        </cdk-nested-tree-node>
+    </cdk-tree>
+</div>

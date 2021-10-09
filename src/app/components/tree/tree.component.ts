@@ -12,24 +12,37 @@ export class TreeComponent implements OnInit {
   @Input() paths: string[] = [];
   @Output() onDelete: EventEmitter<string> = new EventEmitter();
   @Output() onEdit: EventEmitter<string> = new EventEmitter();
+  @Output() onAdd: EventEmitter<string> = new EventEmitter();
+
+  initialPaths: string[] = [];
+  filter: string = '';
 
   rootNode!: TreeNodeWrapper;
-
   treeControl = new NestedTreeControl<TreeNodeWrapper>(node => node.children);
   dataSource!: ArrayDataSource<TreeNodeWrapper>;
   hasChild = (_: number, node: TreeNodeWrapper) => !!node.children && node.children.length > 0;
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.initialPaths = this.paths;
     this.initializeDataSource();
   }
 
-  edit(path: string): void {
+  filterItems() {
+    this.paths = this.initialPaths.filter(x => x.toLowerCase().includes(this.filter.toLowerCase()));
+    this.initializeDataSource();
+  }
+
+  add(path: string) {
+    this.onAdd.emit(path);
+  }
+
+  edit(path: string) {
     this.onEdit.emit(path);
   }
 
-  delete(path: string): void {
+  delete(path: string) {
     if (confirm(`Are you sure you want to delete ${path}?`)) {
       this.onDelete.emit(path);
       this.paths = this.paths.filter(x => x != path);

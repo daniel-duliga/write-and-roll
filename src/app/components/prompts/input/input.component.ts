@@ -22,13 +22,13 @@ export class InputComponent implements OnInit {
     this.callback = data.callback;
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.form = this.formBuilder.group({
       input: [null, Validators.required]
     });
   }
   
-  onFormSubmit(): void {
+  onFormSubmit() {
     this.callback(this.form.value.input);
     this.dialogRef.close();
   }

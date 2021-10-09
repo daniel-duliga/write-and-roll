@@ -10,10 +10,10 @@ export class SidebarComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
-  toggleExpand(): void {
+  toggleExpand() {
     this.expanded = !this.expanded;
   }
 }

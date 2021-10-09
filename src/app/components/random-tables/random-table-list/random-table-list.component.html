@@ -1,7 +1,4 @@
 <div class="container">
-    <mat-form-field appearance="outline" class="random-tables-form-field">
-        <input type="text" placeholder="Filter" aria-label="Filter" matInput>
-    </mat-form-field>
-    <app-tree [paths]="this.randomTablePaths" (onDelete)="this.delete($event)" (onEdit)="this.edit($event)"></app-tree>
+    <app-tree [paths]="this.randomTablePaths" (onAdd)="this.add($event)" (onDelete)="this.delete($event)" (onEdit)="this.edit($event)"></app-tree>
     <button mat-raised-button class="button" routerLink="/random-tables/create-edit">New</button>
 </div>

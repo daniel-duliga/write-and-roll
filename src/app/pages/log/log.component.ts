@@ -20,18 +20,18 @@ export class LogComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit() { }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     this.logModel = this.easymde.Instance.codemirror;
     this.logModel.focus();
   }
 
-  onLogChange(newValue: any): void {
+  onLogChange(newValue: any) {
     this.currentLogValue = newValue;
   }
 
-  handleCommand(option: string): void {
+  handleCommand(option: string) {
     this.logModel.replaceSelection(option);
     this.logModel.focus();
   }

@@ -1,3 +1,8 @@
+.container {
+  display: grid;
+  grid-template-rows: auto 15fr;
+}
+
 .items-container {
   height: 99.75%;
   border: 1px solid lightgray;
@@ -44,4 +49,13 @@
 
 .example-tree-node .example-tree-node {
   padding-left: 40px;
+}
+
+.folder-button {
+  width: 100%;
+  text-align: left;
+}
+
+.folder-action-button {
+  float: right;
 }

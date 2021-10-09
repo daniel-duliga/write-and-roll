@@ -23,9 +23,9 @@ export class AutoCompletePromptComponent implements OnInit {
     this.options = data.options;
   }
 
-  ngOnInit(): void { }
+  ngOnInit() { }
 
-  onOptionSelect(option: string): void {
+  onOptionSelect(option: string) {
     this.callback(option);
     this.dialogRef.close();
   }
