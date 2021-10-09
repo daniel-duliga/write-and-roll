@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
 import { RandomTableWrapper } from 'src/app/storage/random-table/random-table.wrapper';
 
@@ -11,6 +11,7 @@ import { RandomTableWrapper } from 'src/app/storage/random-table/random-table.wr
 export class RandomTableCreateEditComponent implements OnInit {
   randomTable: RandomTableWrapper = new RandomTableWrapper();
   oldName: string = '';
+  folders: string[] = [];
 
   constructor(
     private randomTableService: RandomTableService,
@@ -18,6 +19,11 @@ export class RandomTableCreateEditComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.getDataFromRoute();
+    this.folders = this.randomTableService.getAllFolderPaths();
+  }
+
+  private getDataFromRoute() {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       if (name) {
@@ -27,15 +33,24 @@ export class RandomTableCreateEditComponent implements OnInit {
     });
   }
 
+  setName(name: string) {
+    this.randomTable.name = name;
+  }
+
   save(): void {
     // Validation
     let errors = '';
+    
     if (this.randomTable.name.trim() === '') {
       errors += 'Name is required.\n';
+    } else if (this.randomTable.name.trim().endsWith('/')) {
+      errors += 'Name cannot end with "/"';
     }
+    
     if (this.randomTable.rawContent.trim() === '') {
       errors += 'Content is required.\n';
     }
+    
     if (errors !== '') {
       alert(errors);
       return;

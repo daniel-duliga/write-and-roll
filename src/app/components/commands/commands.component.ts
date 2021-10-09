@@ -43,7 +43,7 @@ export class CommandsComponent implements OnInit {
         break;
       }
       case '🎱 Roll Table': {
-        const tables = this.randomTableService.getAll();
+        const tables = this.randomTableService.getAllPaths();
         this.promptsService.openAutoCompletePrompt(this.dialog, "Table", this.executeRollTableCommand.bind(this), tables);
         break;
       }

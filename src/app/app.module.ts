@@ -29,14 +29,14 @@ import { RandomTablesComponent } from './pages/random-tables/random-tables.compo
 import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
 import { TreeComponent } from './components/tree/tree.component';
-import { InputPromptComponent } from './components/prompts/input-prompt/input-prompt.component';
-import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component';
+import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
 import { InputComponent } from './components/prompts/input/input.component';
+import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AutoCompleteComponent,
+    AutoCompletePromptComponent,
     LogComponent,
     CommandsComponent,
     InputComponent,
@@ -45,6 +45,7 @@ import { InputComponent } from './components/prompts/input/input.component';
     RandomTableCreateEditComponent,
     RandomTableListComponent,
     TreeComponent,
+    AutoCompleteFieldComponent
   ],
   imports: [
     // Core

@@ -1,7 +1,5 @@
 <div class="container">
-    <mat-form-field appearance="outline" class="random-tables-form-field">
-        <input type="text" placeholder="Name" aria-label="Name" matInput class="name" [(ngModel)]="randomTable.name">
-    </mat-form-field>
+    <app-auto-complete-field [message]="'Name'" [options]="this.folders" (onOptionSelected)="this.setName($event)"></app-auto-complete-field>
     <div class="text-editor">
         <ngx-codemirror [(ngModel)]="randomTable.rawContent" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
         </ngx-codemirror>

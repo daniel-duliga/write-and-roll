@@ -5,42 +5,28 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators'
 
 @Component({
-  selector: 'app-auto-complete',
-  templateUrl: './auto-complete.component.html',
-  styleUrls: ['./auto-complete.component.css']
+  selector: 'app-auto-complete-prompt',
+  templateUrl: './auto-complete-prompt.component.html',
+  styleUrls: ['./auto-complete-prompt.component.css']
 })
-export class AutoCompleteComponent implements OnInit {
-  inputControl = new FormControl();
+export class AutoCompletePromptComponent implements OnInit {
   message: string = 'Option';
   callback!: Function;
-  
   options: string[] = [];
-  filteredOptions!: Observable<string[]>;
-  selectedOption: string = '';
-
+  
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { message: string, callback: (option: string) => void, options: string[] },
-    public dialogRef: MatDialogRef<AutoCompleteComponent>
+    public dialogRef: MatDialogRef<AutoCompletePromptComponent>
   ) {
     this.message = data.message;
     this.callback = data.callback;
     this.options = data.options;
   }
 
-  ngOnInit(): void {
-    this.filteredOptions = this.inputControl.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
-  }
+  ngOnInit(): void { }
 
   onOptionSelect(option: string): void {
     this.callback(option);
     this.dialogRef.close();
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 }

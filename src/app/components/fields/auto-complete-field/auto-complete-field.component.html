@@ -1,0 +1,21 @@
+<mat-form-field class="example-full-width random-tables-form-field" appearance="outline" style="width: 100%;">
+    <input 
+        type="text"
+        placeholder="{{ this.message }}"
+        aria-label="Input"
+        matInput
+        [(ngModel)]="selectedOption"
+        (ngModelChange)="trackTextChange ? onOptionSelect($event) : {}"
+        [formControl]="inputControl"
+        [matAutocomplete]="options"
+    >
+    <mat-autocomplete 
+        (optionSelected)="onOptionSelect($event.option.value)"
+        autoActiveFirstOption
+        #options="matAutocomplete"
+    >
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{option}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
