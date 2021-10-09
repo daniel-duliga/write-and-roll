@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RandomTableService } from 'src/app/services/random-table.service';
+import { Router } from '@angular/router';
+import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
 
 @Component({
   selector: 'app-random-table-list',
@@ -7,20 +8,22 @@ import { RandomTableService } from 'src/app/services/random-table.service';
   styleUrls: ['./random-table-list.component.css']
 })
 export class RandomTableListComponent implements OnInit {
-  randomTables: string[] = [];
+  randomTablePaths: string[] = [];
 
   constructor(
-    private randomTableService: RandomTableService
+    private randomTableService: RandomTableService,
+    private router: Router
     ) { }
 
   ngOnInit(): void {
-    this.randomTables = this.randomTableService.getAll();
+    this.randomTablePaths = this.randomTableService.getAll();
+  }
+
+  edit(path: string): void {
+    this.router.navigate(['/random-tables/create-edit', path]);
   }
 
   delete(path: string): void {
-    if(confirm(`Are you sure you want to delete ${path}?`)) {
-      this.randomTableService.delete(path);
-      this.randomTables = this.randomTables.filter(x => x !== path);
-    }
+    this.randomTableService.delete(path);
   }
 }

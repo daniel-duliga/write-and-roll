@@ -4,25 +4,6 @@
     height: 100%;
 }
 
-.items-container {
-    height: 99.75%;
-    border: 1px solid lightgray;
-    overflow: auto;
-}
-
-.item-container {
-    display: flex;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 15fr 1fr;
-}
-
-.item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
 .button {
     height: 48px;
 }

@@ -1,4 +1,4 @@
-export class RandomTable {
+export class RandomTableWrapper {
     constructor(
         public path: string = '',
         public name: string = '',

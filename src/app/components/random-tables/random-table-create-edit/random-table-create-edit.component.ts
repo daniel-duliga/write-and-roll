@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { RandomTableService } from 'src/app/services/random-table.service';
-import { RandomTable } from 'src/app/wrappers/RandomTable';
+import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
+import { RandomTableWrapper } from 'src/app/storage/random-table/random-table.wrapper';
 
 @Component({
   selector: 'app-random-table-create-edit',
@@ -9,7 +9,7 @@ import { RandomTable } from 'src/app/wrappers/RandomTable';
   styleUrls: ['./random-table-create-edit.component.css']
 })
 export class RandomTableCreateEditComponent implements OnInit {
-  randomTable: RandomTable = new RandomTable();
+  randomTable: RandomTableWrapper = new RandomTableWrapper();
   oldName: string = '';
 
   constructor(

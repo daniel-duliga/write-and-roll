@@ -1,0 +1,47 @@
+.items-container {
+  height: 99.75%;
+  border: 1px solid lightgray;
+  overflow: auto;
+}
+
+.item-container {
+  display: flex;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 15fr 1fr;
+}
+
+.item {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  text-align: left;
+}
+
+.example-tree-invisible {
+  display: none;
+}
+
+.example-tree ul,
+.example-tree li {
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: none;
+}
+.example-tree-node {
+  display: block;
+}
+
+.children-container {
+  display: flex;
+}
+
+.marker {
+  height: 100%;
+  width: 1px;
+  background-color: lightgray;
+}
+
+.example-tree-node .example-tree-node {
+  padding-left: 40px;
+}

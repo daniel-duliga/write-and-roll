@@ -1,0 +1,25 @@
+<cdk-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <!-- Tree node template for leaf nodes -->
+    <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
+        <button mat-button style="width: 100%;">
+            <div class="item-container">
+                <div class="item" (click)="edit(node.path)">
+                    <mat-icon>description</mat-icon>
+                    {{node.name}}
+                </div>
+                <button mat-button (click)="delete(node.path)">Delete</button>
+            </div>
+        </button>
+    </cdk-nested-tree-node>
+    <!-- Tree node template for expandable nodes -->
+    <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="example-tree-node">
+        <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle
+            style="width: 100%; text-align: left;">
+            <mat-icon>folder_open</mat-icon>
+            {{node.name}}
+        </button>
+        <div [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+            <ng-container cdkTreeNodeOutlet></ng-container>
+        </div>
+    </cdk-nested-tree-node>
+</cdk-tree>

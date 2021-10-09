@@ -13,6 +13,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CdkTreeModule } from '@angular/cdk/tree';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -21,14 +22,16 @@ import { EasymdeModule } from 'ngx-easymde';
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component'
 import { LogComponent } from './pages/log/log.component';
 import { CommandsComponent } from './components/commands/commands.component';
-import { InputComponent } from './components/prompts/input/input.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
 import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
+import { TreeComponent } from './components/tree/tree.component';
+import { InputPromptComponent } from './components/prompts/input-prompt/input-prompt.component';
+import { AutoCompleteComponent } from './components/prompts/auto-complete/auto-complete.component';
+import { InputComponent } from './components/prompts/input/input.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +44,7 @@ import { RandomTableListComponent } from './components/random-tables/random-tabl
     RandomTablesComponent,
     RandomTableCreateEditComponent,
     RandomTableListComponent,
+    TreeComponent,
   ],
   imports: [
     // Core
@@ -59,6 +63,7 @@ import { RandomTableListComponent } from './components/random-tables/random-tabl
     MatListModule,
     MatIconModule,
     MatTooltipModule,
+    CdkTreeModule,
 
     // Third-party
     CodemirrorModule,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RandomTableService } from 'src/app/services/random-table.service';
+import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
 
 @Component({
   selector: 'app-random-tables',

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Dice } from 'src/app/trpg/dice';
-import { PromptService } from '../../services/prompt.service';
-import { RandomTableService } from 'src/app/services/random-table.service';
-import { Tables } from 'src/app/trpg/tables';
+import { DiceUtil } from 'src/app/trpg/dice/dice.util';
+import { PromptService } from '../prompts/prompt.service';
+import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
+import { TablesUtil } from 'src/app/trpg/tables.util';
 
 @Component({
   selector: 'app-commands',
@@ -54,13 +54,13 @@ export class CommandsComponent implements OnInit {
   }
 
   executeRollDiceCommand(input: string): void {
-    const result = Dice.rollDiceFormula(input).toMarkdown();
+    const result = DiceUtil.rollDiceFormula(input).toMarkdown();
     this.onCommandSelected.emit(result);
   }
 
   executeRollTableCommand(input: string): void {
     const table = this.randomTableService.get(input);
-    const result = Tables.rollOnTable(table.jsonContent);
+    const result = TablesUtil.rollOnTable(table.jsonContent);
     this.onCommandSelected.emit(result);
   }
 }

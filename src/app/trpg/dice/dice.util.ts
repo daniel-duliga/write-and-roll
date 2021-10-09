@@ -1,6 +1,8 @@
-export class Dice {
+import { DiceWrapper } from "./dice.wrapper"
 
-  static rollDiceFormula(formula: string): DiceRoll {
+export class DiceUtil {
+
+  static rollDiceFormula(formula: string): DiceWrapper {
     const operatorsRegEx = /[+]/g
 
     let diceArray = formula.split(operatorsRegEx)
@@ -9,7 +11,7 @@ export class Dice {
     // Not used for now:
     // const operators = formula.match(operatorsRegEx)
 
-    const result = new DiceRoll()
+    const result = new DiceWrapper()
     while (diceArray.length > 0) {
       const formulaPart = diceArray.pop()
       if (formulaPart) {
@@ -17,7 +19,7 @@ export class Dice {
         if (formulaParts.length > 0) {
           const count = +formulaParts[0]
           const dice = formulaParts.length > 1 ? +formulaParts[1] : 1
-          const diceRolls = Dice.rollDice(count, dice)
+          const diceRolls = DiceUtil.rollDice(count, dice)
           result.sum += diceRolls.reduce((sum, current) => sum + current);
           result.rolls[formulaPart] = diceRolls;
         }
@@ -39,28 +41,5 @@ export class Dice {
       }
     }
     return result
-  }
-}
-
-class DiceRoll {
-  constructor(
-    public sum: number = 0,
-    public rolls: { [id: string]: number[] } = {}
-  ) { }
-
-  toMarkdown(): string {
-    let result = '';
-    for (const formula of Object.keys(this.rolls).reverse()) {
-      result = result.concat(`${formula}(`);
-      const dice = this.rolls[formula];
-      for (const diceValue of dice) {
-        result = result.concat(diceValue.toString(), ', ');
-      }
-      result = result
-        .slice(0, result.length - 2)
-        .concat(') + ');
-    }
-    result = result.slice(0, result.length - 3);
-    return `\`${result}\` = **${this.sum}**`;
   }
 }

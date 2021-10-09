@@ -1,10 +1,10 @@
-import { Dice } from './dice';
+import { DiceUtil } from './dice/dice.util';
 
-export class Tables {
+export class TablesUtil {
     static rollOnTable(table: any): string {
         const tableData = table.data;
-        const max = Tables.getMaxIndex(tableData);
-        const roll = Dice.rollDice(1, max)
+        const max = TablesUtil.getMaxIndex(tableData);
+        const roll = DiceUtil.rollDice(1, max)
         const result = tableData.find((x: any[]) => this.checkMatch(x[0], roll[0]))[1]
         return result
     }
