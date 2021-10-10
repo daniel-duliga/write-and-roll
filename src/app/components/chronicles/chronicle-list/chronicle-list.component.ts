@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { JournalService } from 'src/app/storage/journal/journal.service';
 
 @Component({
-  selector: 'app-journal-list',
-  templateUrl: './journal-list.component.html',
-  styleUrls: ['./journal-list.component.css']
+  selector: 'app-chronicle-list',
+  templateUrl: './chronicle-list.component.html',
+  styleUrls: ['./chronicle-list.component.css']
 })
-export class JournalListComponent implements OnInit {
+export class ChronicleListComponent implements OnInit {
   journalPaths: string[] = [];
 
   constructor(
@@ -20,7 +20,7 @@ export class JournalListComponent implements OnInit {
   }
 
   new() {
-    this.router.navigate(['/journal/create-edit']);
+    this.router.navigate(['/chronicle/create-edit']);
   }
   
   add(folderPath: string) {
@@ -28,7 +28,7 @@ export class JournalListComponent implements OnInit {
   }
 
   edit(path: string) {
-    this.router.navigate(['/journal/create-edit', path]);
+    this.router.navigate(['/chronicle/create-edit', path]);
   }
 
   delete(path: string) {

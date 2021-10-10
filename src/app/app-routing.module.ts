@@ -1,20 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { JournalCreateEditComponent } from './components/journal/journal-create-edit/journal-create-edit.component';
-import { JournalListComponent } from './components/journal/journal-list/journal-list.component';
+import { ChronicleCreateEditComponent } from './components/chronicle/chronicle-create-edit/chronicle-create-edit.component';
+import { ChronicleListComponent } from './components/chronicle/chronicle-list/chronicle-list.component';
 import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
-import { JournalComponent } from './pages/journal/journal.component';
-import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'journal',
+    redirectTo: 'chronicle',
     pathMatch: 'full'
   },
   {
-    path: 'journal',
+    path: 'chronicle',
     children: [
       {
         path: '',
@@ -23,21 +21,20 @@ const routes: Routes = [
       },
       {
         path: 'list',
-        component: JournalListComponent
+        component: ChronicleListComponent
       },
       {
         path: 'create-edit',
-        component: JournalCreateEditComponent
+        component: ChronicleCreateEditComponent
       },
       {
         path: 'create-edit/:name',
-        component: JournalCreateEditComponent
+        component: ChronicleCreateEditComponent
       },
     ]
   },
   {
     path: 'random-tables',
-    component: RandomTablesComponent,
     children: [
       {
         path: '',

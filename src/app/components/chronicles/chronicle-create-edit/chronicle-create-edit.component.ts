@@ -6,11 +6,11 @@ import { JournalService } from 'src/app/storage/journal/journal.service';
 import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
 
 @Component({
-  selector: 'app-journal-create-edit',
-  templateUrl: './journal-create-edit.component.html',
-  styleUrls: ['./journal-create-edit.component.css']
+  selector: 'app-chronicle-create-edit',
+  templateUrl: './chronicle-create-edit.component.html',
+  styleUrls: ['./chronicle-create-edit.component.css']
 })
-export class JournalCreateEditComponent implements OnInit {
+export class ChronicleCreateEditComponent implements OnInit {
   folders: string[] = [];
   journal: JournalWrapper = new JournalWrapper();
   oldName: string = '';
@@ -91,6 +91,6 @@ export class JournalCreateEditComponent implements OnInit {
     
     this.journalService.create(this.journal.name, this.journal);
     
-    this.router.navigate(['journal']);
+    this.router.navigate(['chronicle']);
   }
 }

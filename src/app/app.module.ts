@@ -22,34 +22,30 @@ import { EasymdeModule } from 'ngx-easymde';
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { JournalComponent } from './pages/journal/journal.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
 import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
 import { TreeComponent } from './components/tree/tree.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
-import { JournalListComponent } from './components/journal/journal-list/journal-list.component';
-import { JournalCreateEditComponent } from './components/journal/journal-create-edit/journal-create-edit.component';
+import { ChronicleCreateEditComponent } from './components/chronicle/chronicle-create-edit/chronicle-create-edit.component';
+import { ChronicleListComponent } from './components/chronicle/chronicle-list/chronicle-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AutoCompletePromptComponent,
-    JournalComponent,
     CommandsComponent,
     InputComponent,
     SidebarComponent,
-    RandomTablesComponent,
     RandomTableCreateEditComponent,
     RandomTableListComponent,
     TreeComponent,
     AutoCompleteFieldComponent,
-    JournalListComponent,
-    JournalCreateEditComponent
+    ChronicleListComponent,
+    ChronicleCreateEditComponent,
   ],
   imports: [
     // Core
