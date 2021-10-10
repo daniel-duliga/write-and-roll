@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/trpg-spa'),
+      dir: require('path').join(__dirname, './coverage/write-and-roll'),
       subdir: '.',
       reporters: [
         { type: 'html' },

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "trpg-spa": {
+    "write-and-roll": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/trpg-spa",
+            "outputPath": "dist/write-and-roll",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "trpg-spa:build:production"
+              "browserTarget": "write-and-roll:build:production"
             },
             "development": {
-              "browserTarget": "trpg-spa:build:development"
+              "browserTarget": "write-and-roll:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "trpg-spa:build"
+            "browserTarget": "write-and-roll:build"
           }
         },
         "test": {
@@ -107,5 +107,5 @@
       }
     }
   },
-  "defaultProject": "trpg-spa"
+  "defaultProject": "write-and-roll"
 }

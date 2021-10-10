@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'trpg-spa'`, () => {
+  it(`should have as title 'write-and-roll'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('trpg-spa');
+    expect(app.title).toEqual('write-and-roll');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('trpg-spa app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('write-and-roll app is running!');
   });
 });
