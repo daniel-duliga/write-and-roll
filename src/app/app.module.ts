@@ -14,6 +14,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTreeModule } from '@angular/cdk/tree';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -69,6 +70,7 @@ import { ActionCreateEditComponent } from './components/actions/action-create-ed
     MatIconModule,
     MatTooltipModule,
     CdkTreeModule,
+    MatSnackBarModule,
 
     // Third-party
     CodemirrorModule,

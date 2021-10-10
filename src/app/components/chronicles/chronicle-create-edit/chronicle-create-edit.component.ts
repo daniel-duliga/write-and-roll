@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
 import { EasymdeOptions } from 'ngx-easymde/src/config';
@@ -29,6 +30,7 @@ export class ChronicleCreateEditComponent implements OnInit {
     private journalService: JournalService,
     private router: Router,
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -91,6 +93,6 @@ export class ChronicleCreateEditComponent implements OnInit {
 
     this.journalService.create(this.journal.name, this.journal);
 
-    this.router.navigate(['chronicles']);
+    this.snackBar.open('Saved successfully', undefined, { duration: 500, verticalPosition: 'top' });
   }
 }

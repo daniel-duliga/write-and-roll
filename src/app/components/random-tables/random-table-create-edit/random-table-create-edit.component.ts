@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
 import { RandomTableWrapper } from 'src/app/storage/random-table/random-table.wrapper';
@@ -15,8 +16,8 @@ export class RandomTableCreateEditComponent implements OnInit {
 
   constructor(
     private randomTableService: RandomTableService,
-    private router: Router,
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -62,6 +63,6 @@ export class RandomTableCreateEditComponent implements OnInit {
       this.randomTableService.delete(this.oldName);
     }
     this.randomTableService.create(this.randomTable.name, this.randomTable.rawContent);
-    this.router.navigate(['random-tables']);
+    this.snackBar.open('Saved successfully', undefined, { duration: 500, verticalPosition: 'top' });
   }
 }
