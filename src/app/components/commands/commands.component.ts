@@ -15,9 +15,9 @@ export class CommandsComponent implements OnInit {
 
   commands = [
     // '🌟 View Character Sheet',
-    // '🎮 Roll Move',
-    '🎲 Roll Dice',
+    '🔥 Roll Action',
     '🎱 Roll Table',
+    '🎲 Roll Dice',
     // '📜 Roll Sheet',
     // '🎭 View Entities',
   ];
