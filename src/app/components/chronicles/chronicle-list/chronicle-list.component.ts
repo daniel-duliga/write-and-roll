@@ -20,7 +20,7 @@ export class ChronicleListComponent implements OnInit {
   }
 
   new() {
-    this.router.navigate(['/chronicle/create-edit']);
+    this.router.navigate(['/chronicles/create-edit']);
   }
   
   add(folderPath: string) {
