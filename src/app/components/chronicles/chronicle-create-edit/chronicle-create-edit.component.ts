@@ -68,13 +68,13 @@ export class ChronicleCreateEditComponent implements OnInit {
   save() {
     // Validation
     let errors = '';
-    
+
     if (this.journal.name.trim() === '') {
       errors += 'Name is required.\n';
     } else if (this.journal.name.trim().endsWith('/')) {
       errors += 'Name cannot end with "/".\n';
     }
-    
+
     if (this.journal.content.trim() === '') {
       errors += 'Content is required.\n';
     }
@@ -88,9 +88,9 @@ export class ChronicleCreateEditComponent implements OnInit {
     if (this.oldName) {
       this.journalService.delete(this.oldName);
     }
-    
+
     this.journalService.create(this.journal.name, this.journal);
-    
+
     this.router.navigate(['chronicle']);
   }
 }

@@ -28,7 +28,7 @@ export class ChronicleListComponent implements OnInit {
   }
 
   edit(path: string) {
-    this.router.navigate(['/chronicle/create-edit', path]);
+    this.router.navigate(['/chronicles/create-edit', path]);
   }
 
   delete(path: string) {

@@ -32,6 +32,8 @@ import { InputComponent } from './components/prompts/input/input.component';
 import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
 import { ChronicleCreateEditComponent } from './components/chronicles/chronicle-create-edit/chronicle-create-edit.component';
 import { ChronicleListComponent } from './components/chronicles/chronicle-list/chronicle-list.component';
+import { ActionListComponent } from './components/actions/action-list/action-list.component';
+import { ActionCreateEditComponent } from './components/actions/action-create-edit/action-create-edit.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { ChronicleListComponent } from './components/chronicles/chronicle-list/c
     AutoCompleteFieldComponent,
     ChronicleListComponent,
     ChronicleCreateEditComponent,
+    ActionListComponent,
+    ActionCreateEditComponent,
   ],
   imports: [
     // Core

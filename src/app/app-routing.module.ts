@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ActionCreateEditComponent } from './components/actions/action-create-edit/action-create-edit.component';
+import { ActionListComponent } from './components/actions/action-list/action-list.component';
 import { ChronicleCreateEditComponent } from './components/chronicles/chronicle-create-edit/chronicle-create-edit.component';
 import { ChronicleListComponent } from './components/chronicles/chronicle-list/chronicle-list.component';
 import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
@@ -8,11 +10,11 @@ import { RandomTableListComponent } from './components/random-tables/random-tabl
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'chronicle',
+    redirectTo: 'chronicles',
     pathMatch: 'full'
   },
   {
-    path: 'chronicle',
+    path: 'chronicles',
     children: [
       {
         path: '',
@@ -54,7 +56,29 @@ const routes: Routes = [
         component: RandomTableCreateEditComponent
       },
     ]
-  }
+  },
+  {
+    path: 'actions',
+    children: [
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      },
+      {
+        path: 'list',
+        component: ActionListComponent
+      },
+      {
+        path: 'create-edit',
+        component: ActionCreateEditComponent
+      },
+      {
+        path: 'create-edit/:name',
+        component: ActionCreateEditComponent
+      },
+    ]
+  },
 ];
 
 @NgModule({
