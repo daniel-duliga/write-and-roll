@@ -7,13 +7,9 @@
         [(ngModel)]="selectedOption"
         (ngModelChange)="trackTextChange ? onOptionSelect($event) : {}"
         [formControl]="inputControl"
-        [matAutocomplete]="options"
+        [matAutocomplete]="autoComplete"
     >
-    <mat-autocomplete 
-        (optionSelected)="onOptionSelect($event.option.value)"
-        autoActiveFirstOption
-        #options="matAutocomplete"
-    >
+    <mat-autocomplete (optionSelected)="onOptionSelect($event.option.value)" #autoComplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
             {{option}}
         </mat-option>
