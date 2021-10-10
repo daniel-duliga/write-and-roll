@@ -61,6 +61,6 @@ export class CommandsComponent implements OnInit {
   executeRollTableCommand(input: string){
     const table = this.randomTableService.get(input);
     const result = TablesUtil.rollOnTable(table.jsonContent);
-    this.onCommandSelected.emit(result);
+    this.onCommandSelected.emit(`**${result}**`);
   }
 }
