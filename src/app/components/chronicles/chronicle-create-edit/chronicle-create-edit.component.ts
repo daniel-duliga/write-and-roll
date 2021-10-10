@@ -91,6 +91,6 @@ export class ChronicleCreateEditComponent implements OnInit {
 
     this.journalService.create(this.journal.name, this.journal);
 
-    this.router.navigate(['chronicle']);
+    this.router.navigate(['chronicles']);
   }
 }
