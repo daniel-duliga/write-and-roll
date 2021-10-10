@@ -17,18 +17,18 @@ export class ChronicleCreateEditComponent implements OnInit {
   oldName: string = '';
 
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
-  easyMdeOptions: EasymdeOptions = {
+  easyMdeOptions: any = {
     status: false,
     uploadImage: true,
     spellChecker: false,
-    sideBySideFullscreen: false
+    sideBySideFullscreen: false,
+    toolbar: ['image', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'],
   };
 
   logModel: any = '';
 
   constructor(
     private journalService: JournalService,
-    private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) { }
