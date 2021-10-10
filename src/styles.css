@@ -20,7 +20,7 @@ body {
 @easymde-statusbar-counts: 'count ：'; */
 
 .EasyMDEContainer .CodeMirror {
-  height: calc(100vh - 50px) !important;
+  height: calc(100vh - 150px) !important;
 }
 
 .CodeMirror {

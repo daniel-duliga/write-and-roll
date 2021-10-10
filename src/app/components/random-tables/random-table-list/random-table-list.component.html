@@ -1,9 +1,7 @@
-<div class="container">
-    <app-tree
-        [paths]="this.randomTablePaths"
-        (onNew)="this.new()"
-        (onAdd)="this.add($event)"
-        (onEdit)="this.edit($event)"
-        (onDelete)="this.delete($event)"
-    ></app-tree>
-</div>
+<app-tree
+    [paths]="this.randomTablePaths"
+    (onNew)="this.new()"
+    (onAdd)="this.add($event)"
+    (onEdit)="this.edit($event)"
+    (onDelete)="this.delete($event)"
+></app-tree>

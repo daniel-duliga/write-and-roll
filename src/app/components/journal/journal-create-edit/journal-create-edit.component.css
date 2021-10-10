@@ -1,0 +1,11 @@
+.editor {
+  height: calc(100vh - 100px);
+}
+
+.buttons {
+  display: flex;
+}
+
+.button {
+  width: 100%;
+}

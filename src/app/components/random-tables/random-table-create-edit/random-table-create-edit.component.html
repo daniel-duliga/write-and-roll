@@ -3,9 +3,9 @@
         [message]="'Name'"
         [options]="this.folders"
         [initialValue]="this.randomTable.name"
-        (onOptionSelected)="this.setName($event)"
+        (onChange)="this.setName($event)"
     ></app-auto-complete-field>
-    <div class="text-editor">
+    <div class="editor">
         <ngx-codemirror [(ngModel)]="randomTable.rawContent" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
         </ngx-codemirror>
     </div>

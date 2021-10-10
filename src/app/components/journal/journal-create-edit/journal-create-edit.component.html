@@ -1,0 +1,14 @@
+<app-commands (onCommandSelected)="this.handleCommand($event)"></app-commands>
+<app-auto-complete-field 
+    [message]="'Name'"
+    [options]="this.folders"
+    [initialValue]="this.journal.name"
+    (onChange)="this.setName($event)"
+></app-auto-complete-field>
+<div class="editor">
+    <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
+</div>
+<div class="buttons">
+    <button mat-raised-button class="button" (click)="this.save()">Save</button>
+    <button mat-raised-button class="button" routerLink="/journal">Back</button>
+</div>

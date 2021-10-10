@@ -13,7 +13,7 @@ export class AutoCompleteFieldComponent implements OnInit {
   @Input() options: string[] = [];
   @Input() initialValue: string = '';
   @Input() trackTextChange: boolean = true;
-  @Output() onOptionSelected: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onChange: EventEmitter<string> = new EventEmitter<string>();
   
   inputControl = new FormControl();
   filteredOptions!: Observable<string[]>;
@@ -30,7 +30,7 @@ export class AutoCompleteFieldComponent implements OnInit {
   }
 
   onOptionSelect(option: string) {
-    this.onOptionSelected.emit(option);
+    this.onChange.emit(option);
   }
 
   private _filter(value: string): string[] {

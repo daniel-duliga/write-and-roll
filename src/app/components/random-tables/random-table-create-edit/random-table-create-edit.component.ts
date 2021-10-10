@@ -16,7 +16,8 @@ export class RandomTableCreateEditComponent implements OnInit {
   constructor(
     private randomTableService: RandomTableService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
     this.getDataFromRoute();

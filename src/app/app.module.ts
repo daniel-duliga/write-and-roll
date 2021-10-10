@@ -32,6 +32,8 @@ import { TreeComponent } from './components/tree/tree.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
+import { JournalListComponent } from './components/journal/journal-list/journal-list.component';
+import { JournalCreateEditComponent } from './components/journal/journal-create-edit/journal-create-edit.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { AutoCompleteFieldComponent } from './components/fields/auto-complete-fi
     RandomTableCreateEditComponent,
     RandomTableListComponent,
     TreeComponent,
-    AutoCompleteFieldComponent
+    AutoCompleteFieldComponent,
+    JournalListComponent,
+    JournalCreateEditComponent
   ],
   imports: [
     // Core
