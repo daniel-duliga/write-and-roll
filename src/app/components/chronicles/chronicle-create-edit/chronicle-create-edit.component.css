@@ -9,3 +9,10 @@
 .button {
   width: 100%;
 }
+
+.commands-button {
+  position: absolute;
+  top: 110px;
+  right: 10px;
+  z-index: 9;
+}

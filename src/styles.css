@@ -40,3 +40,7 @@ body {
 * {
   /* font-family: 'Courier New', Courier, monospace; */
 }
+
+.mat-snack-bar-container {
+  margin-bottom: 75px !important;
+}

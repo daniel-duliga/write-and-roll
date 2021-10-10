@@ -1,26 +1,30 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DiceUtil } from 'src/app/trpg/dice/dice.util';
 import { PromptService } from '../prompts/prompt.service';
 import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
 import { TablesUtil } from 'src/app/trpg/tables.util';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-commands',
   templateUrl: './commands.component.html',
   styleUrls: ['./commands.component.css']
 })
-export class CommandsComponent implements OnInit {
+export class CommandsComponent implements OnInit, OnDestroy {
+  @Input() customToggle: Subject<boolean> = new Subject();
   @Output() onCommandSelected: EventEmitter<string> = new EventEmitter();
 
   commands = [
-    // '🌟 View Character Sheet',
     '🔥 Roll Action',
     '🎱 Roll Table',
     '🎲 Roll Dice',
+    // '🌟 View Character Sheet',
     // '📜 Roll Sheet',
     // '🎭 View Entities',
   ];
+
+  subscriptions: Subscription[] = [];
 
   constructor(
     private dialog: MatDialog,
@@ -28,7 +32,19 @@ export class CommandsComponent implements OnInit {
     private randomTableService: RandomTableService
   ) { }
 
-  ngOnInit(){ }
+  ngOnInit() {
+    this.subscriptions.push(this.customToggle.subscribe(toggle => {
+      if (toggle) {
+        this.showCommands();
+      }
+    }))
+  }
+
+  ngOnDestroy(): void {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+  }
 
   showCommands() {
     this.promptsService
@@ -58,7 +74,7 @@ export class CommandsComponent implements OnInit {
     this.onCommandSelected.emit(result);
   }
 
-  executeRollTableCommand(input: string){
+  executeRollTableCommand(input: string) {
     const table = this.randomTableService.get(input);
     const result = TablesUtil.rollOnTable(table.jsonContent);
     this.onCommandSelected.emit(`**${result}**`);

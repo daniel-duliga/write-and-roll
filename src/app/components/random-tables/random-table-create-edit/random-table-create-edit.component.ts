@@ -63,6 +63,6 @@ export class RandomTableCreateEditComponent implements OnInit {
       this.randomTableService.delete(this.oldName);
     }
     this.randomTableService.create(this.randomTable.name, this.randomTable.rawContent);
-    this.snackBar.open('Saved successfully', undefined, { duration: 500, verticalPosition: 'top' });
+    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
   }
 }

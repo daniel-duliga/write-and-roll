@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
 import { EasymdeOptions } from 'ngx-easymde/src/config';
+import { Subject } from 'rxjs';
 import { JournalService } from 'src/app/storage/journal/journal.service';
 import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
 
@@ -27,6 +28,8 @@ export class ChronicleCreateEditComponent implements OnInit {
 
   logModel: any = '';
 
+  commandsToggle: Subject<boolean> = new Subject();
+
   constructor(
     private journalService: JournalService,
     private route: ActivatedRoute,
@@ -43,15 +46,8 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.logModel.focus();
   }
 
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
-      const name = params.get('name');
-      if (name) {
-        this.journal = this.journalService.get(name);
-        this.oldName = this.journal.name;
-        this.logModel = this.journal.content;
-      }
-    });
+  showCommands() {
+    this.commandsToggle.next(true);
   }
 
   setName(name: string) {
@@ -93,6 +89,17 @@ export class ChronicleCreateEditComponent implements OnInit {
 
     this.journalService.create(this.journal.name, this.journal);
 
-    this.snackBar.open('Saved successfully', undefined, { duration: 500, verticalPosition: 'top' });
+    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
+  }
+  
+  private getDataFromRoute() {
+    this.route.paramMap.subscribe(params => {
+      const name = params.get('name');
+      if (name) {
+        this.journal = this.journalService.get(name);
+        this.oldName = this.journal.name;
+        this.logModel = this.journal.content;
+      }
+    });
   }
 }

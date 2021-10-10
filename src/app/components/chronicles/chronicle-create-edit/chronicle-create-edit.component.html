@@ -1,4 +1,4 @@
-<app-commands (onCommandSelected)="this.handleCommand($event)"></app-commands>
+<app-commands [customToggle]="commandsToggle" (onCommandSelected)="this.handleCommand($event)"></app-commands>
 <app-auto-complete-field 
     [message]="'Name'"
     [options]="this.folders"
@@ -8,6 +8,17 @@
 <div class="editor">
     <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
 </div>
+<button
+    mat-mini-fab
+    color=""
+    aria-label="Commands button"
+    class="commands-button"
+    matTooltip="Commands (CTRL + Space)"
+    matTooltipPosition="before"
+    (click)="this.showCommands()"
+>
+    <mat-icon>bolt</mat-icon>
+</button>
 <div class="buttons">
     <button mat-raised-button class="button" (click)="this.save()">Save</button>
     <button mat-raised-button class="button" routerLink="/chronicles">Back</button>
