@@ -12,9 +12,9 @@ export class JournalService extends StorageServiceBase {
 
   get(name: string): JournalWrapper {
     let result = new JournalWrapper(name);
-    const existingJournal: JournalWrapper = JSON.parse(super.get(name));
-    if (existingJournal) {
-      result.content = existingJournal.content;
+    const entity = super.get(name);
+    if (entity) {
+      result.rawContent = entity.rawContent;
     } else {
       result.name = `${name}/`;
     }

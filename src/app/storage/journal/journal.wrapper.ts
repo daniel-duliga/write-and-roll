@@ -1,6 +1,8 @@
-export class JournalWrapper {
+import { IEntity } from "../IEntity";
+
+export class JournalWrapper implements IEntity {
     constructor(
         public name: string = '',
-        public content: string = ''
+        public rawContent: string = ''
     ) { }
 }

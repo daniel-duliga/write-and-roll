@@ -55,7 +55,7 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   onLogChange(newValue: any) {
-    this.journal.content = newValue;
+    this.journal.rawContent = newValue;
   }
 
   handleCommand(option: string) {
@@ -73,7 +73,7 @@ export class ChronicleCreateEditComponent implements OnInit {
       errors += 'Name cannot end with "/".\n';
     }
 
-    if (this.journal.content.trim() === '') {
+    if (this.journal.rawContent.trim() === '') {
       errors += 'Content is required.\n';
     }
 
@@ -98,7 +98,7 @@ export class ChronicleCreateEditComponent implements OnInit {
       if (name) {
         this.journal = this.journalService.get(name);
         this.oldName = this.journal.name;
-        this.logModel = this.journal.content;
+        this.logModel = this.journal.rawContent;
       }
     });
   }

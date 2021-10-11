@@ -37,10 +37,13 @@ body {
   height: 48px;
 }
 
-* {
-  /* font-family: 'Courier New', Courier, monospace; */
-}
+/* * {
+  font-family: 'Courier New', Courier, monospace;
+} */
 
 .mat-snack-bar-container {
   margin-bottom: 75px !important;
 }
+
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/material';

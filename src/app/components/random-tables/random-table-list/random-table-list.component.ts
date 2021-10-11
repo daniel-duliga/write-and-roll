@@ -12,7 +12,8 @@ export class RandomTableListComponent implements OnInit {
 
   constructor(
     private randomTableService: RandomTableService,
-    private router: Router) { }
+    private router: Router,
+  ) { }
 
   ngOnInit() {
     this.randomTablePaths = this.randomTableService.getAllPaths();

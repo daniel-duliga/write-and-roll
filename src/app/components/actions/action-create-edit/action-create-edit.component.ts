@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActionService } from 'src/app/storage/action/action.service';
 
 @Component({
   selector: 'app-action-create-edit',
@@ -7,9 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ActionCreateEditComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public actionService: ActionService
+  ) { }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }

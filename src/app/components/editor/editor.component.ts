@@ -13,14 +13,15 @@ import { EntitySaveWrapper } from './entity-save.wrapper';
 export class EditorComponent implements OnInit {
   @Input() entityService!: StorageServiceBase;
   @Input() backLink: string = '';
-  @Output() onSave: EventEmitter<EntitySaveWrapper> = new EventEmitter();
-  
+  @Input() mode: string = 'default';
+
   entity: IEntity = { name: '', rawContent: '' };
   folders: string[] = [];
   oldName: string = '';
 
   constructor(
     private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
@@ -32,8 +33,9 @@ export class EditorComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       if (name) {
-        this.entity = this.entityService.get(name);
-        if (this.entity) {
+        const entity = this.entityService.get(name); 
+        if (entity) {
+          this.entity = entity;
           this.oldName = this.entity.name;
         }
       }
@@ -47,6 +49,18 @@ export class EditorComponent implements OnInit {
   }
 
   save() {
-    this.onSave.emit(new EntitySaveWrapper(this.entity, this.oldName));
+    const entitySaveWrapper = new EntitySaveWrapper(this.entity, this.oldName);
+    
+    const errors = entitySaveWrapper.validate();
+    if (errors !== '') {
+      alert(errors);
+      return;
+    }
+
+    if (entitySaveWrapper.oldName && entitySaveWrapper.entity.name !== entitySaveWrapper.oldName) {
+      this.entityService.delete(entitySaveWrapper.oldName);
+    }
+    this.entityService.create(entitySaveWrapper.entity.name, entitySaveWrapper.entity);
+    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
   }
 }

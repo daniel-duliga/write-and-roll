@@ -1,3 +1,5 @@
+import { IEntity } from "./IEntity";
+
 export class StorageServiceBase {
   collectionName = 'tables';
 
@@ -27,8 +29,13 @@ export class StorageServiceBase {
     return uniqueFolders.map(x => x.concat('/'));
   }
 
-  get(path: string): any | null {
-    return localStorage.getItem(`${this.collectionName}/${path}`);
+  get(path: string): IEntity | null {
+    let entity: IEntity | null = null;
+    const rawContent = localStorage.getItem(`${this.collectionName}/${path}`);
+    if (rawContent) {
+      entity = JSON.parse(rawContent);
+    }
+    return entity;
   }
 
   delete(path: string) {
