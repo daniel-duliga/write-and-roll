@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
-import { RandomTableWrapper } from 'src/app/storage/random-table/random-table.wrapper';
+import { EntitySaveWrapper } from '../../editor/entity-save.wrapper';
 
 @Component({
   selector: 'app-random-table-create-edit',
@@ -10,46 +9,25 @@ import { RandomTableWrapper } from 'src/app/storage/random-table/random-table.wr
   styleUrls: ['./random-table-create-edit.component.css']
 })
 export class RandomTableCreateEditComponent implements OnInit {
-  randomTable: RandomTableWrapper = new RandomTableWrapper();
-  oldName: string = '';
-  folders: string[] = [];
 
   constructor(
-    private randomTableService: RandomTableService,
-    private route: ActivatedRoute,
+    public randomTableService: RandomTableService,
     private snackBar: MatSnackBar,
   ) { }
 
-  ngOnInit() {
-    this.getDataFromRoute();
-    this.folders = this.randomTableService.getAllFolderPaths();
-  }
+  ngOnInit() { }
 
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
-      const name = params.get('name');
-      if (name) {
-        this.randomTable = this.randomTableService.get(name);
-        this.oldName = this.randomTable.name;
-      }
-    });
-  }
-
-  setName(name: string) {
-    this.randomTable.name = name;
-  }
-
-  save() {
+  save(entitySaveWrapper: EntitySaveWrapper) {
     // Validation
     let errors = '';
     
-    if (this.randomTable.name.trim() === '') {
+    if (entitySaveWrapper.entity.name.trim() === '') {
       errors += 'Name is required.\n';
-    } else if (this.randomTable.name.trim().endsWith('/')) {
+    } else if (entitySaveWrapper.entity.name.trim().endsWith('/')) {
       errors += 'Name cannot end with "/".\n';
     }
     
-    if (this.randomTable.rawContent.trim() === '') {
+    if (entitySaveWrapper.entity.rawContent.trim() === '') {
       errors += 'Content is required.\n';
     }
     
@@ -59,10 +37,10 @@ export class RandomTableCreateEditComponent implements OnInit {
     }
     
     // Save
-    if (this.oldName) {
-      this.randomTableService.delete(this.oldName);
+    if (entitySaveWrapper.oldName && entitySaveWrapper.entity.name !== entitySaveWrapper.oldName) {
+      this.randomTableService.delete(entitySaveWrapper.oldName);
     }
-    this.randomTableService.create(this.randomTable.name, this.randomTable.rawContent);
+    this.randomTableService.create(entitySaveWrapper.entity.name, entitySaveWrapper.entity.rawContent);
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
   }
 }

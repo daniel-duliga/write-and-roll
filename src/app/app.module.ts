@@ -35,6 +35,7 @@ import { ChronicleCreateEditComponent } from './components/chronicles/chronicle-
 import { ChronicleListComponent } from './components/chronicles/chronicle-list/chronicle-list.component';
 import { ActionListComponent } from './components/actions/action-list/action-list.component';
 import { ActionCreateEditComponent } from './components/actions/action-create-edit/action-create-edit.component';
+import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { ActionCreateEditComponent } from './components/actions/action-create-ed
     ChronicleCreateEditComponent,
     ActionListComponent,
     ActionCreateEditComponent,
+    EditorComponent,
   ],
   imports: [
     // Core

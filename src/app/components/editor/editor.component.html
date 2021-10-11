@@ -1,0 +1,16 @@
+<div class="container">
+    <app-auto-complete-field 
+        [message]="'Name'"
+        [options]="this.folders"
+        [initialValue]="this.entity.name"
+        (onChange)="this.setName($event)"
+    ></app-auto-complete-field>
+    <div class="editor">
+        <ngx-codemirror [(ngModel)]="entity.rawContent" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
+        </ngx-codemirror>
+    </div>
+    <div class="buttons">
+        <button mat-raised-button class="button" (click)="this.save()">Save</button>
+        <button mat-raised-button class="button" routerLink="{{this.backLink}}">Back</button>
+    </div>
+</div>

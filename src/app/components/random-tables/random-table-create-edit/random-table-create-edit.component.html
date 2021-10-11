@@ -1,16 +1,5 @@
-<div class="container">
-    <app-auto-complete-field 
-        [message]="'Name'"
-        [options]="this.folders"
-        [initialValue]="this.randomTable.name"
-        (onChange)="this.setName($event)"
-    ></app-auto-complete-field>
-    <div class="editor">
-        <ngx-codemirror [(ngModel)]="randomTable.rawContent" [options]="{ lineNumbers: true, theme: 'material', mode: 'markdown' }">
-        </ngx-codemirror>
-    </div>
-    <div class="buttons">
-        <button mat-raised-button class="button" (click)="this.save()">Save</button>
-        <button mat-raised-button class="button" routerLink="/random-tables">Back</button>
-    </div>
-</div>
+<app-editor 
+    [entityService]="this.randomTableService"
+    [backLink]="'/random-tables'"
+    (onSave)="this.save($event)">
+</app-editor>
