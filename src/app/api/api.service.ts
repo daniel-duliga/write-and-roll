@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { PromptService } from '../components/prompts/prompt.service';
 import { RandomTableStorageService } from '../storage/random-table/random-table-storage.service';
 import { DiceUtil } from '../trpg/dice/dice.util';
 import { TablesUtil } from '../trpg/tables.util';
@@ -7,8 +9,11 @@ import { TablesUtil } from '../trpg/tables.util';
   providedIn: 'root'
 })
 export class ApiService {
+  dialog: MatDialog | null = null;
+
   constructor(
-    private randomTableStorageService: RandomTableStorageService
+    private randomTableStorageService: RandomTableStorageService,
+    private promptService: PromptService,
   ) { }
 
   rollDice(formula: string): number {
@@ -18,5 +23,11 @@ export class ApiService {
   rollTable(tableName: string): string {
     const table = this.randomTableStorageService.get(tableName);
     return TablesUtil.rollOnTable(table.jsonContent);
+  }
+
+  prompt(message: string, callback: (selectedOption: string) => void): void {
+    if(this.dialog) {
+      this.promptService.openInputPrompt(this.dialog, message, callback);
+    }
   }
 }

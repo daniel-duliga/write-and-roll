@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActionStorageService } from 'src/app/storage/action-storage.service';
 import { IEntity } from 'src/app/storage/IEntity';
 import { ActionService } from '../action.service';
@@ -14,6 +15,7 @@ export class ActionCreateEditComponent implements OnInit {
   constructor(
     public actionStorageService: ActionStorageService,
     private actionService: ActionService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void { }
@@ -23,7 +25,7 @@ export class ActionCreateEditComponent implements OnInit {
   }
 
   run(): void {
-    const result = this.actionService.run(this.content);
+    const result = this.actionService.run(this.content, this.dialog);
     alert(result);
   }
 }

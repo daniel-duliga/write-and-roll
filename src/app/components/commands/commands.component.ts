@@ -81,7 +81,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.promptsService.openAutoCompletePrompt(this.dialog, "Action", actions, (actionName: string) => {
       const action = this.actionStorageService.get(actionName);
       if (action) {
-        const actionResult = this.actionService.run(action.rawContent);
+        const actionResult = this.actionService.run(action.rawContent, this.dialog);
         this.onCommandSelected.emit(actionResult);
       }
     });
