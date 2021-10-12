@@ -5,7 +5,7 @@ import { JournalWrapper } from './journal.wrapper';
 @Injectable({
   providedIn: 'root'
 })
-export class JournalService extends StorageServiceBase {
+export class JournalStorageService extends StorageServiceBase {
   constructor() {
     super('journal');
   }

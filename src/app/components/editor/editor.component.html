@@ -6,8 +6,11 @@
         (onChange)="this.setName($event)"
     ></app-auto-complete-field>
     <div class="editor">
-        <ngx-codemirror [(ngModel)]="entity.rawContent" [options]="{ lineNumbers: true, theme: 'default', mode: this.mode }">
-        </ngx-codemirror>
+        <ngx-codemirror
+            [(ngModel)]="entity.rawContent"
+            [options]="{ lineNumbers: true, theme: 'default', mode: this.mode }"
+            (ngModelChange)="onChange()"
+        ></ngx-codemirror>
     </div>
     <div class="buttons">
         <button mat-raised-button class="button" (click)="this.save()">Save</button>

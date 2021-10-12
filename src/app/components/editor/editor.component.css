@@ -9,7 +9,7 @@
 }
 
 .editor {
-  width: 99.5%;
+  width: calc(100% - 5px);
   overflow: auto;
   border: 1px solid lightgray;
 }

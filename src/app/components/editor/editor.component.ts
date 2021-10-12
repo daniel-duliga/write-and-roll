@@ -14,10 +14,11 @@ export class EditorComponent implements OnInit {
   @Input() entityService!: StorageServiceBase;
   @Input() backLink: string = '';
   @Input() mode: string = 'default';
+  @Output() onChanged: EventEmitter<IEntity> = new EventEmitter();
 
   entity: IEntity = { name: '', rawContent: '' };
   folders: string[] = [];
-  oldName: string = '';
+  initialName: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -35,8 +36,9 @@ export class EditorComponent implements OnInit {
       if (name) {
         const entity = this.entityService.get(name); 
         if (entity) {
+          this.initialName = this.entity.name;
           this.entity = entity;
-          this.oldName = this.entity.name;
+          this.onChanged.emit(entity);
         }
       }
     });
@@ -48,8 +50,12 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  onChange(): void {
+    this.onChanged.emit(this.entity);
+  }
+
   save() {
-    const entitySaveWrapper = new EntitySaveWrapper(this.entity, this.oldName);
+    const entitySaveWrapper = new EntitySaveWrapper(this.entity, this.initialName);
     
     const errors = entitySaveWrapper.validate();
     if (errors !== '') {

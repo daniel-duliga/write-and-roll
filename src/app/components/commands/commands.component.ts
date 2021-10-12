@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { MatDialog } from '@angular/material/dialog';
 import { DiceUtil } from 'src/app/trpg/dice/dice.util';
 import { PromptService } from '../prompts/prompt.service';
-import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
+import { RandomTableStorageService } from 'src/app/storage/random-table/random-table-storage.service';
 import { TablesUtil } from 'src/app/trpg/tables.util';
 import { Observable, Subject, Subscription } from 'rxjs';
 
@@ -29,7 +29,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private promptsService: PromptService,
-    private randomTableService: RandomTableService
+    private randomTableService: RandomTableStorageService
   ) { }
 
   ngOnInit() {

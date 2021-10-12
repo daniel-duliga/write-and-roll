@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RandomTableService } from 'src/app/storage/random-table/random-table.service';
+import { RandomTableStorageService } from 'src/app/storage/random-table/random-table-storage.service';
 
 @Component({
   selector: 'app-random-table-create-edit',
@@ -9,7 +9,7 @@ import { RandomTableService } from 'src/app/storage/random-table/random-table.se
 export class RandomTableCreateEditComponent implements OnInit {
 
   constructor(
-    public randomTableService: RandomTableService,
+    public randomTableService: RandomTableStorageService,
   ) { }
 
   ngOnInit() { }

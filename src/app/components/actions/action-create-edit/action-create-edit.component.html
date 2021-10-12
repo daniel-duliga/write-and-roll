@@ -1,4 +1,9 @@
-<app-editor [entityService]="this.actionService" [backLink]="'/actions'" [mode]="'javascript'"></app-editor>
+<app-editor 
+    [entityService]="this.actionStorageService"
+    [backLink]="'/actions'"
+    [mode]="'javascript'"
+    (onChanged)="this.onChanged($event)"
+></app-editor>
 <button
     mat-mini-fab
     color=""

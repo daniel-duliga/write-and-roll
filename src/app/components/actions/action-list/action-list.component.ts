@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActionService } from 'src/app/storage/action/action.service';
+import { ActionStorageService } from 'src/app/storage/action-storage.service';
 
 @Component({
   selector: 'app-action-list',
@@ -11,7 +11,7 @@ export class ActionListComponent implements OnInit {
   actionPaths: string[] = [];
 
   constructor(
-    private actionService: ActionService,
+    private actionService: ActionStorageService,
     private router: Router,
   ) { }
 

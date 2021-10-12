@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionService } from 'src/app/storage/action/action.service';
+import { ActionStorageService } from 'src/app/storage/action-storage.service';
+import { IEntity } from 'src/app/storage/IEntity';
+import { ActionService } from '../action.service';
 
 @Component({
   selector: 'app-action-create-edit',
@@ -7,13 +9,21 @@ import { ActionService } from 'src/app/storage/action/action.service';
   styleUrls: ['./action-create-edit.component.css']
 })
 export class ActionCreateEditComponent implements OnInit {
+  content: string = '';
+
   constructor(
-    public actionService: ActionService
+    public actionStorageService: ActionStorageService,
+    private actionService: ActionService,
   ) { }
 
   ngOnInit(): void { }
 
+  onChanged(entity: IEntity): void {
+    this.content = entity.rawContent;
+  }
+
   run(): void {
-    
+    const result = this.actionService.run(this.content);
+    alert(result);
   }
 }

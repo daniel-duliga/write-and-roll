@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { JournalService } from 'src/app/storage/journal/journal.service';
+import { JournalStorageService } from 'src/app/storage/journal/journal-storage.service';
 
 @Component({
   selector: 'app-chronicle-list',
@@ -12,7 +12,7 @@ export class ChronicleListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private journalService: JournalService
+    private journalService: JournalStorageService
   ) { }
 
   ngOnInit(): void {

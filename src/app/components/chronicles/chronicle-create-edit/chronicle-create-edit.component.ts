@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
 import { EasymdeOptions } from 'ngx-easymde/src/config';
 import { Subject } from 'rxjs';
-import { JournalService } from 'src/app/storage/journal/journal.service';
+import { JournalStorageService } from 'src/app/storage/journal/journal-storage.service';
 import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
 
 @Component({
@@ -31,7 +31,7 @@ export class ChronicleCreateEditComponent implements OnInit {
   commandsToggle: Subject<boolean> = new Subject();
 
   constructor(
-    private journalService: JournalService,
+    private journalService: JournalStorageService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) { }

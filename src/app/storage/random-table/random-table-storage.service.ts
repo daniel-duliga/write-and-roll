@@ -7,7 +7,7 @@ import { IEntity } from '../IEntity';
 @Injectable({
   providedIn: 'root'
 })
-export class RandomTableService extends StorageServiceBase {
+export class RandomTableStorageService extends StorageServiceBase {
   constructor(private papa: Papa) {
     super('tables');
   }
