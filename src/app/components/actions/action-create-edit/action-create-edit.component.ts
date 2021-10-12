@@ -7,10 +7,13 @@ import { ActionService } from 'src/app/storage/action/action.service';
   styleUrls: ['./action-create-edit.component.css']
 })
 export class ActionCreateEditComponent implements OnInit {
-
   constructor(
     public actionService: ActionService
   ) { }
 
   ngOnInit(): void { }
+
+  run(): void {
+    
+  }
 }

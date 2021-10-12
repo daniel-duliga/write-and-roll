@@ -1,1 +1,12 @@
 <app-editor [entityService]="this.actionService" [backLink]="'/actions'" [mode]="'javascript'"></app-editor>
+<button
+    mat-mini-fab
+    color=""
+    aria-label="Run button"
+    class="run-button"
+    matTooltip="Run"
+    matTooltipPosition="before"
+    (click)="this.run()"
+>
+    <mat-icon>play_arrow</mat-icon>
+</button>
