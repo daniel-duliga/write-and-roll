@@ -24,7 +24,7 @@ export class PromptService {
     )
   }
 
-  openAutoCompletePrompt(dialog: MatDialog, message: string, callback: (selectedOption: string) => void, options: string[], ) {
+  openAutoCompletePrompt(dialog: MatDialog, message: string, options: string[], callback: (selectedOption: string) => void) {
     dialog.open(
       AutoCompletePromptComponent,
       {

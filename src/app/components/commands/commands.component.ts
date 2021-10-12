@@ -5,6 +5,8 @@ import { PromptService } from '../prompts/prompt.service';
 import { RandomTableStorageService } from 'src/app/storage/random-table/random-table-storage.service';
 import { TablesUtil } from 'src/app/trpg/tables.util';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { ActionStorageService } from 'src/app/storage/action-storage.service';
+import { ActionService } from '../actions/action.service';
 
 @Component({
   selector: 'app-commands',
@@ -29,7 +31,9 @@ export class CommandsComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private promptsService: PromptService,
-    private randomTableService: RandomTableStorageService
+    private randomTableStorageService: RandomTableStorageService,
+    private actionStorageService: ActionStorageService,
+    private actionService: ActionService,
   ) { }
 
   ngOnInit() {
@@ -48,19 +52,22 @@ export class CommandsComponent implements OnInit, OnDestroy {
 
   showCommands() {
     this.promptsService
-      .openAutoCompletePrompt(this.dialog, "Command", this.handleCommandSelected.bind(this), this.commands);
+      .openAutoCompletePrompt(this.dialog, "Command", this.commands, this.handleCommandSelected.bind(this));
   }
 
   handleCommandSelected(option: string) {
     let result = option;
     switch (option) {
+      case '🔥 Roll Action': {
+        this.executeRollActionCommand();
+        break;
+      }
       case '🎲 Roll Dice': {
-        this.promptsService.openInputPrompt(this.dialog, "Formula", this.executeRollDiceCommand.bind(this));
+        this.executeRollDiceCommand();
         break;
       }
       case '🎱 Roll Table': {
-        const tables = this.randomTableService.getAllPaths();
-        this.promptsService.openAutoCompletePrompt(this.dialog, "Table", this.executeRollTableCommand.bind(this), tables);
+        this.executeRollTableCommand();
         break;
       }
       default: {
@@ -69,14 +76,30 @@ export class CommandsComponent implements OnInit, OnDestroy {
     }
   }
 
-  executeRollDiceCommand(input: string) {
-    const result = DiceUtil.rollDiceFormula(input).toMarkdown();
-    this.onCommandSelected.emit(result);
+  executeRollActionCommand() {
+    const actions = this.actionStorageService.getAllPaths();
+    this.promptsService.openAutoCompletePrompt(this.dialog, "Action", actions, (actionName: string) => {
+      const action = this.actionStorageService.get(actionName);
+      if (action) {
+        const actionResult = this.actionService.run(action.rawContent);
+        this.onCommandSelected.emit(actionResult);
+      }
+    });
   }
 
-  executeRollTableCommand(input: string) {
-    const table = this.randomTableService.get(input);
-    const result = TablesUtil.rollOnTable(table.jsonContent);
-    this.onCommandSelected.emit(`**${result}**`);
+  executeRollDiceCommand() {
+    this.promptsService.openInputPrompt(this.dialog, "Formula", (formula: string) => {
+      const result = DiceUtil.rollDiceFormula(formula).toMarkdown();
+      this.onCommandSelected.emit(result);
+    });
+  }
+
+  executeRollTableCommand() {
+    const tables = this.randomTableStorageService.getAllPaths();
+    this.promptsService.openAutoCompletePrompt(this.dialog, "Table", tables, (tableName: string) => {
+      const table = this.randomTableStorageService.get(tableName);
+      const result = TablesUtil.rollOnTable(table.jsonContent);
+      this.onCommandSelected.emit(`**${result}**`);
+    });
   }
 }

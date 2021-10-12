@@ -12,6 +12,6 @@ export class ActionService {
   run(action: string): string {
     const api = this.api;
     const result: string = eval(action);
-    return result;
+    return result.toString();
   }
 }
