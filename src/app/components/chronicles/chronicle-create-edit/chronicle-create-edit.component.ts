@@ -70,7 +70,7 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   handleCommand(option: string) {
-    this.logModel.replaceSelection(option);
+    this.logModel.replaceSelection(`\`${option}\``);
     this.logModel.focus();
   }
 
@@ -100,6 +100,6 @@ export class ChronicleCreateEditComponent implements OnInit {
 
     this.journalService.create(this.journal.name, this.journal);
 
-    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
+    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }
 }

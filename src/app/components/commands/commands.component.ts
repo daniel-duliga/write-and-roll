@@ -89,7 +89,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
 
   executeRollDiceCommand() {
     this.promptsService.openInputPrompt(this.dialog, "Formula", (formula: string) => {
-      const result = DiceUtil.rollDiceFormula(formula).toMarkdown();
+      const result = DiceUtil.rollDiceFormula(formula).toString();
       this.onCommandSelected.emit(result);
     });
   }
@@ -99,7 +99,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
     this.promptsService.openAutoCompletePrompt(this.dialog, "Table", tables, (tableName: string) => {
       const table = this.randomTableStorageService.get(tableName);
       const result = TablesUtil.rollOnTable(table.jsonContent);
-      this.onCommandSelected.emit(`**${result}**`);
+      this.onCommandSelected.emit(result);
     });
   }
 }

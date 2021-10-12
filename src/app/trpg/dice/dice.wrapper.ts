@@ -4,7 +4,7 @@ export class DiceWrapper {
         public rolls: { [id: string]: number[] } = {}
     ) { }
 
-    toMarkdown(): string {
+    toString(): string {
         let result = '';
         for (const formula of Object.keys(this.rolls).reverse()) {
             result = result.concat(`${formula}(`);
@@ -17,6 +17,6 @@ export class DiceWrapper {
                 .concat(') + ');
         }
         result = result.slice(0, result.length - 3);
-        return `\`${result}\` = **${this.sum}**`;
+        return `${result} = ${this.sum}`;
     }
 }

@@ -67,6 +67,6 @@ export class EditorComponent implements OnInit {
       this.entityService.delete(entitySaveWrapper.oldName);
     }
     this.entityService.create(entitySaveWrapper.entity.name, entitySaveWrapper.entity);
-    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
+    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }
 }

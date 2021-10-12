@@ -28,6 +28,9 @@ body {
   width: 100%;
 }
 
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/material';
+
 .random-tables-form-field .mat-form-field-wrapper {
   margin: 0 !important;
   padding: 0 !important;
@@ -41,9 +44,6 @@ body {
   font-family: 'Courier New', Courier, monospace;
 } */
 
-.mat-snack-bar-container {
+/* .mat-snack-bar-container {
   margin-bottom: 75px !important;
-}
-
-@import '~codemirror/lib/codemirror';
-@import '~codemirror/theme/material';
+} */
