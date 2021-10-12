@@ -7,6 +7,7 @@ export class ActionService {
   constructor() { }
 
   run(action: string): string {
-    return action;
+    const result: string = eval(action);
+    return result;
   }
 }
