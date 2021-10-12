@@ -40,6 +40,17 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.getDataFromRoute();
     this.folders = this.journalService.getAllFolderPaths();
   }
+  
+  private getDataFromRoute() {
+    this.route.paramMap.subscribe(params => {
+      const name = params.get('name');
+      if (name) {
+        this.journal = this.journalService.get(name);
+        this.oldName = this.journal.name;
+        this.logModel = this.journal.rawContent;
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.logModel = this.easymde.Instance.codemirror;
@@ -90,16 +101,5 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.journalService.create(this.journal.name, this.journal);
 
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'bottom' });
-  }
-  
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
-      const name = params.get('name');
-      if (name) {
-        this.journal = this.journalService.get(name);
-        this.oldName = this.journal.name;
-        this.logModel = this.journal.rawContent;
-      }
-    });
   }
 }
