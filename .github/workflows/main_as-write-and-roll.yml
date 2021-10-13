@@ -26,16 +26,11 @@ jobs:
           npm install
           npm run build --if-present
           
-      - name: Zip deployment package
-        uses: montudor/action-zip@v1.0.0
-        with:
-         args: zip -qq -r deploy-package.zip ./dist/write-and-roll
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: deploy-package.zip
-          path: deploy-package.zip
+          name: node-app
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,13 +43,8 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: deploy-package.zip
+          name: node-app
           
-      - name: Unzip deployment package
-        uses: montudor/action-zip@v1
-        with:
-          args: unzip -qq deploy-package.zip -d .
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -62,4 +52,4 @@ jobs:
           app-name: 'as-write-and-roll'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8C96944009FE4F028F1A38D3841EA030 }}
-          package: .
+          package: ./dist/write-and-roll
