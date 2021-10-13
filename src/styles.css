@@ -8,46 +8,57 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+/* * {
+  font-family: 'Courier New', Courier, monospace;
+} */
 
-/* src/style.scss  */
+/* EasyMDE */
 @import "~ngx-easymde/lib/index.scss";
-
 /* Change existing parameters here:  */
 /* @easymde-icon-url: 'icons.zip';
 @easymde-statusbar-lines: 'lines:';
 @easymde-statusbar-words: 'words:';
 @easymde-statusbar-characters: 'chars ：';
 @easymde-statusbar-counts: 'count ：'; */
-
 .EasyMDEContainer .CodeMirror {
-  height: calc(100vh - 150px) !important;
+  height: calc(100vh - 149px) !important;
+  border-radius: 0;
+}
+.editor-toolbar {
+  border-radius: 0;
 }
 
+/* CodeMirror */
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/material';
 .CodeMirror {
   height: 100%;
   width: 100%;
 }
-
 .CodeMirror-scroll {
   min-height: auto !important;
 }
+.editor-preview-side {
+  height: 100%;
+}
 
-@import '~codemirror/lib/codemirror';
-@import '~codemirror/theme/material';
+/* Angular Material */
+/* .mat-snack-bar-container {
+  margin-bottom: 75px !important;
+} */
+.mat-form-field-appearance-outline .mat-form-field-outline-start {
+  border-radius: 0 !important;
+}
+.mat-form-field-appearance-outline .mat-form-field-outline-end {
+  border-radius: 0 !important;
+}
 
+/* Custom */
 .random-tables-form-field .mat-form-field-wrapper {
   margin: 0 !important;
   padding: 0 !important;
 }
-
 .button {
   height: 48px;
+  border-radius: 0 !important;
 }
-
-/* * {
-  font-family: 'Courier New', Courier, monospace;
-} */
-
-/* .mat-snack-bar-container {
-  margin-bottom: 75px !important;
-} */
