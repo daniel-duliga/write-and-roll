@@ -1,5 +1,7 @@
 # Write and Roll
 
+[![Build and deploy Azure](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml/badge.svg)](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.7.
 
 ## Development server
