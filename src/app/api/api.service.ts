@@ -25,9 +25,11 @@ export class ApiService {
     return TablesUtil.rollOnTable(table.jsonContent);
   }
 
-  prompt(message: string, callback: (selectedOption: string) => void): void {
+  prompt(message: string): Promise<string> | null {
     if(this.dialog) {
-      this.promptService.openInputPrompt(this.dialog, message, callback);
+      return this.promptService.openInputPrompt(this.dialog, message);
+    } else {
+      return null;
     }
   }
 }

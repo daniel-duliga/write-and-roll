@@ -9,17 +9,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class InputComponent implements OnInit {
   form!: FormGroup;
-  
   message: string = 'Option';
-  callback!: Function;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { message: string, callback: (option: string) => void },
+    @Inject(MAT_DIALOG_DATA) public data: { message: string },
     public dialogRef: MatDialogRef<InputComponent>,
     private formBuilder: FormBuilder
   ) {
     this.message = data.message;
-    this.callback = data.callback;
   }
 
   ngOnInit() {
@@ -29,7 +26,6 @@ export class InputComponent implements OnInit {
   }
   
   onFormSubmit() {
-    this.callback(this.form.value.input);
-    this.dialogRef.close();
+    this.dialogRef.close(this.form.value.input);
   }
 }

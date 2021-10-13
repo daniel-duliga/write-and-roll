@@ -40,7 +40,7 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.getDataFromRoute();
     this.folders = this.journalService.getAllFolderPaths();
   }
-  
+
   private getDataFromRoute() {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
@@ -70,8 +70,10 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   handleCommand(option: string) {
-    this.logModel.replaceSelection(`\`${option}\``);
-    this.logModel.focus();
+    if (option) {
+      this.logModel.replaceSelection(`\`${option}\``);
+      this.logModel.focus();
+    }
   }
 
   save() {

@@ -24,8 +24,9 @@ export class ActionCreateEditComponent implements OnInit {
     this.content = entity.rawContent;
   }
 
-  run(): void {
-    const result = this.actionService.run(this.content, this.dialog);
+  async run(): Promise<void> {
+    const result = await this.actionService.run(this.content, this.dialog);
     alert(result);
+    return Promise.resolve();
   }
 }

@@ -10,13 +10,14 @@ export class ActionService {
     private api: ApiService
   ) { }
 
-  run(action: string, dialog: MatDialog): string {
+  async run(action: string, dialog: MatDialog): Promise<string> {
     // Provisioning
     const api = this.api;
     api.dialog = dialog;
-    
+
     // Execute action
-    const result: string = eval(action);
+    const command: Function = eval(`(async function() { ${action} })`);
+    const result: string = await command();
     
     // Return result
     return result.toString();

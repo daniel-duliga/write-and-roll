@@ -37,11 +37,11 @@ export class CommandsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.subscriptions.push(this.customToggle.subscribe(toggle => {
+    this.subscriptions.push(this.customToggle.subscribe(async toggle => {
       if (toggle) {
-        this.showCommands();
+        await this.showCommands();
       }
-    }))
+    }));
   }
 
   ngOnDestroy(): void {
@@ -50,24 +50,24 @@ export class CommandsComponent implements OnInit, OnDestroy {
     }
   }
 
-  showCommands() {
-    this.promptsService
-      .openAutoCompletePrompt(this.dialog, "Command", this.commands, this.handleCommandSelected.bind(this));
+  async showCommands() {
+    const command = await this.promptsService.openAutoCompletePrompt(this.dialog, "Command", this.commands);
+    await this.handleCommandSelected(command);
   }
 
-  handleCommandSelected(option: string) {
+  async handleCommandSelected(option: string) {
     let result = option;
     switch (option) {
       case '🔥 Roll Action': {
-        this.executeRollActionCommand();
+        await this.executeRollActionCommand();
         break;
       }
       case '🎲 Roll Dice': {
-        this.executeRollDiceCommand();
+        await this.executeRollDiceCommand();
         break;
       }
       case '🎱 Roll Table': {
-        this.executeRollTableCommand();
+        await this.executeRollTableCommand();
         break;
       }
       default: {
@@ -76,30 +76,27 @@ export class CommandsComponent implements OnInit, OnDestroy {
     }
   }
 
-  executeRollActionCommand() {
+  async executeRollActionCommand() {
     const actions = this.actionStorageService.getAllPaths();
-    this.promptsService.openAutoCompletePrompt(this.dialog, "Action", actions, (actionName: string) => {
-      const action = this.actionStorageService.get(actionName);
-      if (action) {
-        const actionResult = this.actionService.run(action.rawContent, this.dialog);
-        this.onCommandSelected.emit(actionResult);
-      }
-    });
+    const actionName = await this.promptsService.openAutoCompletePrompt(this.dialog, "Action", actions);
+    const action = this.actionStorageService.get(actionName);
+    if (action) {
+      const actionResult = await this.actionService.run(action.rawContent, this.dialog);
+      this.onCommandSelected.emit(actionResult);
+    }
   }
 
-  executeRollDiceCommand() {
-    this.promptsService.openInputPrompt(this.dialog, "Formula", (formula: string) => {
-      const result = DiceUtil.rollDiceFormula(formula).toString();
-      this.onCommandSelected.emit(result);
-    });
+  async executeRollDiceCommand() {
+    const formula = await this.promptsService.openInputPrompt(this.dialog, "Formula");
+    const result = DiceUtil.rollDiceFormula(formula).toString();
+    this.onCommandSelected.emit(result);
   }
 
-  executeRollTableCommand() {
+  async executeRollTableCommand() {
     const tables = this.randomTableStorageService.getAllPaths();
-    this.promptsService.openAutoCompletePrompt(this.dialog, "Table", tables, (tableName: string) => {
-      const table = this.randomTableStorageService.get(tableName);
-      const result = TablesUtil.rollOnTable(table.jsonContent);
-      this.onCommandSelected.emit(result);
-    });
+    const tableName = await this.promptsService.openAutoCompletePrompt(this.dialog, "Table", tables);
+    const table = this.randomTableStorageService.get(tableName);
+    const rollResult = TablesUtil.rollOnTable(table.jsonContent);
+    this.onCommandSelected.emit(rollResult);
   }
 }

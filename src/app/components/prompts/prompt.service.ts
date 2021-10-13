@@ -11,30 +11,27 @@ export class PromptService {
 
   constructor() { }
 
-  openInputPrompt(dialog: MatDialog, message: string, callback: (selectedOption: string) => void,) {
-    dialog.open(
+  openInputPrompt(dialog: MatDialog, message: string): Promise<string> {
+    const openedDialog = dialog.open(
       InputComponent,
       {
         width: this.promptsWidth,
-        data: {
-          message: message,
-          callback: (input: string) => callback(input)
-        },
-      }
-    )
+        data: { message: message }
+      });
+    return openedDialog.afterClosed().toPromise().then(((result: string) => result));
   }
 
-  openAutoCompletePrompt(dialog: MatDialog, message: string, options: string[], callback: (selectedOption: string) => void) {
-    dialog.open(
+  openAutoCompletePrompt(dialog: MatDialog, message: string, options: string[]): Promise<string> {
+    const openedDialog = dialog.open(
       AutoCompletePromptComponent,
       {
         width: this.promptsWidth,
         data: {
           message: message,
-          options: options,
-          callback: (selectedOption: string) => callback(selectedOption)
+          options: options
         },
       }
     );
+    return openedDialog.afterClosed().toPromise().then((result: string) => result);
   }
 }
