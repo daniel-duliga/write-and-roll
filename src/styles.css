@@ -28,6 +28,10 @@ body {
   width: 100%;
 }
 
+.CodeMirror-scroll {
+  min-height: auto !important;
+}
+
 @import '~codemirror/lib/codemirror';
 @import '~codemirror/theme/material';
 
