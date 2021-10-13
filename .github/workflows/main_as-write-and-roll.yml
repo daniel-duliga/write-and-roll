@@ -29,7 +29,7 @@ jobs:
       - name: Zip deployment package
         uses: montudor/action-zip@v1.0.0
         with:
-         args: zip -qq -r deploy-package.zip .
+         args: zip -qq -r deploy-package.zip ./dist/write-and-roll
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -53,7 +53,7 @@ jobs:
       - name: Unzip deployment package
         uses: montudor/action-zip@v1
         with:
-          args: unzip -qq deploy-package.zip -d node-app
+          args: unzip -qq deploy-package.zip -d .
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
