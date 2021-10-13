@@ -25,12 +25,17 @@ jobs:
         run: |
           npm install
           npm run build --if-present
+          
+      - name: action-zip
+        uses: montudor/action-zip@v1.0.0
+        with:
+         args: zip -qq -r deploy-package.zip dir
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: node-app
-          path: .
+          name: deploy-package.zip
+          path: deploy-package.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,7 +48,11 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: node-app
+          name: deploy-package.zip
+          
+      - uses: montudor/action-zip@v1
+        with:
+          args: unzip -qq deploy-package.zip -d node-app
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
