@@ -26,10 +26,10 @@ jobs:
           npm install
           npm run build --if-present
           
-      - name: action-zip
+      - name: Zip deployment package
         uses: montudor/action-zip@v1.0.0
         with:
-         args: zip -qq -r deploy-package.zip dir
+         args: zip -qq -r deploy-package.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -50,7 +50,8 @@ jobs:
         with:
           name: deploy-package.zip
           
-      - uses: montudor/action-zip@v1
+      - name: Unzip deployment package
+        uses: montudor/action-zip@v1
         with:
           args: unzip -qq deploy-package.zip -d node-app
 
