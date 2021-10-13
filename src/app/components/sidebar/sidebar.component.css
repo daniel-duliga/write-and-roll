@@ -10,17 +10,21 @@
 }
 
 .top-separator {
-    height: 52px;
+  height: 43px;
 }
 
 .middle-separator {
-    height: 100%;
+  flex-grow: 1;
 }
 
 .item-text {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .active-link {
-    background-color: rgba(0,0,0,.04);
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.separator {
+  border-bottom: 1px solid lightgray;
 }
