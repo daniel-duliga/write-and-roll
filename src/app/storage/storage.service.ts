@@ -7,8 +7,8 @@ export class StorageServiceBase {
     this.collectionName = collectionName;
   }
 
-  create(path: string, content: any) {
-    localStorage.setItem(`${this.collectionName}/${path}`, JSON.stringify(content));
+  create(path: string, content: string) {
+    localStorage.setItem(`${this.collectionName}/${path}`, content);
   }
 
   getAllPaths(): string[] {
@@ -29,16 +29,28 @@ export class StorageServiceBase {
     return uniqueFolders.map(x => x.concat('/'));
   }
 
-  get(path: string): IEntity | null {
+  get(name: string): IEntity {
     let entity: IEntity | null = null;
-    const rawContent = localStorage.getItem(`${this.collectionName}/${path}`);
+    const rawContent = localStorage.getItem(`${this.collectionName}/${name}`);
     if (rawContent) {
-      entity = JSON.parse(rawContent);
+      entity = {
+        name: name,
+        rawContent: rawContent
+      };
+    } else {
+      entity = {
+        name: `${name}/`,
+        rawContent: ''
+      };
     }
     return entity;
   }
 
-  delete(path: string) {
-    return localStorage.removeItem(`${this.collectionName}/${path}`);
+  getNameWithoutCollection(name: string): string {
+    return name.replace(`${this.collectionName}/`, '');
+  }
+
+  delete(name: string) {
+    return localStorage.removeItem(`${this.collectionName}/${name}`);
   }
 }

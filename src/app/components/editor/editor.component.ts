@@ -36,7 +36,7 @@ export class EditorComponent implements OnInit {
       if (name) {
         const entity = this.entityService.get(name); 
         if (entity) {
-          this.initialName = this.entity.name;
+          this.initialName = entity.name;
           this.entity = entity;
           this.onChanged.emit(entity);
         }
@@ -66,7 +66,7 @@ export class EditorComponent implements OnInit {
     if (entitySaveWrapper.oldName && entitySaveWrapper.entity.name !== entitySaveWrapper.oldName) {
       this.entityService.delete(entitySaveWrapper.oldName);
     }
-    this.entityService.create(entitySaveWrapper.entity.name, entitySaveWrapper.entity);
+    this.entityService.create(entitySaveWrapper.entity.name, entitySaveWrapper.entity.rawContent);
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }
 }

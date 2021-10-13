@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { JournalStorageService } from 'src/app/storage/journal/journal-storage.service';
+import { JournalStorageService } from 'src/app/storage/journal-storage.service';
 
 @Component({
   selector: 'app-chronicle-list',

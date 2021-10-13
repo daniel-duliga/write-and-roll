@@ -1,25 +1,32 @@
 import { DiceUtil } from './dice/dice.util';
 
 export class TablesUtil {
-    static rollOnTable(table: any): string {
-        const tableData = table.data;
-        const max = TablesUtil.getMaxIndex(tableData);
-        const roll = DiceUtil.rollDice(1, max)
-        const result = tableData.find((x: any[]) => this.checkMatch(x[0], roll[0]))[1]
-        return result
+    static rollOnTable(table: string[][]): string {
+        const max = TablesUtil.getMaxIndex(table);
+        const roll = DiceUtil.rollDice(1, max);
+        const match = table.find((x: string[]) => this.checkMatch(x[0], roll[0]));
+        if (match) {
+            return match[1];
+        } else {
+            return '';
+        }
     }
 
-    private static getMaxIndex(tableData: any) {
-        let max = tableData[tableData.length - 1][0];
+    private static getMaxIndex(tableData: string[][]): number {
+        let result = 0;
+
+        let max: string = tableData[tableData.length - 1][0];
         if (max.includes('-')) {
             max = max.split('-')[1];
         }
+
         if (max === '00') {
-            max = 100;
+            result = 100;
         } else {
-            max = +max;
+            result = +max;
         }
-        return max;
+
+        return result;
     }
 
     private static checkMatch(index: string, roll: number): boolean {

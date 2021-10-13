@@ -96,7 +96,10 @@ export class CommandsComponent implements OnInit, OnDestroy {
     const tables = this.randomTableStorageService.getAllPaths();
     const tableName = await this.promptsService.openAutoCompletePrompt(this.dialog, "Table", tables);
     const table = this.randomTableStorageService.get(tableName);
-    const rollResult = TablesUtil.rollOnTable(table.jsonContent);
+    let rollResult = '';
+    if (table) {
+      rollResult = TablesUtil.rollOnTable(table.content);
+    }
     this.onCommandSelected.emit(rollResult);
   }
 }

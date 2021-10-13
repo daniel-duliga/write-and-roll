@@ -1,7 +1,9 @@
-export class RandomTableWrapper {
+import { IEntity } from "../IEntity";
+
+export class RandomTableWrapper implements IEntity {
     constructor(
-        public path: string = '',
         public name: string = '',
         public rawContent: string = '',
-        public jsonContent: any = {}) { }
+        public content: any = {}
+    ) { }
 }

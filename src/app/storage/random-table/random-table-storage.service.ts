@@ -12,24 +12,12 @@ export class RandomTableStorageService extends StorageServiceBase {
     super('tables');
   }
 
-  create(path: string, entity: IEntity) {
-    this.papa.parse(entity.rawContent, {
-      complete: content => super.create(path, content)
-    });
-  }
-
-  get(path: string): RandomTableWrapper {
-    let csvContentParsed = '';
-    const entity = super.get(path);
-    if (entity) {
-      csvContentParsed = this.papa.unparse(entity);
-    } else {
-      path = path.concat('/');
+  get(name: string): RandomTableWrapper {
+    const entity = super.get(name);
+    const randomTable = new RandomTableWrapper(entity.name, entity.rawContent);
+    if (entity.rawContent) {
+      randomTable.content = this.papa.parse(entity.rawContent).data;
     }
-    return new RandomTableWrapper(path, this.getName(path), csvContentParsed, entity);
-  }
-
-  getName(path: string): string {
-    return path.replace(`${this.collectionName}/`, '');
+    return randomTable;
   }
 }

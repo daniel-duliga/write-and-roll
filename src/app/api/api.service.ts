@@ -22,11 +22,15 @@ export class ApiService {
 
   rollTable(tableName: string): string {
     const table = this.randomTableStorageService.get(tableName);
-    return TablesUtil.rollOnTable(table.jsonContent);
+    if (table) {
+      return TablesUtil.rollOnTable(table.content);
+    } else {
+      return `Table ${tableName} not found`;
+    }
   }
 
   prompt(message: string): Promise<string> | null {
-    if(this.dialog) {
+    if (this.dialog) {
       return this.promptService.openInputPrompt(this.dialog, message);
     } else {
       return null;

@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
-import { EasymdeOptions } from 'ngx-easymde/src/config';
 import { Subject } from 'rxjs';
-import { JournalStorageService } from 'src/app/storage/journal/journal-storage.service';
+import { JournalStorageService } from 'src/app/storage/journal-storage.service';
 import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
 
 @Component({
@@ -15,7 +14,7 @@ import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
 export class ChronicleCreateEditComponent implements OnInit {
   folders: string[] = [];
   journal: JournalWrapper = new JournalWrapper();
-  oldName: string = '';
+  initialName: string = '';
 
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
   easyMdeOptions: any = {
@@ -45,9 +44,12 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       if (name) {
-        this.journal = this.journalService.get(name);
-        this.oldName = this.journal.name;
-        this.logModel = this.journal.rawContent;
+        this.initialName = name;
+        const entity = this.journalService.get(name);
+        if (entity) {
+          this.journal = entity;
+          this.logModel = this.journal.rawContent;
+        }
       }
     });
   }
@@ -96,11 +98,11 @@ export class ChronicleCreateEditComponent implements OnInit {
     }
 
     // Save
-    if (this.oldName) {
-      this.journalService.delete(this.oldName);
+    if (this.initialName) {
+      this.journalService.delete(this.initialName);
     }
 
-    this.journalService.create(this.journal.name, this.journal);
+    this.journalService.create(this.journal.name, this.journal.rawContent);
 
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }
