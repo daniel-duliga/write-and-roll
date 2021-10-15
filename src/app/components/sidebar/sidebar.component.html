@@ -21,7 +21,7 @@
         </a>
         <div class="middle-separator"></div>
         <span class="separator"></span>
-        <a mat-list-item (click)="toggleExpand()" matTooltip="Expand/Collapse" [matTooltipPosition]="'after'">
+        <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
             <mat-icon *ngIf="!expanded">last_page</mat-icon>
             <mat-icon *ngIf="expanded">first_page</mat-icon>
         </a>

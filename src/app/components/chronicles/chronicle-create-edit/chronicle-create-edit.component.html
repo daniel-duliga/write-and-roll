@@ -1,25 +1,29 @@
+<!-- Static elements -->
 <app-commands [customToggle]="commandsToggle" (onCommandSelected)="this.handleCommand($event)"></app-commands>
-<app-auto-complete-field 
-    [message]="'Name'"
-    [options]="this.folders"
-    [initialValue]="this.journal.name"
-    (onChange)="this.setName($event)"
-></app-auto-complete-field>
-<div class="editor">
-    <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
-</div>
-<button
-    mat-mini-fab
-    color=""
-    aria-label="Commands button"
-    class="commands-button"
-    matTooltip="Commands (CTRL + Space)"
-    matTooltipPosition="before"
-    (click)="this.showCommands()"
->
-    <mat-icon>bolt</mat-icon>
-</button>
-<div class="buttons">
-    <button mat-raised-button class="button" (click)="this.save()">Save</button>
-    <button mat-raised-button class="button" routerLink="/chronicles">Back</button>
+<!-- Relative elements -->
+<div class="container">
+    <app-auto-complete-field 
+        [message]="'Name'"
+        [options]="this.folders"
+        [initialValue]="this.journal.name"
+        (onChange)="this.setName($event)"
+    ></app-auto-complete-field>
+    <div class="editor">
+        <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
+    </div>
+    <div class="buttons">
+        <button mat-raised-button class="button" (click)="this.save()">Save</button>
+        <button
+            mat-raised-button
+            color=""
+            aria-label="Commands button"
+            class="button commands-button"
+            matTooltip="Commands (CTRL + Space)"
+            matTooltipPosition="above"
+            (click)="this.showCommands()"
+        >
+            <mat-icon>bolt</mat-icon>
+        </button>
+        <button mat-raised-button class="button" routerLink="/chronicles">Back</button>
+    </div>
 </div>

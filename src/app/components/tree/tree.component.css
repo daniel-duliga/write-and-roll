@@ -1,10 +1,17 @@
 .container {
   display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+}
+
+.form-field {
+  height: 49px;
 }
 
 .tree {
-  height: calc(100vh - 100px);
+  height: 100%;
   overflow: auto;
+  flex-grow: 1;
 }
 
 .item-container {

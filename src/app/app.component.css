@@ -1,0 +1,12 @@
+.container {
+    display: grid;
+    height: 100%;
+}
+
+.main-content {
+    display: flex;
+}
+
+.router-container {
+    width: 100%;
+}

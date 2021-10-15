@@ -1,5 +1,12 @@
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .editor {
-  height: calc(100vh - 100px);
+  /* height: 100%; */
+  overflow: auto;
 }
 
 .buttons {
@@ -11,8 +18,5 @@
 }
 
 .commands-button {
-  position: absolute;
-  top: 110px;
-  right: 10px;
-  z-index: 9;
+  width: 50px;
 }

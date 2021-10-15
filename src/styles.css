@@ -21,11 +21,12 @@ body {
 @easymde-statusbar-characters: 'chars ：';
 @easymde-statusbar-counts: 'count ：'; */
 .EasyMDEContainer .CodeMirror {
-  height: calc(100vh - 149px) !important;
+  height: calc(100vh - 148px);
   border-radius: 0;
 }
 .editor-toolbar {
   border-radius: 0;
+  border-top: 0;
 }
 
 /* CodeMirror */
@@ -54,11 +55,11 @@ body {
 }
 
 /* Custom */
-.random-tables-form-field .mat-form-field-wrapper {
+.form-field .mat-form-field-wrapper {
   margin: 0 !important;
   padding: 0 !important;
 }
 .button {
-  height: 48px;
+  height: 49px !important;
   border-radius: 0 !important;
 }
