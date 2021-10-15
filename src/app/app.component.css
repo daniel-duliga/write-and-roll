@@ -10,3 +10,12 @@
 .router-container {
     width: 100%;
 }
+
+.footer {
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid lightgray;
+}

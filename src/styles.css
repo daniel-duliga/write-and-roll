@@ -8,9 +8,9 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-/* * {
+* {
   font-family: 'Courier New', Courier, monospace;
-} */
+}
 
 /* EasyMDE */
 @import "~ngx-easymde/lib/index.scss";
@@ -21,7 +21,7 @@ body {
 @easymde-statusbar-characters: 'chars ：';
 @easymde-statusbar-counts: 'count ：'; */
 .EasyMDEContainer .CodeMirror {
-  height: calc(100vh - 148px);
+  height: calc(100vh - 200px);
   border-radius: 0;
 }
 .editor-toolbar {

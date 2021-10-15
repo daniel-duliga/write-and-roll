@@ -1,6 +1,9 @@
 <div class="container" [style.width]="expanded ? '180px' : '55px'">
     <mat-nav-list class="list">
-        <div class="top-separator"></div>
+        <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
+            <mat-icon *ngIf="!expanded">last_page</mat-icon>
+            <mat-icon *ngIf="expanded">first_page</mat-icon>
+        </a>
         <span class="separator"></span>
         <a mat-list-item routerLink="/chronicles" [routerLinkActive]="['active-link']" matTooltip="Chronicle" [matTooltipPosition]="'after'">
             <mat-icon>book</mat-icon>
@@ -20,10 +23,5 @@
             <span class="item-text" *ngIf="expanded">Import/Export</span>
         </a>
         <div class="middle-separator"></div>
-        <span class="separator"></span>
-        <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
-            <mat-icon *ngIf="!expanded">last_page</mat-icon>
-            <mat-icon *ngIf="expanded">first_page</mat-icon>
-        </a>
     </mat-nav-list>
 </div>

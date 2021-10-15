@@ -1,7 +1,7 @@
 .container {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  height: 100vh;
+  height: calc(100vh - 52px);
 }
 
 .form-field {
@@ -9,9 +9,10 @@
 }
 
 .tree {
-  height: 100%;
+  height: calc(100% - 1px);
   overflow: auto;
   flex-grow: 1;
+  border-bottom: 1px solid lightgray;
 }
 
 .item-container {
