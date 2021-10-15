@@ -2,6 +2,7 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   height: calc(100vh - 52px);
+  border-left: 1px solid lightgray;
 }
 
 .form-field {
