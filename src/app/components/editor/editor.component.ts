@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { IEntity } from 'src/app/storage/IEntity';
-import { StorageServiceBase } from 'src/app/storage/storage.service';
+import { IEntity } from 'src/app/storage/core/IEntity';
+import { StorageServiceBase } from 'src/app/storage/core/storage-service-base';
 import { EntitySaveWrapper } from './entity-save.wrapper';
 
 @Component({

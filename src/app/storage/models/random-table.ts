@@ -1,6 +1,6 @@
-import { IEntity } from "../IEntity";
+import { IEntity } from "../core/IEntity";
 
-export class RandomTableWrapper implements IEntity {
+export class RandomTable implements IEntity {
     constructor(
         public name: string = '',
         public rawContent: string = '',

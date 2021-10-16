@@ -2,6 +2,7 @@ import { ArrayDataSource } from '@angular/cdk/collections';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TreeNodeWrapper } from 'src/app/components/tree/tree-node.wrapper';
+import { ExpansionModelItem } from 'src/app/storage/core/expansion-model-item';
 
 @Component({
   selector: 'app-tree',
@@ -10,6 +11,9 @@ import { TreeNodeWrapper } from 'src/app/components/tree/tree-node.wrapper';
 })
 export class TreeComponent implements OnInit {
   @Input() paths: string[] = [];
+  @Input() expansionModel: ExpansionModelItem[] = [];
+
+  @Output() onExpanded: EventEmitter<ExpansionModelItem> = new EventEmitter();
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();
   @Output() onAdd: EventEmitter<string> = new EventEmitter();
   @Output() onEdit: EventEmitter<string> = new EventEmitter();
@@ -28,11 +32,14 @@ export class TreeComponent implements OnInit {
   ngOnInit() {
     this.initialPaths = this.paths;
     this.initializeDataSource();
+    this.setExpansionModel();
   }
 
   filterItems() {
     this.paths = this.initialPaths.filter(x => x.toLowerCase().includes(this.filter.toLowerCase()));
     this.initializeDataSource();
+    this.treeControl.dataNodes = this.rootNode.children;
+    this.treeControl.expandAll();
   }
 
   clearFilter() {
@@ -42,6 +49,10 @@ export class TreeComponent implements OnInit {
 
   new() {
     this.onNew.emit(true);
+  }
+
+  expandNode(node: TreeNodeWrapper) {
+    this.onExpanded.emit(new ExpansionModelItem(node.path, this.treeControl.isExpanded(node)));
   }
 
   add(path: string) {
@@ -62,10 +73,21 @@ export class TreeComponent implements OnInit {
     }
   }
 
+  private setExpansionModel() {
+    for (const expandableItem of this.expansionModel) {
+      const node = this.rootNode.getChildRecursive(expandableItem.identifier);
+      if (node) {
+        if (expandableItem.isExpanded) {
+          this.treeControl.expand(node);
+        } else {
+          this.treeControl.collapse(node);
+        }
+      }
+    }
+  }
+
   private initializeDataSource() {
     this.rootNode = TreeNodeWrapper.fromPaths(this.paths);
     this.dataSource = new ArrayDataSource(this.rootNode.children);
-    this.treeControl.dataNodes = this.rootNode.children;
-    this.treeControl.expandAll();
   }
 }

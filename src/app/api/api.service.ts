@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PromptService } from '../components/prompts/prompt.service';
-import { RandomTableStorageService } from '../storage/random-table/random-table-storage.service';
+import { RandomTableStorageService } from '../storage/model-services/random-table-storage.service';
 import { DiceUtil } from '../trpg/dice/dice.util';
 import { TablesUtil } from '../trpg/tables.util';
 

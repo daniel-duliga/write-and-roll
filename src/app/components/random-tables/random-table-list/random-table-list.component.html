@@ -1,5 +1,7 @@
 <app-tree
     [paths]="this.randomTablePaths"
+    [expansionModel]="this.randomTableStorageService.getExpansionModel()"
+    (onExpanded)="this.randomTableStorageService.setExpansionState($event)"
     (onNew)="this.new()"
     (onAdd)="this.add($event)"
     (onEdit)="this.edit($event)"

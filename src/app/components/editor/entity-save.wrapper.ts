@@ -1,4 +1,4 @@
-import { IEntity } from "src/app/storage/IEntity";
+import { IEntity } from "src/app/storage/core/IEntity";
 
 export class EntitySaveWrapper {
     constructor(

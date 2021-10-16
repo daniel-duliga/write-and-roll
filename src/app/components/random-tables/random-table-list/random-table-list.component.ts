@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RandomTableStorageService } from 'src/app/storage/random-table/random-table-storage.service';
+import { RandomTableStorageService } from 'src/app/storage/model-services/random-table-storage.service';
 
 @Component({
   selector: 'app-random-table-list',
@@ -11,12 +11,12 @@ export class RandomTableListComponent implements OnInit {
   randomTablePaths: string[] = [];
 
   constructor(
-    private randomTableService: RandomTableStorageService,
+    public randomTableStorageService: RandomTableStorageService,
     private router: Router,
   ) { }
 
   ngOnInit() {
-    this.randomTablePaths = this.randomTableService.getAllPaths();
+    this.randomTablePaths = this.randomTableStorageService.getAllPaths();
   }
 
   new() {
@@ -32,6 +32,6 @@ export class RandomTableListComponent implements OnInit {
   }
 
   delete(path: string) {
-    this.randomTableService.delete(path);
+    this.randomTableStorageService.delete(path);
   }
 }

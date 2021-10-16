@@ -5,9 +5,9 @@ import { ApiService } from 'src/app/api/api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ActionService {
+export class ActionsComponentService {
   constructor(
-    private api: ApiService
+    private api: ApiService,
   ) { }
 
   async run(action: string, dialog: MatDialog): Promise<string> {

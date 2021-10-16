@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { MatDialog } from '@angular/material/dialog';
 import { DiceUtil } from 'src/app/trpg/dice/dice.util';
 import { PromptService } from '../prompts/prompt.service';
-import { RandomTableStorageService } from 'src/app/storage/random-table/random-table-storage.service';
+import { RandomTableStorageService } from 'src/app/storage/model-services/random-table-storage.service';
 import { TablesUtil } from 'src/app/trpg/tables.util';
 import { Subject, Subscription } from 'rxjs';
-import { ActionStorageService } from 'src/app/storage/action-storage.service';
-import { ActionService } from '../actions/action.service';
+import { ActionStorageService } from 'src/app/storage/model-services/action-storage.service';
+import { ActionsComponentService } from '../actions/actions-component.service';
 
 @Component({
   selector: 'app-commands',
@@ -33,7 +33,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
     private promptsService: PromptService,
     private randomTableStorageService: RandomTableStorageService,
     private actionStorageService: ActionStorageService,
-    private actionService: ActionService,
+    private actionService: ActionsComponentService,
   ) { }
 
   ngOnInit() {

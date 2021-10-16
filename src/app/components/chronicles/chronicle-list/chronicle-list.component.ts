@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChronicleStorageService } from 'src/app/storage/chronicle/chronicle-storage.service';
+import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
 
 @Component({
   selector: 'app-chronicle-list',
@@ -11,12 +11,12 @@ export class ChronicleListComponent implements OnInit {
   journalPaths: string[] = [];
 
   constructor(
+    public chronicleStorageService: ChronicleStorageService,
     private router: Router,
-    private journalService: ChronicleStorageService
   ) { }
 
   ngOnInit(): void {
-    this.journalPaths = this.journalService.getAllPaths();
+    this.journalPaths = this.chronicleStorageService.getAllPaths();
   }
 
   new() {
@@ -32,6 +32,6 @@ export class ChronicleListComponent implements OnInit {
   }
 
   delete(path: string) {
-    this.journalService.delete(path);
+    this.chronicleStorageService.delete(path);
   }
 }

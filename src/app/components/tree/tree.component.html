@@ -29,8 +29,13 @@
 
         <!-- Tree node template for expandable nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
-            <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle
-                class="folder-button tree-node-button">
+            <button 
+                mat-button
+                [attr.aria-label]="'Toggle ' + node.name"
+                cdkTreeNodeToggle
+                class="folder-button tree-node-button"
+                (click)="expandNode(node)"
+            >
                 <mat-icon>folder_open</mat-icon>
                 {{node.name}}
                 <button mat-icon-button class="action-button" (click)="add(node.path)">

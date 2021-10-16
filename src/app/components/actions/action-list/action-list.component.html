@@ -1,5 +1,7 @@
 <app-tree
     [paths]="this.actionPaths"
+    [expansionModel]="this.actionStorageService.getExpansionModel()"
+    (onExpanded)="this.actionStorageService.setExpansionState($event)"
     (onNew)="this.new()"
     (onAdd)="this.add($event)"
     (onEdit)="this.edit($event)"

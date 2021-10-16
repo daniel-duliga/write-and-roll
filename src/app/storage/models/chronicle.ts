@@ -1,6 +1,6 @@
-import { IEntity } from "../IEntity";
+import { IEntity } from "../core/IEntity";
 
-export class ChronicleWrapper implements IEntity {
+export class Chronicle implements IEntity {
     constructor(
         public name: string = '',
         public rawContent: string = ''

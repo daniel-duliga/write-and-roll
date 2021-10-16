@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActionStorageService } from 'src/app/storage/action-storage.service';
+import { ActionStorageService } from 'src/app/storage/model-services/action-storage.service';
 
 @Component({
   selector: 'app-action-list',
@@ -11,12 +11,12 @@ export class ActionListComponent implements OnInit {
   actionPaths: string[] = [];
 
   constructor(
-    private actionService: ActionStorageService,
+    public actionStorageService: ActionStorageService,
     private router: Router,
   ) { }
 
   ngOnInit(): void {
-    this.actionPaths = this.actionService.getAllPaths();
+    this.actionPaths = this.actionStorageService.getAllPaths();
   }
 
   new() {
@@ -32,6 +32,6 @@ export class ActionListComponent implements OnInit {
   }
 
   delete(path: string) {
-    this.actionService.delete(path);
+    this.actionStorageService.delete(path);
   }
 }

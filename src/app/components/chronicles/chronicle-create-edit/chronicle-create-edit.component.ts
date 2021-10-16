@@ -3,8 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
 import { Subject } from 'rxjs';
-import { ChronicleStorageService } from 'src/app/storage/chronicle/chronicle-storage.service';
-import { ChronicleWrapper } from 'src/app/storage/chronicle/chronicle.wrapper';
+import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
+import { Chronicle } from 'src/app/storage/models/chronicle';
 
 @Component({
   selector: 'app-chronicle-create-edit',
@@ -13,7 +13,7 @@ import { ChronicleWrapper } from 'src/app/storage/chronicle/chronicle.wrapper';
 })
 export class ChronicleCreateEditComponent implements OnInit {
   folders: string[] = [];
-  chronicle: ChronicleWrapper = new ChronicleWrapper();
+  chronicle: Chronicle = new Chronicle();
   initialName: string = '';
 
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
@@ -30,14 +30,14 @@ export class ChronicleCreateEditComponent implements OnInit {
   commandsToggle: Subject<boolean> = new Subject();
 
   constructor(
-    private journalService: ChronicleStorageService,
+    private chronicleStorageService: ChronicleStorageService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
     this.getDataFromRoute();
-    this.folders = this.journalService.getAllFolderPaths();
+    this.folders = this.chronicleStorageService.getAllFolderPaths();
   }
 
   private getDataFromRoute() {
@@ -45,7 +45,7 @@ export class ChronicleCreateEditComponent implements OnInit {
       const name = params.get('name');
       if (name) {
         this.initialName = name;
-        const entity = this.journalService.get(name);
+        const entity = this.chronicleStorageService.get(name);
         if (entity) {
           this.chronicle = entity;
           this.logModel = this.chronicle.rawContent;
@@ -104,10 +104,10 @@ export class ChronicleCreateEditComponent implements OnInit {
 
     // Save
     if (this.initialName) {
-      this.journalService.delete(this.initialName);
+      this.chronicleStorageService.delete(this.initialName);
     }
 
-    this.journalService.create(this.chronicle.name, this.chronicle.rawContent);
+    this.chronicleStorageService.create(this.chronicle.name, this.chronicle.rawContent);
 
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }

@@ -1,5 +1,7 @@
 <app-tree
     [paths]="this.journalPaths"
+    [expansionModel]="this.chronicleStorageService.getExpansionModel()"
+    (onExpanded)="this.chronicleStorageService.setExpansionState($event)"
     (onNew)="this.new()"
     (onAdd)="this.add($event)"
     (onEdit)="this.edit($event)"

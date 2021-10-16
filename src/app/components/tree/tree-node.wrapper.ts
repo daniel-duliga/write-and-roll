@@ -2,7 +2,8 @@ export class TreeNodeWrapper {
   constructor(
     public name: string = '',
     public path: string = '',
-    public children: TreeNodeWrapper[] = []
+    public children: TreeNodeWrapper[] = [],
+    public isExpanded: boolean = false,
   ) { }
 
   static fromPaths(paths: string[]): TreeNodeWrapper {
@@ -14,9 +15,14 @@ export class TreeNodeWrapper {
     return rootNode;
   }
 
-  removeChild(path: string) {
+  getChildRecursive(path: string) {
     const pathSegments = path.split('/').reverse();
-    TreeNodeWrapper.removeChildByPath(pathSegments, this);
+    return TreeNodeWrapper.getChildByPathRecursive(pathSegments, this);
+  }
+
+  removeChildRecursive(path: string) {
+    const pathSegments = path.split('/').reverse();
+    TreeNodeWrapper.removeChildByPathRecursive(pathSegments, this);
   }
 
   private static getNodeFromPath(parentNode: TreeNodeWrapper, pathSegments: string[]): TreeNodeWrapper {
@@ -34,14 +40,28 @@ export class TreeNodeWrapper {
     return parentNode;
   }
 
-  private static removeChildByPath(pathSegments: string[], node: TreeNodeWrapper) {
+  private static getChildByPathRecursive(pathSegments: string[], startNode: TreeNodeWrapper): TreeNodeWrapper | null {
+    while (pathSegments.length > 0) {
+      const pathSegment = pathSegments.pop();
+      const childNode = startNode.children.find(x => x.name === pathSegment);
+      if (childNode) {
+        startNode = childNode;
+      } else {
+        return null;
+      }
+    }
+
+    return startNode;
+  }
+
+  private static removeChildByPathRecursive(pathSegments: string[], startNode: TreeNodeWrapper) {
     if (pathSegments.length > 0) {
       const pathSegment = pathSegments.pop();
-      const childNode = node.children.find(x => x.name === pathSegment);
+      const childNode = startNode.children.find(x => x.name === pathSegment);
       if (childNode?.children.length === 0) {
-        node.children = node.children.filter(x => x.name != pathSegment);
+        startNode.children = startNode.children.filter(x => x.name != pathSegment);
       } else if (childNode) {
-        this.removeChildByPath(pathSegments, childNode);
+        this.removeChildByPathRecursive(pathSegments, childNode);
       }
     }
   }
