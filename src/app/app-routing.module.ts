@@ -4,6 +4,7 @@ import { ActionCreateEditComponent } from './components/actions/action-create-ed
 import { ActionListComponent } from './components/actions/action-list/action-list.component';
 import { ChronicleCreateEditComponent } from './components/chronicles/chronicle-create-edit/chronicle-create-edit.component';
 import { ChronicleListComponent } from './components/chronicles/chronicle-list/chronicle-list.component';
+import { ImportExportComponent } from './components/import-export/import-export.component';
 import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
 
@@ -79,6 +80,10 @@ const routes: Routes = [
       },
     ]
   },
+  {
+    path: 'import-export',
+    component: ImportExportComponent
+  }
 ];
 
 @NgModule({

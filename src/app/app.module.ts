@@ -36,6 +36,7 @@ import { ChronicleListComponent } from './components/chronicles/chronicle-list/c
 import { ActionListComponent } from './components/actions/action-list/action-list.component';
 import { ActionCreateEditComponent } from './components/actions/action-create-edit/action-create-edit.component';
 import { EditorComponent } from './components/editor/editor.component';
+import { ImportExportComponent } from './components/import-export/import-export.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { EditorComponent } from './components/editor/editor.component';
     ActionListComponent,
     ActionCreateEditComponent,
     EditorComponent,
+    ImportExportComponent,
   ],
   imports: [
     // Core

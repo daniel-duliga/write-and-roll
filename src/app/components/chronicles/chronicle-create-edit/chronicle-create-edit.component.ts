@@ -3,8 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
 import { Subject } from 'rxjs';
-import { JournalStorageService } from 'src/app/storage/journal-storage.service';
-import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
+import { ChronicleStorageService } from 'src/app/storage/chronicle/chronicle-storage.service';
+import { ChronicleWrapper } from 'src/app/storage/chronicle/chronicle.wrapper';
 
 @Component({
   selector: 'app-chronicle-create-edit',
@@ -13,7 +13,7 @@ import { JournalWrapper } from 'src/app/storage/journal/journal.wrapper';
 })
 export class ChronicleCreateEditComponent implements OnInit {
   folders: string[] = [];
-  journal: JournalWrapper = new JournalWrapper();
+  journal: ChronicleWrapper = new ChronicleWrapper();
   initialName: string = '';
 
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
@@ -30,7 +30,7 @@ export class ChronicleCreateEditComponent implements OnInit {
   commandsToggle: Subject<boolean> = new Subject();
 
   constructor(
-    private journalService: JournalStorageService,
+    private journalService: ChronicleStorageService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) { }

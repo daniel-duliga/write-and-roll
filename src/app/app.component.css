@@ -1,22 +1,28 @@
 .container {
-    display: grid;
-    height: 100%;
+  display: grid;
+  height: 100%;
 }
 
 .main-content {
-    display: flex;
+  display: flex;
 }
 
 .router-container {
-    width: 100%;
+  width: 100%;
+}
+
+.route-container {
+  height: calc(100% - 53px);
+  border-left: 1px solid lightgray;
+  border-bottom: 1px solid lightgrey;
 }
 
 .footer {
-    height: 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 9pt;
-    background-color: whitesmoke;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 9pt;
+  background-color: whitesmoke;
 }

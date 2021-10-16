@@ -9,7 +9,7 @@ import { IEntity } from '../IEntity';
 })
 export class RandomTableStorageService extends StorageServiceBase {
   constructor(private papa: Papa) {
-    super('tables');
+    super('random-tables');
   }
 
   get(name: string): RandomTableWrapper {

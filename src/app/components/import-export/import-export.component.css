@@ -1,0 +1,21 @@
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.separator {
+    flex-grow: 1;
+    text-align: center;
+    height: 100%;
+    overflow: auto;
+}
+
+.middle-separator {
+    height: 25px;
+}
+
+.button {
+    margin-left: 30%;
+    margin-right: 30%;
+}
