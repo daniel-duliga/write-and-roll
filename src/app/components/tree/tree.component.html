@@ -1,8 +1,12 @@
 <div class="container">
     <!-- Filter -->
     <mat-form-field appearance="outline" class="form-field">
+        <mat-icon matPrefix>search</mat-icon>
         <input type="text" placeholder="Filter" aria-label="Filter" matInput [(ngModel)]="filter"
             (ngModelChange)="filterItems()">
+        <button *ngIf="filter" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
+            <mat-icon>close</mat-icon>
+        </button>
     </mat-form-field>
 
     <!-- Tree -->
@@ -10,7 +14,7 @@
 
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
-            <button mat-button class="node-button">
+            <button mat-button class="tree-node-button">
                 <div class="item-container" (click)="edit(node.path)">
                     <div class="item">
                         <mat-icon>description</mat-icon>
@@ -25,7 +29,8 @@
 
         <!-- Tree node template for expandable nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
-            <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="folder-button node-button">
+            <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle
+                class="folder-button tree-node-button">
                 <mat-icon>folder_open</mat-icon>
                 {{node.name}}
                 <button mat-icon-button class="action-button" (click)="add(node.path)">

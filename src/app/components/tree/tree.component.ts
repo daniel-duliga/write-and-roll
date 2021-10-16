@@ -35,6 +35,11 @@ export class TreeComponent implements OnInit {
     this.initializeDataSource();
   }
 
+  clearFilter() {
+    this.filter = '';
+    this.filterItems();
+  }
+
   new() {
     this.onNew.emit(true);
   }

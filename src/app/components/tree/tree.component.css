@@ -65,13 +65,13 @@
   margin-left: auto;
 }
 
-.new-button {
-  border-left: 0 !important;
-}
-
-.node-button {
+.tree-node-button {
   width: 100%;
   border-left: 0 !important;
   border-radius: 0 !important;
   border-bottom: 1px solid lightgray;
+}
+
+.new-button {
+  margin: 20px;
 }
