@@ -6,7 +6,7 @@ import { RandomTableStorageService } from 'src/app/storage/model-services/random
 import { TablesUtil } from 'src/app/trpg/tables.util';
 import { Subject, Subscription } from 'rxjs';
 import { ActionStorageService } from 'src/app/storage/model-services/action-storage.service';
-import { ActionsComponentService } from '../actions/actions-component.service';
+import { ActionsComponentService } from 'src/app/pages/actions/actions-component.service';
 
 @Component({
   selector: 'app-commands',

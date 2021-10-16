@@ -25,18 +25,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
-import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
+import { RandomTableCreateEditComponent } from './pages/random-tables/random-table-create-edit/random-table-create-edit.component';
+import { RandomTableListComponent } from './pages/random-tables/random-table-list/random-table-list.component';
 import { TreeComponent } from './components/tree/tree.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
-import { ChronicleCreateEditComponent } from './components/chronicles/chronicle-create-edit/chronicle-create-edit.component';
-import { ChronicleListComponent } from './components/chronicles/chronicle-list/chronicle-list.component';
-import { ActionListComponent } from './components/actions/action-list/action-list.component';
-import { ActionCreateEditComponent } from './components/actions/action-create-edit/action-create-edit.component';
+import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-create-edit/chronicle-create-edit.component';
+import { ChronicleListComponent } from './pages/chronicles/chronicle-list/chronicle-list.component';
+import { ActionListComponent } from './pages/actions/action-list/action-list.component';
+import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
 import { EditorComponent } from './components/editor/editor.component';
-import { ImportExportComponent } from './components/import-export/import-export.component';
+import { ImportExportComponent } from './pages/import-export/import-export.component';
 
 @NgModule({
   declarations: [

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ActionCreateEditComponent } from './components/actions/action-create-edit/action-create-edit.component';
-import { ActionListComponent } from './components/actions/action-list/action-list.component';
-import { ChronicleCreateEditComponent } from './components/chronicles/chronicle-create-edit/chronicle-create-edit.component';
-import { ChronicleListComponent } from './components/chronicles/chronicle-list/chronicle-list.component';
-import { ImportExportComponent } from './components/import-export/import-export.component';
-import { RandomTableCreateEditComponent } from './components/random-tables/random-table-create-edit/random-table-create-edit.component';
-import { RandomTableListComponent } from './components/random-tables/random-table-list/random-table-list.component';
+import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
+import { ActionListComponent } from './pages/actions/action-list/action-list.component';
+import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-create-edit/chronicle-create-edit.component';
+import { ChronicleListComponent } from './pages/chronicles/chronicle-list/chronicle-list.component';
+import { ImportExportComponent } from './pages/import-export/import-export.component';
+import { RandomTableCreateEditComponent } from './pages/random-tables/random-table-create-edit/random-table-create-edit.component';
+import { RandomTableListComponent } from './pages/random-tables/random-table-list/random-table-list.component';
 
 const routes: Routes = [
   {
