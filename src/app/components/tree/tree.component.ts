@@ -47,7 +47,9 @@ export class TreeComponent implements OnInit {
     this.onEdit.emit(path);
   }
 
-  delete(path: string) {
+  delete(path: string, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
     if (confirm(`Are you sure you want to delete ${path}?`)) {
       this.onDelete.emit(path);
       this.paths = this.paths.filter(x => x != path);

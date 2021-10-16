@@ -1,19 +1,13 @@
 <div class="container">
     <!-- Filter -->
     <mat-form-field appearance="outline" class="form-field">
-        <input
-            type="text"
-            placeholder="Filter"
-            aria-label="Filter"
-            matInput
-            [(ngModel)]="filter"
-            (ngModelChange)="filterItems()"
-        >
+        <input type="text" placeholder="Filter" aria-label="Filter" matInput [(ngModel)]="filter"
+            (ngModelChange)="filterItems()">
     </mat-form-field>
 
     <!-- Tree -->
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
-        
+
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
             <button mat-button style="width: 100%;" class="button">
@@ -22,13 +16,13 @@
                         <mat-icon>description</mat-icon>
                         {{node.name}}
                     </div>
-                    <button mat-icon-button (click)="delete(node.path)" class="action-button">
+                    <button mat-icon-button (click)="delete(node.path, $event)" class="action-button">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
             </button>
         </cdk-nested-tree-node>
-        
+
         <!-- Tree node template for expandable nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
             <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="button folder-button">
