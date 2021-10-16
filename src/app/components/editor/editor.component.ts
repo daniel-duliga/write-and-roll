@@ -54,7 +54,12 @@ export class EditorComponent implements OnInit {
     this.onChanged.emit(this.entity);
   }
 
-  save() {
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+    
     const entitySaveWrapper = new EntitySaveWrapper(this.entity, this.initialName);
     
     const errors = entitySaveWrapper.validate();

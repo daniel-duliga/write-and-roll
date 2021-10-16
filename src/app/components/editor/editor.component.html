@@ -5,7 +5,7 @@
         [initialValue]="this.entity.name"
         (onChange)="this.setName($event)"
     ></app-auto-complete-field>
-    <div class="editor">
+    <div class="editor" (document:keydown.control.s)="this.save($event)">
         <ngx-codemirror
             [(ngModel)]="entity.rawContent"
             [options]="{ lineNumbers: true, theme: 'default', mode: this.mode }"

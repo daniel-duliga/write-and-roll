@@ -4,7 +4,7 @@ import { DiceUtil } from 'src/app/trpg/dice/dice.util';
 import { PromptService } from '../prompts/prompt.service';
 import { RandomTableStorageService } from 'src/app/storage/random-table/random-table-storage.service';
 import { TablesUtil } from 'src/app/trpg/tables.util';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ActionStorageService } from 'src/app/storage/action-storage.service';
 import { ActionService } from '../actions/action.service';
 

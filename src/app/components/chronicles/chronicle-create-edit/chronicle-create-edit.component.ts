@@ -78,7 +78,12 @@ export class ChronicleCreateEditComponent implements OnInit {
     }
   }
 
-  save() {
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+
     // Validation
     let errors = '';
 

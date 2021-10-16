@@ -1,3 +1,9 @@
+/* Fonts */
+@font-face {
+  font-family: JetBrainsMono;
+  src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+}
+
 /* You can add global styles to this file, and also import other style files */
 
 html,
@@ -8,9 +14,9 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-* {
-  font-family: "Courier New", Courier, monospace;
-}
+/* * {
+  font-family: "JetBrainsMono", Courier, monospace;
+} */
 
 /* EasyMDE */
 @import "~ngx-easymde/lib/index.scss";
@@ -35,6 +41,7 @@ body {
 .CodeMirror {
   height: 100%;
   width: 100%;
+  font-family: "JetBrainsMono" !important;
 }
 .CodeMirror-scroll {
   min-height: auto !important;
@@ -62,7 +69,7 @@ body {
 .button {
   height: 49px !important;
   border-radius: 0 !important;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-bottom: 1px solid lightgray !important;
   border-left: 1px solid lightgray !important;
   box-shadow: none !important;

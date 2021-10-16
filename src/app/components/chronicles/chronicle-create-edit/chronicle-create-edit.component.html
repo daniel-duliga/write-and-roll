@@ -8,7 +8,7 @@
         [initialValue]="this.journal.name"
         (onChange)="this.setName($event)"
     ></app-auto-complete-field>
-    <div class="editor">
+    <div class="editor" (document:keydown.control.s)="this.save($event)">
         <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
     </div>
     <div class="buttons">
