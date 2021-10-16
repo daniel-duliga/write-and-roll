@@ -9,7 +9,7 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 * {
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 
 /* EasyMDE */
@@ -30,8 +30,8 @@ body {
 }
 
 /* CodeMirror */
-@import '~codemirror/lib/codemirror';
-@import '~codemirror/theme/material';
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/theme/material";
 .CodeMirror {
   height: 100%;
   width: 100%;
@@ -63,4 +63,7 @@ body {
   height: 49px !important;
   border-radius: 0 !important;
   font-weight: bold;
+  border-bottom: 1px solid lightgray !important;
+  border-left: 1px solid lightgray !important;
+  box-shadow: none !important;
 }

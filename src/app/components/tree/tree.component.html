@@ -15,7 +15,7 @@
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
         
         <!-- Tree node template for leaf nodes -->
-        <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="example-tree-node">
+        <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
             <button mat-button style="width: 100%;" class="button">
                 <div class="item-container" (click)="edit(node.path)">
                     <div class="item">
@@ -30,7 +30,7 @@
         </cdk-nested-tree-node>
         
         <!-- Tree node template for expandable nodes -->
-        <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="example-tree-node">
+        <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
             <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="button folder-button">
                 <mat-icon>folder_open</mat-icon>
                 {{node.name}}
@@ -38,12 +38,12 @@
                     <mat-icon>add</mat-icon>
                 </button>
             </button>
-            <div [class.example-tree-invisible]="!treeControl.isExpanded(node)">
+            <div [class.tree-invisible]="!treeControl.isExpanded(node)">
                 <ng-container cdkTreeNodeOutlet></ng-container>
             </div>
         </cdk-nested-tree-node>
     </cdk-tree>
 
     <!-- New -->
-    <button mat-raised-button class="button" (click)="new()">New</button>
+    <button mat-raised-button class="button new-button" (click)="new()">New</button>
 </div>
