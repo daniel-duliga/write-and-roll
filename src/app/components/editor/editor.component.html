@@ -4,6 +4,7 @@
         [options]="this.folders"
         [initialValue]="this.entity.name"
         (onChange)="this.setName($event)"
+        class="name"
     ></app-auto-complete-field>
     <div class="editor" (document:keydown.control.s)="this.save($event)">
         <ngx-codemirror
@@ -13,7 +14,7 @@
         ></ngx-codemirror>
     </div>
     <div class="buttons">
-        <button mat-raised-button class="button" (click)="this.save()">Save</button>
-        <button mat-raised-button class="button" routerLink="{{this.backLink}}">Back</button>
+        <button mat-stroked-button class="button" (click)="this.save()">Save</button>
+        <button mat-stroked-button class="button" routerLink="{{this.backLink}}">Back</button>
     </div>
 </div>

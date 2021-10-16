@@ -32,7 +32,7 @@ export class SidebarComponent implements OnInit {
       text: 'Import/Export'
     },
   ];
-  expanded = true;
+  expanded = false;
 
   constructor() { }
 
