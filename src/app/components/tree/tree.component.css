@@ -5,14 +5,14 @@
 }
 
 .form-field {
-  height: 49px;
+  margin: 20px;
 }
 
 .tree {
   height: calc(100% - 1px);
   overflow: auto;
   flex-grow: 1;
-  border-bottom: 1px solid lightgray;
+  margin-left: 20px;
 }
 
 .item-container {
@@ -52,7 +52,7 @@
 }
 
 .tree-node .tree-node {
-  padding-left: 40px;
+  padding-left: 30px;
 }
 
 .folder-button {
@@ -67,9 +67,11 @@
 
 .new-button {
   border-left: 0 !important;
-  border-bottom: 0 !important;
 }
 
-.button {
+.node-button {
+  width: 100%;
   border-left: 0 !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid lightgray;
 }

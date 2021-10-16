@@ -54,12 +54,12 @@ body {
 /* .mat-snack-bar-container {
   margin-bottom: 75px !important;
 } */
-.mat-form-field-appearance-outline .mat-form-field-outline-start {
+/* .mat-form-field-appearance-outline .mat-form-field-outline-start {
   border-radius: 0 !important;
-}
-.mat-form-field-appearance-outline .mat-form-field-outline-end {
+} */
+/* .mat-form-field-appearance-outline .mat-form-field-outline-end {
   border-radius: 0 !important;
-}
+} */
 
 /* Custom */
 .form-field .mat-form-field-wrapper {

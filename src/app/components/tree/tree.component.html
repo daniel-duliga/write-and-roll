@@ -10,7 +10,7 @@
 
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
-            <button mat-button style="width: 100%;" class="button">
+            <button mat-button class="node-button">
                 <div class="item-container" (click)="edit(node.path)">
                     <div class="item">
                         <mat-icon>description</mat-icon>
@@ -25,7 +25,7 @@
 
         <!-- Tree node template for expandable nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
-            <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="button folder-button">
+            <button mat-button [attr.aria-label]="'Toggle ' + node.name" cdkTreeNodeToggle class="folder-button node-button">
                 <mat-icon>folder_open</mat-icon>
                 {{node.name}}
                 <button mat-icon-button class="action-button" (click)="add(node.path)">
@@ -39,5 +39,5 @@
     </cdk-tree>
 
     <!-- New -->
-    <button mat-raised-button class="button new-button" (click)="new()">New</button>
+    <button mat-stroked-button class="button new-button" (click)="new()">New</button>
 </div>
