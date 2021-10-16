@@ -1,5 +1,6 @@
 .container {
   display: grid;
+  height: calc(100% - 2px);
 }
 
 .main-content {
