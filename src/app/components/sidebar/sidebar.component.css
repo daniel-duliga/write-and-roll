@@ -10,11 +10,12 @@
   padding-top: 0 !important;
 }
 
-.top-separator {
-  height: 50px;
+.list-item {
+  font-size: 11pt;
+  font-weight: 500;
 }
 
-.middle-separator {
+.spacer {
   flex-grow: 1;
 }
 
@@ -28,4 +29,9 @@
 
 .separator {
   border-bottom: 1px solid lightgray;
+}
+
+mat-list-item {
+  font-size: 11pt;
+  font-weight: 500;
 }

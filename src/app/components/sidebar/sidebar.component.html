@@ -1,27 +1,23 @@
 <div class="container" [style.width]="expanded ? '200px' : '55px'">
     <mat-nav-list class="list">
+        <a
+            *ngFor="let item of items"
+            mat-list-item
+            routerLink="{{item.link}}"
+            [routerLinkActive]="['active-link']"
+            class="list-item"
+            matTooltip="{{item.tooltip}}"
+            [matTooltipPosition]="'after'"
+        >
+            <mat-icon>{{item.icon}}</mat-icon>
+            <span class="item-text" *ngIf="expanded">{{item.text}}</span>
+        </a>
+        
+        <div class="spacer"></div>
+        
         <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
             <mat-icon *ngIf="!expanded">last_page</mat-icon>
             <mat-icon *ngIf="expanded">first_page</mat-icon>
         </a>
-        <span class="separator"></span>
-        <a mat-list-item routerLink="/chronicles" [routerLinkActive]="['active-link']" matTooltip="Chronicle" [matTooltipPosition]="'after'">
-            <mat-icon>book</mat-icon>
-            <span class="item-text" *ngIf="expanded">Chronicles</span>
-        </a>
-        <a mat-list-item routerLink="/random-tables" [routerLinkActive]="['active-link']" matTooltip="Random Tables" [matTooltipPosition]="'after'">
-            <mat-icon>view_list</mat-icon>
-            <span class="item-text" *ngIf="expanded">Random Tables</span>
-        </a>
-        <a mat-list-item routerLink="/actions" [routerLinkActive]="['active-link']" matTooltip="Actions" [matTooltipPosition]="'after'">
-            <mat-icon>code</mat-icon>
-            <span class="item-text" *ngIf="expanded">Actions</span>
-        </a>
-        <span class="separator"></span>
-        <a mat-list-item routerLink="/import-export" [routerLinkActive]="['import-export']" matTooltip="Import/Export" [matTooltipPosition]="'after'">
-            <mat-icon>save</mat-icon>
-            <span class="item-text" *ngIf="expanded">Import/Export</span>
-        </a>
-        <div class="middle-separator"></div>
     </mat-nav-list>
 </div>
