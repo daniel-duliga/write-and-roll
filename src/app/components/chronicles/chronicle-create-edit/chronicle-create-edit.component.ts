@@ -13,7 +13,7 @@ import { ChronicleWrapper } from 'src/app/storage/chronicle/chronicle.wrapper';
 })
 export class ChronicleCreateEditComponent implements OnInit {
   folders: string[] = [];
-  journal: ChronicleWrapper = new ChronicleWrapper();
+  chronicle: ChronicleWrapper = new ChronicleWrapper();
   initialName: string = '';
 
   @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
@@ -47,8 +47,8 @@ export class ChronicleCreateEditComponent implements OnInit {
         this.initialName = name;
         const entity = this.journalService.get(name);
         if (entity) {
-          this.journal = entity;
-          this.logModel = this.journal.rawContent;
+          this.chronicle = entity;
+          this.logModel = this.chronicle.rawContent;
         }
       }
     });
@@ -64,11 +64,11 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   setName(name: string) {
-    this.journal.name = name;
+    this.chronicle.name = name;
   }
 
   onLogChange(newValue: any) {
-    this.journal.rawContent = newValue;
+    this.chronicle.rawContent = newValue;
   }
 
   handleCommand(option: string) {
@@ -87,13 +87,13 @@ export class ChronicleCreateEditComponent implements OnInit {
     // Validation
     let errors = '';
 
-    if (this.journal.name.trim() === '') {
+    if (this.chronicle.name.trim() === '') {
       errors += 'Name is required.\n';
-    } else if (this.journal.name.trim().endsWith('/')) {
+    } else if (this.chronicle.name.trim().endsWith('/')) {
       errors += 'Name cannot end with "/".\n';
     }
 
-    if (this.journal.rawContent.trim() === '') {
+    if (this.chronicle.rawContent.trim() === '') {
       errors += 'Content is required.\n';
     }
 
@@ -107,7 +107,7 @@ export class ChronicleCreateEditComponent implements OnInit {
       this.journalService.delete(this.initialName);
     }
 
-    this.journalService.create(this.journal.name, this.journal.rawContent);
+    this.journalService.create(this.chronicle.name, this.chronicle.rawContent);
 
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }

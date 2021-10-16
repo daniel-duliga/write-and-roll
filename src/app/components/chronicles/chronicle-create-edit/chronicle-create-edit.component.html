@@ -1,20 +1,19 @@
-<!-- Static elements -->
 <app-commands [customToggle]="commandsToggle" (onCommandSelected)="this.handleCommand($event)"></app-commands>
-<!-- Relative elements -->
 <div class="container">
-    <app-auto-complete-field 
+    <app-auto-complete-field
         [message]="'Name'"
         [options]="this.folders"
-        [initialValue]="this.journal.name"
+        [initialValue]="this.chronicle.name"
         (onChange)="this.setName($event)"
+        class="title"
     ></app-auto-complete-field>
     <div class="editor" (document:keydown.control.s)="this.save($event)">
         <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
     </div>
     <div class="buttons">
-        <button mat-raised-button class="button" (click)="this.save()">Save</button>
+        <button mat-stroked-button class="button" (click)="this.save()">Save</button>
         <button
-            mat-raised-button
+            mat-stroked-button
             color=""
             aria-label="Commands button"
             class="button commands-button"
@@ -24,6 +23,6 @@
         >
             <mat-icon>bolt</mat-icon>
         </button>
-        <button mat-raised-button class="button" routerLink="/chronicles">Back</button>
+        <button mat-stroked-button class="button" routerLink="/chronicles">Back</button>
     </div>
 </div>

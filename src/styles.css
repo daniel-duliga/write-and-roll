@@ -24,12 +24,10 @@ body {
 @easymde-statusbar-characters: 'chars ：';
 @easymde-statusbar-counts: 'count ：'; */
 .EasyMDEContainer .CodeMirror {
-  height: calc(100vh - 200px);
-  border-radius: 0;
+  height: calc(100vh - 263px);
 }
-.editor-toolbar {
-  border-radius: 0;
-  border-top: 0;
+.EasyMDEContainer .editor-preview-side {
+  height: calc(100vh - 263px) !important;
 }
 
 /* CodeMirror */
@@ -44,7 +42,7 @@ body {
   min-height: auto !important;
 }
 .editor-preview-side {
-  height: 100%;
+  height: calc(100vh - 262px);
 }
 
 /* Angular Material */
