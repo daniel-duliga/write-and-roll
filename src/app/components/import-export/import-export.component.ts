@@ -23,7 +23,7 @@ export class ImportExportComponent implements OnInit {
       const result: IEntity[] = [];
       for (let index = 0; index < localStorage.length; index++) {
         const key = localStorage.key(index);
-        if (key) {
+        if (key && !key.includes('expansionModel')) {
           const element = localStorage.getItem(key);
           if (element) {
             result.push({ name: key, rawContent: element });
