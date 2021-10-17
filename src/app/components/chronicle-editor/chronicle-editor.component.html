@@ -1,0 +1,29 @@
+<div class="container">
+    <app-commands [customToggle]="commandsToggle" (onCommandSelected)="this.handleCommand($event)"></app-commands>
+    <app-auto-complete-field
+        class="title"
+        [message]="'Name'"
+        [options]="this.allChronicles"
+        [initialValue]="this.chronicle.name"
+        (onTextChange)="this.setName($event)"
+        (onOptionChange)="this.changeChronicle($event)"
+    ></app-auto-complete-field>
+    <div class="editor" (document:keydown.control.s)="this.save($event)">
+        <easymde #easymde [(ngModel)]="logModel" (onChange)="onLogChange($event)" [options]="easyMdeOptions"></easymde>
+    </div>
+    <div class="buttons">
+        <button mat-stroked-button class="button" (click)="this.save()">Save</button>
+        <button
+            mat-stroked-button
+            color=""
+            aria-label="Commands button"
+            class="button commands-button"
+            matTooltip="Commands (CTRL + Space)"
+            matTooltipPosition="above"
+            (click)="this.showCommands()"
+        >
+            <mat-icon>bolt</mat-icon>
+        </button>
+        <button mat-stroked-button class="button" routerLink="/chronicles">Back</button>
+    </div>
+</div>

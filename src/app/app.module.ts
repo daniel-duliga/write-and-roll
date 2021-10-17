@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -37,6 +38,7 @@ import { ActionListComponent } from './pages/actions/action-list/action-list.com
 import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './pages/import-export/import-export.component';
+import { ChronicleEditorComponent } from './components/chronicle-editor/chronicle-editor.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,7 @@ import { ImportExportComponent } from './pages/import-export/import-export.compo
     ActionCreateEditComponent,
     EditorComponent,
     ImportExportComponent,
+    ChronicleEditorComponent,
   ],
   imports: [
     // Core
@@ -75,6 +78,7 @@ import { ImportExportComponent } from './pages/import-export/import-export.compo
     MatTooltipModule,
     CdkTreeModule,
     MatSnackBarModule,
+    MatCheckboxModule,
 
     // Third-party
     CodemirrorModule,

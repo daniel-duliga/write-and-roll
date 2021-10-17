@@ -5,11 +5,11 @@
         aria-label="Input"
         matInput
         [(ngModel)]="selectedOption"
-        (ngModelChange)="trackTextChange ? onOptionSelect($event) : {}"
         [formControl]="inputControl"
         [matAutocomplete]="autoComplete"
+        (ngModelChange)="onTextChanged($event)"
     >
-    <mat-autocomplete (optionSelected)="onOptionSelect($event.option.value)" #autoComplete="matAutocomplete">
+    <mat-autocomplete (optionSelected)="onOptionChanged($event.option.value)" #autoComplete="matAutocomplete">
         <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
             {{option}}
         </mat-option>

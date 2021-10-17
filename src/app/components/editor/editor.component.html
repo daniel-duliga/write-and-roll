@@ -1,10 +1,10 @@
 <div class="container">
     <app-auto-complete-field 
+        class="name"
         [message]="'Name'"
         [options]="this.folders"
         [initialValue]="this.entity.name"
-        (onChange)="this.setName($event)"
-        class="name"
+        (onTextChange)="this.setName($event)"
     ></app-auto-complete-field>
     <div class="editor" (document:keydown.control.s)="this.save($event)">
         <ngx-codemirror

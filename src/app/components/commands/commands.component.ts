@@ -50,7 +50,7 @@ export class CommandsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async showCommands() {
+  async showCommands(event: Event | null = null) {
     const command = await this.promptsService.openAutoCompletePrompt(this.dialog, "Command", this.commands);
     await this.handleCommandSelected(command);
   }

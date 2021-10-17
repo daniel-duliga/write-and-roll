@@ -1,6 +1,5 @@
 <app-auto-complete-field
     [message]="this.message"
     [options]="this.options"
-    [trackTextChange]="false"
-    (onChange)="this.onOptionSelect($event)"
+    (onOptionChange)="this.onOptionSelect($event)"
 ></app-auto-complete-field>

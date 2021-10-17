@@ -13,8 +13,9 @@ export class AutoCompleteFieldComponent implements OnInit {
   @Input() message: string = 'Option';
   @Input() options: string[] = [];
   @Input() initialValue: string = '';
-  @Input() trackTextChange: boolean = true;
-  @Output() onChange: EventEmitter<string> = new EventEmitter<string>();
+  
+  @Output() onOptionChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onTextChange: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild(MatAutocomplete) autoComplete!: MatAutocomplete;
   
@@ -37,8 +38,12 @@ export class AutoCompleteFieldComponent implements OnInit {
     this.autoComplete.options.first.setActiveStyles();
   }
 
-  onOptionSelect(option: string) {
-    this.onChange.emit(option);
+  onOptionChanged(option: string) {
+    this.onOptionChange.emit(option);
+  }
+
+  onTextChanged(newValue: string) {
+    this.onTextChange.emit(newValue);
   }
 
   private _filter(value: string): string[] {
