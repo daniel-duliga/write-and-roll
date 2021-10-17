@@ -13,7 +13,13 @@
     </div>
 
     <div class="buttons">
-        <button mat-stroked-button class="button" (click)="this.save()">Save</button>
+        <button 
+            mat-stroked-button
+            class="button save-button"
+            matTooltip="Save (CTRL + S)"
+            matTooltipPosition="above"
+            (click)="this.save()"
+        >Save</button>
         <button
             mat-stroked-button
             color=""
@@ -25,6 +31,5 @@
         >
             <mat-icon>bolt</mat-icon>
         </button>
-        <button mat-stroked-button class="button" routerLink="/chronicles">Back</button>
     </div>
 </div>

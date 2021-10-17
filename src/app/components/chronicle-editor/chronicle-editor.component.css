@@ -19,8 +19,10 @@
   width: 100%;
 }
 
-.commands-button {
-  width: 50px;
-  margin-left: 10px;
+.save-button {
   margin-right: 10px;
+}
+
+.commands-button {
+  margin-left: 10px;
 }

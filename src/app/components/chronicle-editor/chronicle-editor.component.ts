@@ -126,10 +126,8 @@ export class ChronicleEditorComponent implements OnInit {
 
   private getChronicle(name: string) {
     const entity = this.chronicleStorageService.get(name);
-    if (entity) {
-      this.initialName = name;
-      this.chronicle = entity;
-      this.logModel = this.chronicle.rawContent;
-    }
+    this.initialName = entity.name;
+    this.chronicle = entity;
+    this.logModel = this.chronicle.rawContent;
   }
 }

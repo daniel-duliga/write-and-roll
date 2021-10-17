@@ -25,6 +25,7 @@ body {
 @easymde-statusbar-counts: 'count ：'; */
 .EasyMDEContainer .CodeMirror {
   height: calc(100vh - 267px);
+  border: 1px solid darkgray;
 }
 .EasyMDEContainer .editor-preview-side {
   height: calc(100vh - 267px) !important;
@@ -52,15 +53,19 @@ body {
 /* .mat-form-field-appearance-outline .mat-form-field-outline-end {
   border-radius: 0 !important;
 } */
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: darkgray;
+}
 
 /* Custom */
 .form-field .mat-form-field-wrapper {
   margin: 0 !important;
   padding: 0 !important;
+  background-color: white;
 }
 .button {
   height: 49px !important;
-  border-bottom: 1px solid lightgray !important;
-  border-left: 1px solid lightgray !important;
   box-shadow: none !important;
+  background-color: white;
+  border: 1px solid darkgray !important;
 }

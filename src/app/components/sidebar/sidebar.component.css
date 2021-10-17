@@ -1,8 +1,8 @@
 .container {
   height: 100%;
-  background-color: whitesmoke;
   border-right: 1px solid lightgray;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.15);
+  background-color: #4b6587;
 }
 
 .list {
@@ -15,6 +15,10 @@
 .list-item {
   font-size: 11pt;
   font-weight: 500;
+}
+
+a {
+  color: white !important;
 }
 
 .spacer {

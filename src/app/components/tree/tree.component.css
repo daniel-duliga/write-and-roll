@@ -16,8 +16,10 @@
   margin-left: 20px;
   margin-right: 20px;
   
-  border: 1px solid lightgray;
+  border: 1px solid darkgray;
   border-radius: 5px;
+
+  background-color: white;
 }
 
 .item-container {
