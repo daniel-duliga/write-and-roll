@@ -1,16 +1,10 @@
 <div class="container">
     <div class="separator"></div>
-
-    <button class="button" mat-stroked-button (click)="this.export()">Export</button>
-
-    <div class="middle-separator"></div>
-
+    <button class="button export-button" mat-stroked-button (click)="this.export()">Export</button>
     <input type="file" id="file" (change)="import($event)" #importFileUpload style="display: none;">
-
-    <button class="button" mat-stroked-button type="file" (click)="importFileUpload.click()">Import</button>
-
+    <button class="button import-button" mat-stroked-button (click)="importFileUpload.click()">Import</button>
+    <button class="button purge-button" mat-stroked-button (click)="this.purge()">Purge</button>
     <br>
-
     <div class="separator">
         <p *ngFor="let log of importLogs">
             {{log}}

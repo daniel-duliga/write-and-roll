@@ -44,10 +44,9 @@ export class ImportExportComponent implements OnInit {
       const processImportFile = (fileReader: FileReader) => {
         if (fileReader.result && typeof fileReader.result === "string") {
           const importData: IEntity[] = JSON.parse(fileReader.result);
-          this.importLogs = ['Import started...'];
           for (const element of importData) {
             if(localStorage.getItem(element.name)) {
-              this.importLogs.push(`Element ${element.name} already exists and has not been imported.`);
+              this.importLogs.push(`${element.name} already exists and has not been imported.`);
             } else {
               localStorage.setItem(element.name, element.rawContent);
             }
@@ -55,6 +54,12 @@ export class ImportExportComponent implements OnInit {
           this.importLogs.push('Import ended.');
         }
       }
+    }
+  }
+
+  purge() {
+    if (confirm('Are you sure you want to erase all data?')) {
+      localStorage.clear();
     }
   }
 }

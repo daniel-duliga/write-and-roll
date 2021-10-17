@@ -7,8 +7,9 @@
 .separator {
     flex-grow: 1;
     text-align: center;
-    height: 100%;
-    overflow: auto;
+    margin: 20px;
+    font-family: JetBrainsMono;
+    font-size: 9pt;
 }
 
 .middle-separator {
@@ -16,6 +17,22 @@
 }
 
 .button {
+    margin-top: 20px;
     margin-left: 30%;
     margin-right: 30%;
+}
+
+.export-button {
+    /* background-color: #28FFBF; */
+    /* color: white; */
+}
+
+.import-button {
+    /* background-color: #B5FFD9; */
+    /* color: white; */
+}
+
+.purge-button {
+    background-color: #FF7171;
+    color: white;
 }
