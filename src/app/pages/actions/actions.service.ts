@@ -5,7 +5,7 @@ import { ApiService } from 'src/app/api/api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ActionsComponentService {
+export class ActionsService {
   constructor(
     private api: ApiService,
   ) { }

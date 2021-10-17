@@ -24,7 +24,6 @@ import { EasymdeModule } from 'ngx-easymde';
 // Internal
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CommandsComponent } from './components/commands/commands.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { RandomTableCreateEditComponent } from './pages/random-tables/random-table-create-edit/random-table-create-edit.component';
 import { RandomTableListComponent } from './pages/random-tables/random-table-list/random-table-list.component';
@@ -44,7 +43,6 @@ import { ChronicleEditorComponent } from './components/chronicle-editor/chronicl
   declarations: [
     AppComponent,
     AutoCompletePromptComponent,
-    CommandsComponent,
     InputComponent,
     SidebarComponent,
     RandomTableCreateEditComponent,

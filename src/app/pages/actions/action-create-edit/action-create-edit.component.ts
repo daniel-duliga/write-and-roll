@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActionStorageService } from 'src/app/storage/model-services/action-storage.service';
 import { IEntity } from 'src/app/storage/core/IEntity';
-import { ActionsComponentService } from '../actions-component.service';
+import { ActionsService } from '../actions.service';
 
 @Component({
   selector: 'app-action-create-edit',
@@ -14,7 +14,7 @@ export class ActionCreateEditComponent implements OnInit {
 
   constructor(
     public actionStorageService: ActionStorageService,
-    private actionService: ActionsComponentService,
+    private actionService: ActionsService,
     private dialog: MatDialog
   ) { }
 

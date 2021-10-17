@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { EasymdeComponent } from 'ngx-easymde';
 import { Subject } from 'rxjs';
+import { CommandService } from 'src/app/commands/command.service';
 import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
 import { Chronicle } from 'src/app/storage/models/chronicle';
 
@@ -27,9 +29,9 @@ export class ChronicleEditorComponent implements OnInit {
 
   logModel: any = '';
 
-  commandsToggle: Subject<boolean> = new Subject();
-
   constructor(
+    public commandService: CommandService,
+    public dialog: MatDialog,
     private chronicleStorageService: ChronicleStorageService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
@@ -40,31 +42,24 @@ export class ChronicleEditorComponent implements OnInit {
     this.allChronicles = this.chronicleStorageService.getAllPaths();
   }
 
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
-      const name = params.get('name');
-      if (name) {
-        this.getChronicle(name);
-      }
-    });
-  }
-
-  private getChronicle(name: string) {
-    const entity = this.chronicleStorageService.get(name);
-    if (entity) {
-      this.initialName = name;
-      this.chronicle = entity;
-      this.logModel = this.chronicle.rawContent;
-    }
-  }
-
   ngAfterViewInit() {
     this.logModel = this.easymde.Instance.codemirror;
     this.logModel.focus();
   }
 
-  showCommands() {
-    this.commandsToggle.next(true);
+  @HostListener('keydown.control.space', ['$event'])
+  async onShowCommands(e: Event) {
+    this.showCommands();
+  }
+
+  @HostListener('keydown.control.s', ['$event'])
+  onSave(e: Event) {
+    this.save(e);
+  }
+
+  async showCommands() {
+    const result = await this.commandService.showCommands(this.dialog);
+    this.handleCommand(result);
   }
 
   setName(name: string) {
@@ -118,5 +113,23 @@ export class ChronicleEditorComponent implements OnInit {
     this.chronicleStorageService.create(this.chronicle.name, this.chronicle.rawContent);
 
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
+  }
+
+  private getDataFromRoute() {
+    this.route.paramMap.subscribe(params => {
+      const name = params.get('name');
+      if (name) {
+        this.getChronicle(name);
+      }
+    });
+  }
+
+  private getChronicle(name: string) {
+    const entity = this.chronicleStorageService.get(name);
+    if (entity) {
+      this.initialName = name;
+      this.chronicle = entity;
+      this.logModel = this.chronicle.rawContent;
+    }
   }
 }
