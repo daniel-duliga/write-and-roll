@@ -38,7 +38,7 @@ body {
 .CodeMirror {
   height: 100%;
   width: 100%;
-  font-family: "JetBrainsMono" !important;
+  /* font-family: "JetBrainsMono" !important; */
 }
 .CodeMirror-scroll {
   min-height: auto !important;
