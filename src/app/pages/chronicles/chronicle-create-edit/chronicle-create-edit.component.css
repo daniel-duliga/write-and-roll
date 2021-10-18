@@ -1,10 +1,11 @@
 .container {
     display: flex;
+    height: 100%;
 }
 
 .editor {
     flex: 1;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .split-toggle-container {
@@ -14,9 +15,9 @@
 }
 
 #editor1 {
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 #editor2 {
-    margin-right: 20px;
+    margin-right: 10px;
 }

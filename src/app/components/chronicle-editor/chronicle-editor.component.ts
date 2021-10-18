@@ -2,8 +2,7 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { EasymdeComponent } from 'ngx-easymde';
-import { Subject } from 'rxjs';
+import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CommandService } from 'src/app/commands/command.service';
 import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
 import { Chronicle } from 'src/app/storage/models/chronicle';
@@ -17,17 +16,14 @@ export class ChronicleEditorComponent implements OnInit {
   allChronicles: string[] = [];
   chronicle: Chronicle = new Chronicle();
   initialName: string = '';
+  
+  @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
-  @ViewChild('easymde', { static: true }) private readonly easymde!: EasymdeComponent;
-  easyMdeOptions: any = {
-    status: false,
-    uploadImage: true,
-    spellChecker: false,
-    sideBySideFullscreen: false,
-    toolbar: ['image', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'],
-  };
-
-  logModel: any = '';
+  
+  public get codeMirror() : CodeMirror.EditorFromTextArea | undefined {
+    return this.ngxCodeMirror.codeMirror;
+  }
+  
 
   constructor(
     public commandService: CommandService,
@@ -43,8 +39,15 @@ export class ChronicleEditorComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.logModel = this.easymde.Instance.codemirror;
-    this.logModel.focus();
+    if (this.codeMirror) {
+      this.codeMirror.setOption(
+        "extraKeys", {
+          Enter: function(cm) {
+            cm.execCommand("newlineAndIndentContinueMarkdownList");
+          }
+        }
+      );
+    }
   }
 
   @HostListener('keydown.control.space', ['$event'])
@@ -70,14 +73,9 @@ export class ChronicleEditorComponent implements OnInit {
     this.getChronicle(name);
   }
 
-  onLogChange(newValue: any) {
-    this.chronicle.rawContent = newValue;
-  }
-
   handleCommand(option: string) {
-    if (option) {
-      this.logModel.replaceSelection(`\`${option}\``);
-      this.logModel.focus();
+    if (option && this.ngxCodeMirror.codeMirror) {
+      this.ngxCodeMirror.codeMirror.replaceSelection(`\`${option}\``);
     }
   }
 
@@ -128,6 +126,5 @@ export class ChronicleEditorComponent implements OnInit {
     const entity = this.chronicleStorageService.get(name);
     this.initialName = entity.name;
     this.chronicle = entity;
-    this.logModel = this.chronicle.rawContent;
   }
 }
