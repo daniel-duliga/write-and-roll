@@ -1,7 +1,12 @@
 <div class="container">
     <app-chronicle-editor class="editor" id="editor1"></app-chronicle-editor>
-    <div class="split-toggle-container">
-        <button mat-icon-button matTooltip="{{ this.splitEdit ? 'Close' : 'Split' }}" (click)="this.toggleSplitEditor()">
+    <div 
+        class="split-toggle-container"
+        matTooltip="{{ this.splitEdit ? 'Close' : 'Split' }}"
+        matTooltipPosition="before"
+        (click)="this.toggleSplitEditor()"
+    >
+        <button mat-icon-button>
             <mat-icon *ngIf="!this.splitEdit" mat-icon>keyboard_double_arrow_left</mat-icon>
             <mat-icon *ngIf="this.splitEdit" mat-icon>keyboard_double_arrow_right</mat-icon>
         </button>

@@ -5,7 +5,7 @@
         placeholder="{{ this.message }}"
         aria-label="Input"
         matInput
-        [(ngModel)]="selectedOption"
+        [(ngModel)]="initialValue"
         [formControl]="inputControl"
         [matAutocomplete]="autoComplete"
         (ngModelChange)="onTextChanged($event)"

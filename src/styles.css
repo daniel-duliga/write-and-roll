@@ -16,32 +16,16 @@ body {
   background-color: #F7F6F2;
 }
 
-/* EasyMDE */
-@import "~ngx-easymde/lib/index.scss";
-/* Change existing parameters here:  */
-/* @easymde-icon-url: 'icons.zip';
-@easymde-statusbar-lines: 'lines:';
-@easymde-statusbar-words: 'words:';
-@easymde-statusbar-characters: 'chars ：';
-@easymde-statusbar-counts: 'count ：'; */
-.EasyMDEContainer .CodeMirror {
-  height: calc(100vh - 267px);
-  border: 1px solid darkgray;
-}
-.EasyMDEContainer .editor-preview-side {
-  height: calc(100vh - 267px) !important;
-}
-
 /* CodeMirror */
 @import "~codemirror/lib/codemirror";
 @import "~codemirror/theme/material";
 .CodeMirror {
   height: 100%;
   width: 100%;
-  /* font-family: "JetBrainsMono" !important; */
 }
-.CodeMirror-scroll {
-  min-height: auto !important;
+.CodeMirror-sizer {
+  padding-top: 10px;
+  padding-left: 10px;
 }
 
 /* Angular Material */
@@ -57,6 +41,13 @@ body {
 .mat-form-field-appearance-outline .mat-form-field-outline {
   color: darkgray;
 }
+.mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.2em 0 0.5em 0;
+}
+.mat-option {
+  height: 33px !important;
+  font-size: 14px !important;
+}
 
 /* Custom */
 .form-field .mat-form-field-wrapper {
@@ -65,7 +56,7 @@ body {
   background-color: white;
 }
 .button {
-  height: 49px !important;
+  height: 33px !important;
   box-shadow: none !important;
   background-color: white;
   border: 1px solid darkgray !important;

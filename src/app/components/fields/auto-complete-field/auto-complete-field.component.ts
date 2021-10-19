@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
