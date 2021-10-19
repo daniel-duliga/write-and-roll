@@ -7,7 +7,8 @@ import { InputComponent } from './input/input.component';
   providedIn: 'root'
 })
 export class PromptService {
-  private promptsWidth = '480px';
+  private promptsWidth = '100%';
+  private promptsPosition = { top: '10vh' };
 
   constructor() { }
 
@@ -16,6 +17,7 @@ export class PromptService {
       InputComponent,
       {
         width: this.promptsWidth,
+        position: this.promptsPosition,
         data: { message: message }
       });
     return openedDialog.afterClosed().toPromise().then(((result: string) => result));
@@ -26,6 +28,7 @@ export class PromptService {
       AutoCompletePromptComponent,
       {
         width: this.promptsWidth,
+        position: this.promptsPosition,
         data: {
           message: message,
           options: options

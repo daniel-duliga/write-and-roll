@@ -20,12 +20,10 @@ body {
 @import "~codemirror/lib/codemirror";
 @import "~codemirror/theme/material";
 .CodeMirror {
-  height: 100%;
-  width: 100%;
-}
-.CodeMirror-sizer {
-  padding-top: 10px;
-  padding-left: 10px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  height: calc(100% - 2px);
+  width: calc(100% - 2px);
 }
 
 /* Angular Material */
@@ -47,6 +45,9 @@ body {
 .mat-option {
   height: 33px !important;
   font-size: 14px !important;
+}
+.mat-autocomplete-panel {
+  max-height: 65vh !important;
 }
 
 /* Custom */
