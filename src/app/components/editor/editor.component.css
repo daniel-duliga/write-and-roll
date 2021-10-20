@@ -1,7 +1,7 @@
 .container {
   display: grid;
   grid-template-rows: auto 15fr;
-  height: calc(100vh - 57px);
+  height: calc(100vh - 27px);
 }
 
 .name {

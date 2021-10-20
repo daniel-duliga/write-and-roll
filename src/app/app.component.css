@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  height: calc(100vh - 2px);
+  height: calc(100vh + 2px);
   background-color: #F7F6F2;
 }
 
@@ -13,16 +13,7 @@
 }
 
 .route-container {
-  height: calc(100% - 53px);
-}
-
-.footer {
-  height: 55px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  font-size: 9pt;
+  height: 100%;
 }
 
 .icon {

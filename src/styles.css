@@ -11,6 +11,7 @@ body {
   height: 100%;
 }
 body {
+  overflow: hidden;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #F7F6F2;
@@ -20,10 +21,7 @@ body {
 @import "~codemirror/lib/codemirror";
 @import "~codemirror/theme/material";
 .CodeMirror {
-  border-radius: 5px;
-  border: 1px solid lightgray;
-  height: calc(100% - 2px);
-  width: calc(100% - 2px);
+  height: calc(100vh - 65px);
 }
 
 /* Angular Material */
@@ -49,6 +47,12 @@ body {
 .mat-autocomplete-panel {
   max-height: 65vh !important;
 }
+.mat-form-field-appearance-outline .mat-form-field-outline-start {
+  border-radius: 0 !important;
+}
+.mat-form-field-appearance-outline .mat-form-field-outline-end {
+  border-radius: 0 !important;
+}
 
 /* Custom */
 .form-field .mat-form-field-wrapper {
@@ -61,4 +65,5 @@ body {
   box-shadow: none !important;
   background-color: white;
   border: 1px solid darkgray !important;
+  border-radius: 0 !important;
 }

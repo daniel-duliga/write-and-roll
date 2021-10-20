@@ -5,20 +5,14 @@
 
 .editor {
     flex: 1;
-    margin-top: 10px;
 }
 
 .split-toggle-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
 }
 
-#editor1 {
-    margin-left: 20px;
-}
-
-#editor2 {
-    margin-right: 10px;
+.split-button {
+    width: initial !important;
 }

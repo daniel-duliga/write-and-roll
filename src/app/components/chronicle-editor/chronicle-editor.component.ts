@@ -19,11 +19,9 @@ export class ChronicleEditorComponent implements OnInit {
   
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
-  
   public get codeMirror() : CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
-  
 
   constructor(
     public commandService: CommandService,
@@ -34,20 +32,12 @@ export class ChronicleEditorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getDataFromRoute();
     this.allChronicles = this.chronicleStorageService.getAllPaths();
   }
 
   ngAfterViewInit() {
-    if (this.codeMirror) {
-      this.codeMirror.setOption(
-        "extraKeys", {
-          Enter: function(cm) {
-            cm.execCommand("newlineAndIndentContinueMarkdownList");
-          }
-        }
-      );
-    }
+    this.getDataFromRoute();
+    this.registerCodeMirrorExtraKeys();
   }
 
   @HostListener('keydown.control.space', ['$event'])
@@ -126,5 +116,17 @@ export class ChronicleEditorComponent implements OnInit {
     const entity = this.chronicleStorageService.get(name);
     this.initialName = entity.name;
     this.chronicle = entity;
+  }
+
+  private registerCodeMirrorExtraKeys() {
+    if (this.codeMirror) {
+      this.codeMirror.setOption(
+        "extraKeys", {
+        Enter: function (cm) {
+          cm.execCommand("newlineAndIndentContinueMarkdownList");
+        }
+      }
+      );
+    }
   }
 }
