@@ -1,7 +1,6 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
 import { CommandService } from 'src/app/commands/command.service';
 import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
@@ -13,13 +12,18 @@ import { Chronicle } from 'src/app/storage/models/chronicle';
   styleUrls: ['./chronicle-editor.component.css']
 })
 export class ChronicleEditorComponent implements OnInit {
-  allChronicles: string[] = [];
-  chronicle: Chronicle = new Chronicle();
-  initialName: string = '';
-  
+  @Input() chronicleName: string = '';
+
+  @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
+  @Output() onChronicleChanged: EventEmitter<string> = new EventEmitter();
+
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
-  public get codeMirror() : CodeMirror.EditorFromTextArea | undefined {
+  chronicle: Chronicle = new Chronicle();
+  allChronicles: string[] = [];
+  initialName: string = '';
+
+  public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
 
@@ -27,48 +31,50 @@ export class ChronicleEditorComponent implements OnInit {
     public commandService: CommandService,
     public dialog: MatDialog,
     private chronicleStorageService: ChronicleStorageService,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
   ) { }
 
+  //#region lifecycle methods
   ngOnInit(): void {
     this.allChronicles = this.chronicleStorageService.getAllPaths();
+    this.getChronicle(this.chronicleName);
   }
-
   ngAfterViewInit() {
-    this.getDataFromRoute();
     this.registerCodeMirrorExtraKeys();
   }
+  //#endregion
 
+  //#region host listener methods
   @HostListener('keydown.control.space', ['$event'])
   async onShowCommands(e: Event) {
     this.showCommands();
   }
-
   @HostListener('keydown.control.s', ['$event'])
   onSave(e: Event) {
     this.save(e);
   }
+  //#endregion
 
+  //#region public methods
+  closeEditor() {
+    this.onClosed.emit(true);
+  }
   async showCommands() {
     const result = await this.commandService.showCommands(this.dialog);
     this.handleCommand(result);
   }
-
   setName(name: string) {
     this.chronicle.name = name;
   }
-
   changeChronicle(name: string) {
     this.getChronicle(name);
+    this.onChronicleChanged.emit(name);
   }
-
   handleCommand(option: string) {
     if (option && this.ngxCodeMirror.codeMirror) {
       this.ngxCodeMirror.codeMirror.replaceSelection(`\`${option}\``);
     }
   }
-
   save($event: Event | null = null) {
     // If triggered by key combination, prevent default browser save action
     if ($event) {
@@ -102,22 +108,12 @@ export class ChronicleEditorComponent implements OnInit {
 
     this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
   }
+  //#endregion
 
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
-      const name = params.get('name');
-      if (name) {
-        this.getChronicle(name);
-      }
-    });
-  }
-
+  //#region private methods
   private getChronicle(name: string) {
-    const entity = this.chronicleStorageService.get(name);
-    this.initialName = entity.name;
-    this.chronicle = entity;
+    this.chronicle = this.chronicleStorageService.get(name);
   }
-
   private registerCodeMirrorExtraKeys() {
     if (this.codeMirror) {
       this.codeMirror.setOption(
@@ -125,8 +121,8 @@ export class ChronicleEditorComponent implements OnInit {
         Enter: function (cm) {
           cm.execCommand("newlineAndIndentContinueMarkdownList");
         }
-      }
-      );
+      });
     }
   }
+  //#endregion
 }

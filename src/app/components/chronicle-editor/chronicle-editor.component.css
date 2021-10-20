@@ -26,10 +26,3 @@
 .button {
   width: 100%;
 }
-
-.new-button {
-  width: 33px !important;
-  height: 33px !important;
-  min-width: 33px !important;
-  padding: 0 !important;
-}

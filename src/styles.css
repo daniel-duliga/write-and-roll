@@ -67,3 +67,9 @@ body {
   border: 1px solid darkgray !important;
   border-radius: 0 !important;
 }
+.new-button {
+  width: 33px !important;
+  height: 33px !important;
+  min-width: 33px !important;
+  padding: 0 !important;
+}

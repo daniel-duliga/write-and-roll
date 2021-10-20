@@ -1,16 +1,19 @@
 <div class="container">
-    <app-chronicle-editor class="editor" id="editor1"></app-chronicle-editor>
-    <div class="split-toggle-container">
-        <button
-            mat-icon-button
-            matTooltip="{{ this.splitEdit ? 'Close' : 'Split' }}"
-            matTooltipPosition="before"
-            class="split-button"
-            (click)="this.toggleSplitEditor()"
-        >
-            <mat-icon *ngIf="!this.splitEdit" mat-icon>keyboard_double_arrow_left</mat-icon>
-            <mat-icon *ngIf="this.splitEdit" mat-icon>keyboard_double_arrow_right</mat-icon>
+    <div class="actions-container">
+        <button mat-icon-button class="new-button" matTooltip="Back" routerLink="/chronicles">
+            <mat-icon>arrow_back</mat-icon>
         </button>
     </div>
-    <app-chronicle-editor *ngIf="this.splitEdit" class="editor" id="editor2"></app-chronicle-editor>
+    <app-chronicle-editor
+        *ngFor="let chronicle of openChronicles"
+        class="editor-container"
+        [chronicleName]="chronicle"
+        (onChronicleChanged)="this.updateChronicleName(chronicle, $event)"
+        (onClosed)="this.closeEditor(chronicle)"
+    ></app-chronicle-editor>
+    <div class="actions-container">
+        <button mat-icon-button class="new-button" matTooltip="Open new" (click)="openNewEditor()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
 </div>

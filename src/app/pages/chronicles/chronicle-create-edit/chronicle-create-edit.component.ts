@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-chronicle-create-edit',
@@ -6,13 +7,42 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chronicle-create-edit.component.css']
 })
 export class ChronicleCreateEditComponent implements OnInit {
-  splitEdit: boolean = false;
+  openChronicles: string[] = [];
 
-  constructor( ) { }
+  constructor(
+    private route: ActivatedRoute,
+  ) { }
 
-  ngOnInit() { }
-
-  toggleSplitEditor() {
-    this.splitEdit = !this.splitEdit;
+  ngOnInit() {
+    this.getDataFromRoute();
   }
+
+  //#region public methods
+  openNewEditor() {
+    this.openChronicles.push('');
+  }
+  updateChronicleName(oldName: string, newName: string) {
+    const oldNameIndex = this.openChronicles.findIndex(x => x === oldName);
+    if (oldNameIndex) {
+      this.openChronicles[oldNameIndex] = newName;
+    }
+  }
+  closeEditor(chronicleName: string) {
+    this.openChronicles = this.openChronicles.filter(x => x !== chronicleName);
+    if(this.openChronicles.length === 0) {
+      this.openNewEditor();
+    }
+  }
+  //#endregion
+
+  //#region private methods
+  private getDataFromRoute() {
+    this.route.paramMap.subscribe(params => {
+      const name = params.get('name');
+      if (name) {
+        this.openChronicles.push(name);
+      }
+    });
+  }
+  //#endregion
 }

@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  height: calc(100vh + 2px);
+  height: 100vh;
   background-color: #F7F6F2;
 }
 

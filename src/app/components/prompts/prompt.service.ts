@@ -7,7 +7,7 @@ import { InputComponent } from './input/input.component';
   providedIn: 'root'
 })
 export class PromptService {
-  private promptsWidth = '100%';
+  private promptsWidth = '480px';
   private promptsPosition = { top: '10vh' };
 
   constructor() { }

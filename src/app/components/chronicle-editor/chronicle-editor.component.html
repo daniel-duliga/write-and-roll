@@ -9,8 +9,8 @@
             (onTextChange)="this.setName($event)"
             (onOptionChange)="this.changeChronicle($event)"
         ></app-auto-complete-field>
-        <button mat-stroked-button class="button new-button" matTooltip="New" (click)="this.changeChronicle('')">
-            <mat-icon>add</mat-icon>
+        <button mat-stroked-button class="button new-button" matTooltip="Close" (click)="this.closeEditor()">
+            <mat-icon>close</mat-icon>
         </button>
     </div>
 

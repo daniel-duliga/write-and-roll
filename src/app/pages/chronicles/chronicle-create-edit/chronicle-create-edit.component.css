@@ -3,7 +3,13 @@
     height: 100%;
 }
 
-.editor {
+.actions-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.editor-container {
     flex: 1;
 }
 
