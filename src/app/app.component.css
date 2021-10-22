@@ -8,6 +8,11 @@
   display: flex;
 }
 
+.sidebar {
+  z-index: 1;
+  box-shadow: 5px 5px 5px rgb(0 0 0 / 10%);
+}
+
 .router-container {
   width: 100%;
 }

@@ -1,4 +1,4 @@
-<div class="container" [style.width]="expanded ? '200px' : '55px'">
+<div *ngIf="!minimized" class="container" [style.width]="expanded ? '200px' : '55px'">
     <mat-nav-list class="list">
         <a
             *ngFor="let item of items"
@@ -16,8 +16,12 @@
         <div class="spacer"></div>
         
         <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
-            <mat-icon *ngIf="!expanded">last_page</mat-icon>
-            <mat-icon *ngIf="expanded">first_page</mat-icon>
+            <mat-icon *ngIf="!inBetween && !expanded">chevron_right</mat-icon>
+            <mat-icon *ngIf="!inBetween && expanded">chevron_left</mat-icon>
+            <mat-icon *ngIf="inBetween">first_page</mat-icon>
         </a>
     </mat-nav-list>
+</div>
+<div *ngIf="minimized" class="minimize-container" (click)="toggleMinimize()">
+    <mat-icon>chevron_right</mat-icon>
 </div>

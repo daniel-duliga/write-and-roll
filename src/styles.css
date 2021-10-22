@@ -23,6 +23,9 @@ body {
 .CodeMirror {
   height: calc(100vh - 65px);
 }
+.CodeMirror-lines { 
+  padding: 10px;
+}
 
 /* Angular Material */
 /* .mat-snack-bar-container {
