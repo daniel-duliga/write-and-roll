@@ -13,8 +13,8 @@ import { TablesUtil } from '../trpg/tables.util';
 })
 export class CommandService {
   commands = [
-    '🔥 Roll Action',
     '🎱 Roll Table',
+    '🔥 Roll Action',
     '🎲 Roll Dice',
   ];
 
