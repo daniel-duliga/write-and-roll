@@ -48,4 +48,5 @@ mat-list-item {
   justify-content: center;
   align-items: center;
   color: white;
+  cursor: pointer;
 }
