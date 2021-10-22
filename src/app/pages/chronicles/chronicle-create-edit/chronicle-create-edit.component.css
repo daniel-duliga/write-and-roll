@@ -22,3 +22,8 @@
 .split-button {
     width: initial !important;
 }
+
+.add-button {
+    min-width: 25px !important;
+    width: 25px !important;
+}

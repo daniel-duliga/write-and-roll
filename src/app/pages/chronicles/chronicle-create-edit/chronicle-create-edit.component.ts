@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chronicle-create-edit',
@@ -11,6 +11,7 @@ export class ChronicleCreateEditComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -21,22 +22,24 @@ export class ChronicleCreateEditComponent implements OnInit {
   openNewEditor() {
     this.openChronicles.push('');
   }
+  
   updateChronicleName(oldName: string, newName: string) {
     const oldNameIndex = this.openChronicles.findIndex(x => x === oldName);
     if (oldNameIndex) {
       this.openChronicles[oldNameIndex] = newName;
     }
   }
+  
   closeEditor(chronicleName: string) {
     this.openChronicles = this.openChronicles.filter(x => x !== chronicleName);
     if(this.openChronicles.length === 0) {
-      this.openNewEditor();
+      this.router.navigate(['/chronicles']);
     }
   }
   //#endregion
 
   //#region private methods
-  private getDataFromRoute() {
+    private getDataFromRoute() {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       if (name) {
@@ -44,5 +47,5 @@ export class ChronicleCreateEditComponent implements OnInit {
       }
     });
   }
-  //#endregion
+    //#endregion
 }

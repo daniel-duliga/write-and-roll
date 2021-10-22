@@ -1,5 +1,8 @@
 <div class="container">
-    <div style="display: flex; align-items: center;">
+    <div class="title-container">
+        <button mat-stroked-button class="button small-button" matTooltip="Close" (click)="this.closeEditor()">
+            <mat-icon class="close-button">close</mat-icon>
+        </button>
         <app-auto-complete-field
             class="title"
             style="width: 100%;"
@@ -9,8 +12,19 @@
             (onTextChange)="this.setName($event)"
             (onOptionChange)="this.changeChronicle($event)"
         ></app-auto-complete-field>
-        <button mat-stroked-button class="button new-button" matTooltip="Close" (click)="this.closeEditor()">
-            <mat-icon>close</mat-icon>
+        <button
+            *ngIf="this.isDirty"
+            mat-stroked-button
+            class="button small-button"
+            matTooltip="Save (CTRL + S)"
+            matTooltipPosition="above"
+            [style]="isDirty ? { 'color': 'red' } : {}"
+            (click)="this.save()"
+        >
+            <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button class="button small-button add-button" matTooltip="New" (click)="this.openNewEditor()">
+            <mat-icon>add</mat-icon>
         </button>
     </div>
 
@@ -22,20 +36,12 @@
             [options]="{ 
                 theme: 'default',
                 mode: 'markdown',
-                lineNumbers: true,
                 lineWrapping: true
             }"
         ></ngx-codemirror>
     </div>
 
     <div class="buttons">
-        <button 
-            mat-stroked-button
-            class="button save-button"
-            matTooltip="Save (CTRL + S)"
-            matTooltipPosition="above"
-            (click)="this.save()"
-        >Save</button>
         <button
             mat-stroked-button
             color=""

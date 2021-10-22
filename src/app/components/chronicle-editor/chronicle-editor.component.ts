@@ -14,18 +14,25 @@ import { Chronicle } from 'src/app/storage/models/chronicle';
 export class ChronicleEditorComponent implements OnInit {
   @Input() chronicleName: string = '';
 
+  @Output() onChanged: EventEmitter<string> = new EventEmitter();
   @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
-  @Output() onChronicleChanged: EventEmitter<string> = new EventEmitter();
+  @Output() onNew: EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
   chronicle: Chronicle = new Chronicle();
   allChronicles: string[] = [];
   initialName: string = '';
+  initialContent: string = '';
 
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
+
+  public get isDirty(): boolean {
+    return this.chronicle.rawContent !== this.initialContent;
+  }
+
 
   constructor(
     public commandService: CommandService,
@@ -49,32 +56,47 @@ export class ChronicleEditorComponent implements OnInit {
   async onShowCommands(e: Event) {
     this.showCommands();
   }
+
   @HostListener('keydown.control.s', ['$event'])
   onSave(e: Event) {
     this.save(e);
   }
+
+  @HostListener('window:beforeunload', ['$event']) 
+  onBeforeUnload(e: Event): boolean | undefined {
+    return !this.isDirty;
+  }
   //#endregion
 
   //#region public methods
-  closeEditor() {
-    this.onClosed.emit(true);
-  }
   async showCommands() {
     const result = await this.commandService.showCommands(this.dialog);
     this.handleCommand(result);
   }
-  setName(name: string) {
-    this.chronicle.name = name;
-  }
-  changeChronicle(name: string) {
-    this.getChronicle(name);
-    this.onChronicleChanged.emit(name);
-  }
+
   handleCommand(option: string) {
     if (option && this.ngxCodeMirror.codeMirror) {
       this.ngxCodeMirror.codeMirror.replaceSelection(`\`${option}\``);
     }
   }
+
+  closeEditor() {
+    if (this.validateUnsavedChanges()) {
+      this.onClosed.emit(true);
+    }
+  }
+  
+  setName(name: string) {
+    this.chronicle.name = name;
+  }
+
+  changeChronicle(name: string) {
+    if (this.validateUnsavedChanges()) {
+      this.getChronicle(name);
+      this.onChanged.emit(name);
+    }
+  }
+
   save($event: Event | null = null) {
     // If triggered by key combination, prevent default browser save action
     if ($event) {
@@ -106,14 +128,20 @@ export class ChronicleEditorComponent implements OnInit {
 
     this.chronicleStorageService.create(this.chronicle.name, this.chronicle.rawContent);
 
-    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
+    this.initialContent = this.chronicle.rawContent;
+  }
+
+  openNewEditor() {
+    this.onNew.emit(true);
   }
   //#endregion
 
   //#region private methods
   private getChronicle(name: string) {
     this.chronicle = this.chronicleStorageService.get(name);
+    this.initialContent = this.chronicle.rawContent;
   }
+  
   private registerCodeMirrorExtraKeys() {
     if (this.codeMirror) {
       this.codeMirror.setOption(
@@ -123,6 +151,10 @@ export class ChronicleEditorComponent implements OnInit {
         }
       });
     }
+  }
+
+  private validateUnsavedChanges() {
+    return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
   }
   //#endregion
 }

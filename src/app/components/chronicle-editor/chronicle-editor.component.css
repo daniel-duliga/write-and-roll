@@ -5,12 +5,19 @@
   flex-direction: column;
 }
 
+.title-container {
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  box-shadow: 5px 5px 5px rgb(0 0 0 / 5%);
+}
+
 .editor {
   overflow: auto;
   display: flex;
-  
+
   height: 100%;
-  
+
   border-left: 1px solid darkgray;
   border-right: 1px solid darkgray;
 }
@@ -20,9 +27,22 @@
 }
 
 .buttons {
-  display: flex;
+  background-color: white;
 }
 
 .button {
   width: 100%;
+}
+
+.add-button {
+  line-height: 31px;
+  border-bottom: none !important;
+}
+
+.close-button {
+  transform: scale(0.8);
+}
+
+.commands-button {
+  color: goldenrod;
 }

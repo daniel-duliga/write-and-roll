@@ -1,19 +1,10 @@
 <div class="container">
-    <div class="actions-container">
-        <button mat-icon-button class="new-button" matTooltip="Back" routerLink="/chronicles">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
-    </div>
     <app-chronicle-editor
         *ngFor="let chronicle of openChronicles"
         class="editor-container"
         [chronicleName]="chronicle"
-        (onChronicleChanged)="this.updateChronicleName(chronicle, $event)"
+        (onChanged)="this.updateChronicleName(chronicle, $event)"
         (onClosed)="this.closeEditor(chronicle)"
+        (onNew)="this.openNewEditor()"
     ></app-chronicle-editor>
-    <div class="actions-container">
-        <button mat-icon-button class="new-button" matTooltip="Open new" (click)="openNewEditor()">
-            <mat-icon>add</mat-icon>
-        </button>
-    </div>
 </div>
