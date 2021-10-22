@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CodemirrorComponent } from '@ctrl/ngx-codemirror';
+import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { CommandService } from 'src/app/commands/command.service';
 import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
 import { Chronicle } from 'src/app/storage/models/chronicle';
@@ -48,6 +48,9 @@ export class ChronicleEditorComponent implements OnInit {
   }
   ngAfterViewInit() {
     this.registerCodeMirrorExtraKeys();
+    if (this.codeMirror) {
+      this.codeMirror.focus();
+    }
   }
   //#endregion
 
@@ -110,10 +113,6 @@ export class ChronicleEditorComponent implements OnInit {
       errors += 'Name is required.\n';
     } else if (this.chronicle.name.trim().endsWith('/')) {
       errors += 'Name cannot end with "/".\n';
-    }
-
-    if (this.chronicle.rawContent.trim() === '') {
-      errors += 'Content is required.\n';
     }
 
     if (errors !== '') {

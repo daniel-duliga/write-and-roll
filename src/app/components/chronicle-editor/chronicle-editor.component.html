@@ -33,10 +33,11 @@
             class="code-mirror"
             #ngxCodeMirror
             [(ngModel)]="this.chronicle.rawContent"
-            [options]="{ 
+            [options]="{
                 theme: 'default',
                 mode: 'markdown',
-                lineWrapping: true
+                lineWrapping: true,
+                inputStyle: 'textarea'
             }"
         ></ngx-codemirror>
     </div>
