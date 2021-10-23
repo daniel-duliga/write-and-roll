@@ -1,24 +1,23 @@
 .container {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  height: calc(100vh - 20px);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
-.form-field {
-  margin: 10px 20px 10px 20px;
+.title {
+  padding: 5px 5px 5px 10px;
+  font-size: 16pt;
+  font-weight: 400;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  z-index: 2;
 }
 
 .tree {
   height: calc(100% - 1px);
   overflow: auto;
   flex-grow: 1;
-  
-  margin-left: 20px;
-  margin-right: 20px;
-  
-  border: 1px solid darkgray;
-  border-radius: 5px;
-
   background-color: white;
 }
 
@@ -80,6 +79,12 @@
   font-size: 10pt;
 }
 
-.small-button {
+.button-small {
   margin: 10px 20px 0 20px;
+}
+
+.button-new {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
 }

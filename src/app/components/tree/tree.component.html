@@ -1,4 +1,13 @@
 <div class="container">
+    <div class="title shadow-small-down">
+        <mat-icon>image</mat-icon>
+        &nbsp;
+        <span>Page Title</span>
+        <div style="flex-grow: 1;"></div>
+        <button mat-icon-button class="" (click)="new()" matTooltip="New">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
     <!-- Filter -->
     <mat-form-field appearance="outline" class="form-field">
         <mat-icon matPrefix>search</mat-icon>
@@ -8,10 +17,8 @@
             <mat-icon>close</mat-icon>
         </button>
     </mat-form-field>
-
     <!-- Tree -->
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
-
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
             <button mat-button class="tree-node-button">
@@ -26,7 +33,6 @@
                 </div>
             </button>
         </cdk-nested-tree-node>
-
         <!-- Tree node template for expandable nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
             <button 
@@ -47,7 +53,4 @@
             </div>
         </cdk-nested-tree-node>
     </cdk-tree>
-
-    <!-- New -->
-    <button mat-stroked-button class="button small-button" (click)="new()">New</button>
 </div>

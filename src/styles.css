@@ -63,9 +63,15 @@ body {
   border: 1px solid darkgray !important;
   border-radius: 0 !important;
 }
-.small-button {
+.button-small {
   width: 33px !important;
   height: 33px !important;
   min-width: 33px !important;
   padding: 0 !important;
+}
+.shadow-small-down {
+  box-shadow: 5px 5px 10px rgba(0,0,0,10%) !important;
+}
+.shadow-small-up {
+  box-shadow: 5px -5px 10px rgba(0,0,0,10%) !important;
 }

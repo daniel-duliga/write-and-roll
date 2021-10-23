@@ -28,6 +28,8 @@
 
 .buttons {
   background-color: white;
+  box-shadow: 5px -5px 10px 0px rgb(0 0 0 / 5%);
+  z-index: 1;
 }
 
 .button {
@@ -43,6 +45,6 @@
   transform: scale(0.8);
 }
 
-.commands-button {
-  color: goldenrod;
+.commands-input {
+  width: 100%;
 }

@@ -44,6 +44,8 @@ export class ChronicleCreateEditComponent implements OnInit {
       const name = params.get('name');
       if (name) {
         this.openChronicles.push(name);
+      } else {
+        this.openChronicles.push('');
       }
     });
   }

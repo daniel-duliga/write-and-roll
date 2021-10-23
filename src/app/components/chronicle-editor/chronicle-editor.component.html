@@ -1,6 +1,6 @@
 <div class="container">
     <div class="title-container">
-        <button mat-stroked-button class="button small-button" matTooltip="Close" (click)="this.closeEditor()">
+        <button mat-stroked-button class="button button-small" matTooltip="Close" (click)="this.closeEditor()">
             <mat-icon class="close-button">close</mat-icon>
         </button>
         <app-auto-complete-field
@@ -15,7 +15,7 @@
         <button
             *ngIf="this.isDirty"
             mat-stroked-button
-            class="button small-button"
+            class="button button-small"
             matTooltip="Save (CTRL + S)"
             matTooltipPosition="above"
             [style]="isDirty ? { 'color': 'red' } : {}"
@@ -23,11 +23,10 @@
         >
             <mat-icon>save</mat-icon>
         </button>
-        <button mat-icon-button class="button small-button add-button" matTooltip="New" (click)="this.openNewEditor()">
+        <button mat-icon-button class="button button-small add-button" matTooltip="New" (click)="this.openNewEditor()">
             <mat-icon>add</mat-icon>
         </button>
     </div>
-
     <div class="editor">
         <ngx-codemirror
             class="code-mirror"
@@ -41,21 +40,9 @@
             }"
         ></ngx-codemirror>
     </div>
-
     <div class="buttons">
-        <!-- <button
-            mat-stroked-button
-            color=""
-            aria-label="Commands button"
-            class="button commands-button"
-            matTooltip="Commands (CTRL + Space)"
-            matTooltipPosition="above"
-            (click)="this.showCommands()"
-        >
-            <mat-icon>bolt</mat-icon>
-        </button> -->
         <app-auto-complete-field
-            style="width: 100%;"
+            class="commands-input"
             #commands
             [message]="'Command'"
             [options]="this.commandService.commands"
