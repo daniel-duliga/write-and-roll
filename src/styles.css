@@ -33,15 +33,6 @@ body {
 }
 
 /* Angular Material */
-/* .mat-snack-bar-container {
-  margin-bottom: 75px !important;
-} */
-/* .mat-form-field-appearance-outline .mat-form-field-outline-start {
-  border-radius: 0 !important;
-} */
-/* .mat-form-field-appearance-outline .mat-form-field-outline-end {
-  border-radius: 0 !important;
-} */
 .mat-form-field-appearance-outline .mat-form-field-outline {
   color: darkgray;
 }
@@ -51,9 +42,6 @@ body {
 .mat-option {
   height: 33px !important;
   font-size: 14px !important;
-}
-.mat-autocomplete-panel {
-  max-height: 65vh !important;
 }
 .mat-form-field-appearance-outline .mat-form-field-outline-start {
   border-radius: 0 !important;

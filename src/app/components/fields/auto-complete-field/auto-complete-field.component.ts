@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete } from '@angular/material/autocomplete';
 import { from, Observable } from 'rxjs';
@@ -18,6 +18,7 @@ export class AutoCompleteFieldComponent implements OnInit {
   @Output() onTextChange: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild(MatAutocomplete) autoComplete!: MatAutocomplete;
+  @ViewChild('input') input!: ElementRef;
   
   inputControl = new FormControl();
   filteredOptions!: Observable<string[]>;
@@ -32,10 +33,14 @@ export class AutoCompleteFieldComponent implements OnInit {
     );
     this.selectedOption = this.initialValue;
   }
-
+  
   ngAfterViewInit() {
     this.autoComplete.autoActiveFirstOption = true;
     this.autoComplete.options.first.setActiveStyles();
+  }
+
+  onPanelOpened() {
+    this.input.nativeElement.focus();
   }
 
   onOptionChanged(option: string) {
