@@ -6,6 +6,11 @@
 
 /* You can add global styles to this file, and also import other style files */
 
+html {
+  top: 0 !important;
+  overflow-y: auto !important;
+}
+
 html,
 body {
   height: 100%;
