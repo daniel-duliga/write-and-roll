@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 // Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -38,8 +39,7 @@ import { ActionCreateEditComponent } from './pages/actions/action-create-edit/ac
 import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './pages/import-export/import-export.component';
 import { ChronicleEditorComponent } from './components/chronicle-editor/chronicle-editor.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
+import { ClarityModule } from '@clr/angular';
 
 @NgModule({
   declarations: [
@@ -66,6 +66,12 @@ import { environment } from '../environments/environment';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: true,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
 
     // Angular Material
     MatButtonModule,
@@ -83,12 +89,7 @@ import { environment } from '../environments/environment';
     // Third-party
     CodemirrorModule,
     EasymdeModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the app is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    })
+    ClarityModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
