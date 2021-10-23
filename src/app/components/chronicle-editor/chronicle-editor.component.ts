@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
@@ -32,7 +32,6 @@ export class ChronicleEditorComponent implements OnInit {
   public get isDirty(): boolean {
     return this.chronicle.rawContent !== this.initialContent;
   }
-
 
   constructor(
     public commandService: CommandService,
@@ -78,8 +77,9 @@ export class ChronicleEditorComponent implements OnInit {
   }
 
   handleCommand(option: string) {
-    if (option && this.ngxCodeMirror.codeMirror) {
-      this.ngxCodeMirror.codeMirror.replaceSelection(`\`${option}\``);
+    if (option && this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
     }
   }
 
