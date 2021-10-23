@@ -2,11 +2,12 @@
   "name": "write-and-roll",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
     "start": "ng serve",
+    "build-and-start-dev-server": "ng build && http-server.cmd -p 8080 -c-1 dist/write-and-roll",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "ng": "ng"
   },
   "private": true,
   "dependencies": {
