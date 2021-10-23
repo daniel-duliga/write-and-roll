@@ -43,7 +43,7 @@
     </div>
 
     <div class="buttons">
-        <button
+        <!-- <button
             mat-stroked-button
             color=""
             aria-label="Commands button"
@@ -53,6 +53,13 @@
             (click)="this.showCommands()"
         >
             <mat-icon>bolt</mat-icon>
-        </button>
+        </button> -->
+        <app-auto-complete-field
+            style="width: 100%;"
+            #commands
+            [message]="'Command'"
+            [options]="this.commandService.commands"
+            (onOptionChange)="this.showCommands($event)"
+        ></app-auto-complete-field>
     </div>
 </div>

@@ -1,10 +1,12 @@
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { CommandService } from 'src/app/commands/command.service';
 import { ChronicleStorageService } from 'src/app/storage/model-services/chronicle-storage.service';
 import { Chronicle } from 'src/app/storage/models/chronicle';
+import { AutoCompleteFieldComponent } from '../fields/auto-complete-field/auto-complete-field.component';
 
 @Component({
   selector: 'app-chronicle-editor',
@@ -19,6 +21,7 @@ export class ChronicleEditorComponent implements OnInit {
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
+  @ViewChild('commands') commands!: AutoCompleteFieldComponent;
 
   chronicle: Chronicle = new Chronicle();
   allChronicles: string[] = [];
@@ -56,7 +59,7 @@ export class ChronicleEditorComponent implements OnInit {
   //#region host listener methods
   @HostListener('keydown.control.space', ['$event'])
   async onShowCommands(e: Event) {
-    this.showCommands();
+    this.commands.autocompleteInput.nativeElement.focus();
   }
 
   @HostListener('keydown.control.s', ['$event'])
@@ -71,9 +74,10 @@ export class ChronicleEditorComponent implements OnInit {
   //#endregion
 
   //#region public methods
-  async showCommands() {
-    const result = await this.commandService.showCommands(this.dialog);
+  async showCommands(command: string) {
+    const result = await this.commandService.handleCommandSelected(this.dialog, command);
     this.handleCommand(result);
+    this.commands.autocompleteTrigger.closePanel();
   }
 
   handleCommand(option: string) {

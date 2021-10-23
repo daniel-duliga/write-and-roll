@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocomplete } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { from, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
@@ -18,7 +18,8 @@ export class AutoCompleteFieldComponent implements OnInit {
   @Output() onTextChange: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild(MatAutocomplete) autoComplete!: MatAutocomplete;
-  @ViewChild('input') input!: ElementRef;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger!: MatAutocompleteTrigger;
+  @ViewChild('input') autocompleteInput!: ElementRef;
   
   inputControl = new FormControl();
   filteredOptions!: Observable<string[]>;
@@ -40,10 +41,11 @@ export class AutoCompleteFieldComponent implements OnInit {
   }
 
   onPanelOpened() {
-    this.input.nativeElement.focus();
+    this.autocompleteInput.nativeElement.focus();
   }
 
   onOptionChanged(option: string) {
+    this.inputControl.setValue('');
     this.onOptionChange.emit(option);
   }
 
