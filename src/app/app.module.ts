@@ -39,7 +39,6 @@ import { ActionCreateEditComponent } from './pages/actions/action-create-edit/ac
 import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './pages/import-export/import-export.component';
 import { ChronicleEditorComponent } from './components/chronicle-editor/chronicle-editor.component';
-import { ClarityModule } from '@clr/angular';
 
 @NgModule({
   declarations: [
@@ -89,7 +88,6 @@ import { ClarityModule } from '@clr/angular';
     // Third-party
     CodemirrorModule,
     EasymdeModule.forRoot(),
-    ClarityModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
