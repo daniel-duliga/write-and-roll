@@ -34,7 +34,6 @@ export class TreeComponent implements OnInit {
   ngOnInit() {
     this.initialPaths = this.paths;
     this.initializeDataSource();
-    this.setExpansionModel();
   }
 
   filterItems() {
@@ -75,6 +74,12 @@ export class TreeComponent implements OnInit {
     }
   }
 
+  private initializeDataSource() {
+    this.rootNode = TreeNodeWrapper.fromPaths(this.paths);
+    this.dataSource = new ArrayDataSource(this.rootNode.children);
+    this.setExpansionModel();
+  }
+
   private setExpansionModel() {
     for (const expandableItem of this.expansionModel) {
       const node = this.rootNode.getChildRecursive(expandableItem.identifier);
@@ -86,10 +91,5 @@ export class TreeComponent implements OnInit {
         }
       }
     }
-  }
-
-  private initializeDataSource() {
-    this.rootNode = TreeNodeWrapper.fromPaths(this.paths);
-    this.dataSource = new ArrayDataSource(this.rootNode.children);
   }
 }
