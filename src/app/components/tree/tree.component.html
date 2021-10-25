@@ -42,7 +42,8 @@
                 class="folder-button tree-node-button"
                 (click)="expandNode(node)"
             >
-                <mat-icon>folder_open</mat-icon>
+                <mat-icon *ngIf="!treeControl.isExpanded(node)">folder</mat-icon>
+                <mat-icon *ngIf="treeControl.isExpanded(node)">folder_open</mat-icon>
                 {{node.name}}
                 <button mat-icon-button class="action-button" (click)="add(node.path)">
                     <mat-icon>add</mat-icon>
