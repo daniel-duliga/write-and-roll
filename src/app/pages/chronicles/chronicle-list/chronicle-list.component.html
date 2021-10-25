@@ -1,4 +1,6 @@
 <app-tree
+    [title]="'Chronicles'"
+    [icon]="'book'"
     [paths]="this.journalPaths"
     [expansionModel]="this.chronicleStorageService.getExpansionModel()"
     (onExpanded)="this.chronicleStorageService.setExpansionState($event)"

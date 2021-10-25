@@ -1,4 +1,6 @@
 <app-tree
+    [title]="'Random Tables'"
+    [icon]="'view_list'"
     [paths]="this.randomTablePaths"
     [expansionModel]="this.randomTableStorageService.getExpansionModel()"
     (onExpanded)="this.randomTableStorageService.setExpansionState($event)"

@@ -12,6 +12,8 @@ import { ExpansionModelItem } from 'src/app/storage/core/expansion-model-item';
 export class TreeComponent implements OnInit {
   @Input() paths: string[] = [];
   @Input() expansionModel: ExpansionModelItem[] = [];
+  @Input() icon: string = '';
+  @Input() title: string = '';
 
   @Output() onExpanded: EventEmitter<ExpansionModelItem> = new EventEmitter();
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();

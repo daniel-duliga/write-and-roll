@@ -1,4 +1,6 @@
 <app-tree
+    [title]="'Actions'"
+    [icon]="'code'"
     [paths]="this.actionPaths"
     [expansionModel]="this.actionStorageService.getExpansionModel()"
     (onExpanded)="this.actionStorageService.setExpansionState($event)"
