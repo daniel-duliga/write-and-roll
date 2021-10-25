@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { IEntity } from 'src/app/storage/core/IEntity';
-import { StorageServiceBase } from 'src/app/storage/core/storage-service-base';
-import { EntitySaveWrapper } from './entity-save.wrapper';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
+import { CommandService } from 'src/app/commands/command.service';
+import { Entity } from 'src/app/entities/models/entity';
+import { EntityService } from 'src/app/entities/services/entity.service';
+import { AutoCompleteFieldComponent } from '../fields/auto-complete-field/auto-complete-field.component';
 
 @Component({
   selector: 'app-editor',
@@ -11,47 +12,90 @@ import { EntitySaveWrapper } from './entity-save.wrapper';
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() entityService!: StorageServiceBase;
-  @Input() backLink: string = '';
-  @Input() mode: string = 'default';
-  @Output() onChanged: EventEmitter<IEntity> = new EventEmitter();
+  @Input() name: string = '';
+  @Input() mode: string = '';
+  @Input() entityService!: EntityService;
+  @Input() showNewButton: boolean = true;
+  @Input() showCommandsSection: boolean = true;
 
-  entity: IEntity = { name: '', rawContent: '' };
-  folders: string[] = [];
+  @Output() onChanged: EventEmitter<string> = new EventEmitter();
+  @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
+  @Output() onNew: EventEmitter<boolean> = new EventEmitter();
+
+  @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
+  @ViewChild('commands') commands!: AutoCompleteFieldComponent;
+
+  entity!: Entity;
+  otherEntities: string[] = [];
   initialName: string = '';
+  initialContent: string = '';
 
+  //#region properties
+  public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
+    return this.ngxCodeMirror.codeMirror;
+  }
+
+  public get isDirty(): boolean {
+    return this.entity.rawContent !== this.initialContent;
+  }
+  //#endregion
+  
   constructor(
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar,
+    public commandService: CommandService,
+    public dialog: MatDialog,
   ) { }
 
+  //#region lifecycle methods
   ngOnInit(): void {
-    this.getDataFromRoute();
-    this.folders = this.entityService.getAllFolderPaths();
+    this.otherEntities = this.entityService.getAllPaths();
+    this.getChronicle(this.name);
   }
 
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
-      const name = params.get('name');
-      if (name) {
-        const entity = this.entityService.get(name); 
-        if (entity) {
-          this.initialName = entity.name;
-          this.entity = entity;
-          this.onChanged.emit(entity);
-        }
-      }
-    });
+  ngAfterViewInit() {
+    this.registerCodeMirrorExtraKeys();
+    if (this.codeMirror) {
+      this.codeMirror.focus();
+    }
+  }
+  //#endregion
+
+  //#region host listener methods
+  @HostListener('keydown.control.space', ['$event'])
+  async onShowCommands(e: Event) {
+    this.commands.autocompleteInput.nativeElement.focus();
   }
 
+  @HostListener('keydown.control.s', ['$event'])
+  onSave(e: Event) {
+    this.save(e);
+  }
+
+  @HostListener('window:beforeunload', ['$event']) 
+  onBeforeUnload(e: Event): boolean | undefined {
+    return !this.isDirty;
+  }
+  //#endregion
+
+  //#region public methods
+  closeEditor() {
+    if (this.validateUnsavedChanges()) {
+      this.onClosed.emit(true);
+    }
+  }
+  
   setName(name: string) {
-    if (this.entity) {
-      this.entity.name = name;
+    this.entity.name = name;
+  }
+
+  changeChronicle(name: string) {
+    if (this.validateUnsavedChanges()) {
+      this.getChronicle(name);
+      this.onChanged.emit(name);
     }
   }
 
-  onChange(): void {
-    this.onChanged.emit(this.entity);
+  openNewEditor() {
+    this.onNew.emit(true);
   }
 
   save($event: Event | null = null) {
@@ -59,19 +103,57 @@ export class EditorComponent implements OnInit {
     if ($event) {
       $event.preventDefault();
     }
-    
-    const entitySaveWrapper = new EntitySaveWrapper(this.entity, this.initialName);
-    
-    const errors = entitySaveWrapper.validate();
+
+    // Validation
+    const errors = this.entity.validate();
     if (errors !== '') {
       alert(errors);
       return;
     }
 
-    if (entitySaveWrapper.oldName && entitySaveWrapper.entity.name !== entitySaveWrapper.oldName) {
-      this.entityService.delete(entitySaveWrapper.oldName);
+    // Save
+    if (this.initialName) {
+      this.entityService.delete(this.initialName);
     }
-    this.entityService.create(entitySaveWrapper.entity.name, entitySaveWrapper.entity.rawContent);
-    this.snackBar.open('Saved successfully', undefined, { duration: 1000, verticalPosition: 'top' });
+
+    this.entityService.create(this.entity.name, this.entity.rawContent);
+
+    this.initialContent = this.entity.rawContent;
   }
+
+  async showCommands(command: string) {
+    const result = await this.commandService.handleCommandSelected(this.dialog, command);
+    this.handleCommand(result);
+    this.commands.autocompleteTrigger.closePanel();
+  }
+
+  handleCommand(option: string) {
+    if (option && this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
+    }
+  }
+  //#endregion
+
+  //#region private methods
+  private getChronicle(name: string) {
+    this.entity = this.entityService.get(name);
+    this.initialContent = this.entity.rawContent;
+  }
+  
+  private registerCodeMirrorExtraKeys() {
+    if (this.codeMirror) {
+      this.codeMirror.setOption(
+        "extraKeys", {
+        Enter: function (cm) {
+          cm.execCommand("newlineAndIndentContinueMarkdownList");
+        }
+      });
+    }
+  }
+
+  private validateUnsavedChanges() {
+    return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
+  }
+  //#endregion
 }

@@ -1,7 +1,7 @@
-import { ExpansionModelItem } from "./expansion-model-item";
-import { IEntity } from "./IEntity";
+import { Entity } from "../models/entity";
+import { ExpansionModelItem } from "../models/expansion-model-item";
 
-export class StorageServiceBase {
+export class EntityService {
   collectionName = 'tables';
 
   constructor(collectionName: string) {
@@ -30,19 +30,13 @@ export class StorageServiceBase {
     return uniqueFolders.map(x => x.concat('/'));
   }
 
-  get(name: string): IEntity {
-    let entity: IEntity | null = null;
+  get(name: string): Entity {
+    let entity: Entity | null = null;
     const rawContent = localStorage.getItem(`${this.collectionName}/data/${name}`);
     if (rawContent) {
-      entity = {
-        name: name,
-        rawContent: rawContent
-      };
+      entity = new Entity(name, rawContent);
     } else {
-      entity = {
-        name: `${name}/`,
-        rawContent: ''
-      };
+      entity = new Entity(`${name}/`, '');
     }
     return entity;
   }

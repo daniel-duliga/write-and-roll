@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { RandomTable } from '../models/random-table';
-import { StorageServiceBase } from '../core/storage-service-base';
+import { EntityService } from './entity.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RandomTableStorageService extends StorageServiceBase {
+export class RandomTableEntityService extends EntityService {
   constructor(private papa: Papa) {
     super('random-tables');
   }

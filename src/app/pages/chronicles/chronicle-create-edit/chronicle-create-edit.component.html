@@ -1,10 +1,12 @@
 <div class="container">
-    <app-chronicle-editor
+    <app-editor
         *ngFor="let chronicle of openChronicles"
         class="editor-container"
-        [chronicleName]="chronicle"
+        [name]="chronicle"
+        [mode]="'markdown'"
+        [entityService]="this.chronicleEntityService"
         (onChanged)="this.updateChronicleName(chronicle, $event)"
         (onClosed)="this.closeEditor(chronicle)"
         (onNew)="this.openNewEditor()"
-    ></app-chronicle-editor>
+    ></app-editor>
 </div>

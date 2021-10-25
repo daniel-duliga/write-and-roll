@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActionStorageService } from 'src/app/storage/model-services/action-storage.service';
-import { IEntity } from 'src/app/storage/core/IEntity';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EntityEditorComponentBase } from 'src/app/entities/entity-editor-component-base';
+import { ActionEntityService } from 'src/app/entities/services/action-entity.service';
 import { ActionsService } from '../actions.service';
 
 @Component({
@@ -9,23 +10,31 @@ import { ActionsService } from '../actions.service';
   templateUrl: './action-create-edit.component.html',
   styleUrls: ['./action-create-edit.component.css']
 })
-export class ActionCreateEditComponent implements OnInit {
-  content: string = '';
-
+export class ActionCreateEditComponent extends EntityEditorComponentBase implements OnInit {
   constructor(
-    public actionStorageService: ActionStorageService,
+    public actionEntityService: ActionEntityService,
     private actionService: ActionsService,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
+    super();
+  }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.getDataFromRoute(this.route, this.actionEntityService);
+  }
 
-  onChanged(entity: IEntity): void {
-    this.content = entity.rawContent;
+  closeEditor() {
+    this.router.navigate(['/actions']);
+  }
+
+  onChanged(content: string): void {
+    this.entity.rawContent = content;
   }
 
   async run(): Promise<void> {
-    const result = await this.actionService.run(this.content, this.dialog);
+    const result = await this.actionService.run(this.entity.rawContent, this.dialog);
     alert(result);
     return Promise.resolve();
   }

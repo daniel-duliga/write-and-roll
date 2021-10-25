@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
 import { PromptService } from '../components/prompts/prompt.service';
+import { ActionEntityService } from '../entities/services/action-entity.service';
+import { RandomTableEntityService } from '../entities/services/random-table-entity.service';
 import { ActionsService } from '../pages/actions/actions.service';
-import { ActionStorageService } from '../storage/model-services/action-storage.service';
-import { RandomTableStorageService } from '../storage/model-services/random-table-storage.service';
 import { DiceUtil } from '../trpg/dice/dice.util';
 import { TablesUtil } from '../trpg/tables.util';
 
@@ -20,9 +19,9 @@ export class CommandService {
 
   constructor(
     private promptService: PromptService,
-    private actionStorageService: ActionStorageService,
+    private actionEntityService: ActionEntityService,
     private actionService: ActionsService,
-    private randomTableStorageService: RandomTableStorageService,
+    private randomTableEntityService: RandomTableEntityService,
   ) { }
 
   async showCommands(dialog: MatDialog): Promise<string> {
@@ -49,9 +48,9 @@ export class CommandService {
   }
 
   async executeRollActionCommand(dialog: MatDialog): Promise<string> {
-    const actions = this.actionStorageService.getAllPaths();
+    const actions = this.actionEntityService.getAllPaths();
     const actionName = await this.promptService.openAutoCompletePrompt(dialog, "Action", actions);
-    const action = this.actionStorageService.get(actionName);
+    const action = this.actionEntityService.get(actionName);
     return this.actionService.run(action.rawContent, dialog);
   }
 
@@ -61,9 +60,9 @@ export class CommandService {
   }
 
   async executeRollTableCommand(dialog: MatDialog): Promise<string> {
-    const tables = this.randomTableStorageService.getAllPaths();
+    const tables = this.randomTableEntityService.getAllPaths();
     const tableName = await this.promptService.openAutoCompletePrompt(dialog, "Table", tables);
-    const table = this.randomTableStorageService.get(tableName);
+    const table = this.randomTableEntityService.get(tableName);
     return TablesUtil.rollOnTable(table.content);
   }
 }

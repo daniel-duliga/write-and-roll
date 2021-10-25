@@ -36,9 +36,8 @@ import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-creat
 import { ChronicleListComponent } from './pages/chronicles/chronicle-list/chronicle-list.component';
 import { ActionListComponent } from './pages/actions/action-list/action-list.component';
 import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
-import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './pages/import-export/import-export.component';
-import { ChronicleEditorComponent } from './components/chronicle-editor/chronicle-editor.component';
+import { EditorComponent } from './components/editor/editor.component';
 
 @NgModule({
   declarations: [
@@ -54,9 +53,8 @@ import { ChronicleEditorComponent } from './components/chronicle-editor/chronicl
     ChronicleCreateEditComponent,
     ActionListComponent,
     ActionCreateEditComponent,
-    EditorComponent,
     ImportExportComponent,
-    ChronicleEditorComponent,
+    EditorComponent,
   ],
   imports: [
     // Core

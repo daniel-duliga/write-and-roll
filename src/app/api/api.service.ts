@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PromptService } from '../components/prompts/prompt.service';
-import { RandomTableStorageService } from '../storage/model-services/random-table-storage.service';
+import { RandomTableEntityService } from '../entities/services/random-table-entity.service';
 import { DiceUtil } from '../trpg/dice/dice.util';
 import { TablesUtil } from '../trpg/tables.util';
 
@@ -12,7 +12,7 @@ export class ApiService {
   dialog: MatDialog | null = null;
 
   constructor(
-    private randomTableStorageService: RandomTableStorageService,
+    private randomTableEntityService: RandomTableEntityService,
     private promptService: PromptService,
   ) { }
 
@@ -21,7 +21,7 @@ export class ApiService {
   }
 
   rollTable(tableName: string): string {
-    const table = this.randomTableStorageService.get(tableName);
+    const table = this.randomTableEntityService.get(tableName);
     if (table) {
       return TablesUtil.rollOnTable(table.content);
     } else {

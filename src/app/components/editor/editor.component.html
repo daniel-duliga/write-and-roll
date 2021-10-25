@@ -1,20 +1,58 @@
 <div class="container">
-    <app-auto-complete-field 
-        class="name"
-        [message]="'Name'"
-        [options]="this.folders"
-        [initialValue]="this.entity.name"
-        (onTextChange)="this.setName($event)"
-    ></app-auto-complete-field>
-    <div class="editor" (document:keydown.control.s)="this.save($event)">
+    <div class="title-container">
+        <button mat-stroked-button class="button button-small" matTooltip="Close" (click)="this.closeEditor()">
+            <mat-icon class="close-button">close</mat-icon>
+        </button>
+        <app-auto-complete-field
+            class="title"
+            style="width: 100%;"
+            [message]="'Name'"
+            [options]="this.otherEntities"
+            [initialValue]="this.entity.name"
+            (onTextChange)="this.setName($event)"
+            (onOptionChange)="this.changeChronicle($event)"
+        ></app-auto-complete-field>
+        <button
+            *ngIf="this.isDirty"
+            mat-stroked-button
+            class="button button-small"
+            matTooltip="Save (CTRL + S)"
+            matTooltipPosition="above"
+            [style]="isDirty ? { 'color': 'red' } : {}"
+            (click)="this.save()"
+        >
+            <mat-icon>save</mat-icon>
+        </button>
+        <button
+            *ngIf="this.showNewButton"
+            mat-icon-button
+            class="button button-small add-button"
+            matTooltip="New"
+            (click)="this.openNewEditor()"
+        >
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <div class="editor">
         <ngx-codemirror
-            [(ngModel)]="entity.rawContent"
-            [options]="{ lineNumbers: true, theme: 'default', mode: this.mode }"
-            (ngModelChange)="onChange()"
+            class="code-mirror"
+            #ngxCodeMirror
+            [(ngModel)]="this.entity.rawContent"
+            [options]="{
+                theme: 'default',
+                mode: this.mode,
+                lineWrapping: true,
+                inputStyle: 'textarea'
+            }"
         ></ngx-codemirror>
     </div>
-    <div class="buttons">
-        <button mat-stroked-button class="button" (click)="this.save()">Save</button>
-        <button mat-stroked-button class="button" routerLink="{{this.backLink}}">Back</button>
+    <div *ngIf="this.showCommandsSection" class="commands">
+        <app-auto-complete-field
+            class="commands-input"
+            #commands
+            [message]="'Command'"
+            [options]="this.commandService.commands"
+            (onOptionChange)="this.showCommands($event)"
+        ></app-auto-complete-field>
     </div>
 </div>

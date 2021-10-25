@@ -1,1 +1,8 @@
-<app-editor [entityService]="this.randomTableService" [backLink]="'/random-tables'"></app-editor>
+<app-editor
+    [name]="this.entity.name"
+    [mode]="'javascript'"
+    [entityService]="this.randomTableEntityService"
+    [showNewButton]="false"
+    [showCommandsSection]="false"
+    (onClosed)="this.closeEditor()"
+></app-editor>
