@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
-import { LineHandle } from 'codemirror';
+import { LineHandle, LineWidget } from 'codemirror';
 import { CommandService } from 'src/app/commands/command.service';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
@@ -30,6 +30,7 @@ export class EditorComponent implements OnInit {
   otherEntities: string[] = [];
   initialName: string = '';
   initialContent: string = '';
+  lineWidgets: LineWidget[] = [];
 
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
@@ -56,7 +57,7 @@ export class EditorComponent implements OnInit {
   ngAfterViewInit() {
     this.registerCodeMirrorExtraKeys();
     if (this.codeMirror) {
-      this.postProcessCodeMirror();
+      this.codeMirror.on('changes', () => this.postProcessCodeMirror());
       this.codeMirror.focus();
     }
   }
@@ -81,6 +82,11 @@ export class EditorComponent implements OnInit {
 
   //#region public methods
   public postProcessCodeMirror() {
+    for (const lineWidget of this.lineWidgets) {
+      lineWidget.clear();
+    }
+    this.lineWidgets = [];
+    
     if (this.codeMirror) {
       const linesCount = this.codeMirror.lineCount();
       for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
@@ -90,16 +96,16 @@ export class EditorComponent implements OnInit {
           let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
           if (imageUrl) {
             imageUrl = imageUrl.slice(1, imageUrl.length - 1);
-            console.log(`Found image ${imageUrl} on line ${lineIndex}`);
-
+            
             let widget: HTMLElement = this.renderer.createElement('img');
             this.renderer.setAttribute(widget, 'src', imageUrl);
-            this.renderer.setStyle(widget, 'width', '100%');
-            this.codeMirror.addLineWidget(lineIndex, widget);
+            this.renderer.setStyle(widget, 'max-width', '100%');
+            const lineWidget = this.codeMirror.addLineWidget(lineIndex, widget);
+            
+            this.lineWidgets.push(lineWidget);
           }
         }
       }
-      this.codeMirror.refresh();
     }
   }
   
