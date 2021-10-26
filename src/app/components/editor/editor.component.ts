@@ -82,12 +82,18 @@ export class EditorComponent implements OnInit {
 
   //#region public methods
   public postProcessCodeMirror() {
-    for (const lineWidget of this.lineWidgets) {
-      lineWidget.clear();
+    if (this.mode !== 'markdown') {
+      return;
     }
-    this.lineWidgets = [];
-    
+
     if (this.codeMirror) {
+      const y = this.codeMirror.getScrollInfo().top;
+
+      for (const lineWidget of this.lineWidgets) {
+        lineWidget.clear();
+      }
+      this.lineWidgets = [];
+      
       const linesCount = this.codeMirror.lineCount();
       for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
         const line = this.codeMirror.getLine(lineIndex);
@@ -96,19 +102,23 @@ export class EditorComponent implements OnInit {
           let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
           if (imageUrl) {
             imageUrl = imageUrl.slice(1, imageUrl.length - 1);
-            
+
             let widget: HTMLElement = this.renderer.createElement('img');
             this.renderer.setAttribute(widget, 'src', imageUrl);
             this.renderer.setStyle(widget, 'max-width', '100%');
+
             const lineWidget = this.codeMirror.addLineWidget(lineIndex, widget);
-            
+
             this.lineWidgets.push(lineWidget);
           }
         }
       }
+      
+      console.log(`Scrolling to: Y = ${y}`);
+      this.codeMirror.scrollTo(null, y);
     }
   }
-  
+
   closeEditor() {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit(true);

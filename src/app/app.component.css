@@ -1,24 +1,13 @@
 .container {
-  display: grid;
-  height: 100vh;
-  background-color: #F7F6F2;
-}
-
-.main-content {
+  height: 100%;
+  width: 100%;
   display: flex;
+  background-color: #F7F6F2;
 }
 
 .sidebar {
   z-index: 1;
   box-shadow: 5px 5px 5px rgb(0 0 0 / 10%);
-}
-
-.router-container {
-  width: 100%;
-}
-
-.route-container {
-  height: 100%;
 }
 
 .icon {

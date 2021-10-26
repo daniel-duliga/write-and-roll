@@ -1,7 +1,7 @@
 <div class="container">
     <app-editor
+        class="editor"
         *ngFor="let chronicle of openChronicles"
-        class="editor-container"
         [name]="chronicle"
         [mode]="'markdown'"
         [entityService]="this.chronicleEntityService"

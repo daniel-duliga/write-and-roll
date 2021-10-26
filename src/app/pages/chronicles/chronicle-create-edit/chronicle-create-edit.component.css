@@ -3,27 +3,6 @@
     height: 100%;
 }
 
-.actions-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.editor-container {
+.editor {
     flex: 1;
-}
-
-.split-toggle-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.split-button {
-    width: initial !important;
-}
-
-.add-button {
-    min-width: 25px !important;
-    width: 25px !important;
 }
