@@ -1,6 +1,7 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
+import { LineHandle } from 'codemirror';
 import { CommandService } from 'src/app/commands/command.service';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
@@ -39,10 +40,11 @@ export class EditorComponent implements OnInit {
     return this.entity.rawContent !== this.initialContent;
   }
   //#endregion
-  
+
   constructor(
     public commandService: CommandService,
     public dialog: MatDialog,
+    private renderer: Renderer2
   ) { }
 
   //#region lifecycle methods
@@ -54,6 +56,7 @@ export class EditorComponent implements OnInit {
   ngAfterViewInit() {
     this.registerCodeMirrorExtraKeys();
     if (this.codeMirror) {
+      this.postProcessCodeMirror();
       this.codeMirror.focus();
     }
   }
@@ -70,19 +73,42 @@ export class EditorComponent implements OnInit {
     this.save(e);
   }
 
-  @HostListener('window:beforeunload', ['$event']) 
+  @HostListener('window:beforeunload', ['$event'])
   onBeforeUnload(e: Event): boolean | undefined {
     return !this.isDirty;
   }
   //#endregion
 
   //#region public methods
+  public postProcessCodeMirror() {
+    if (this.codeMirror) {
+      const linesCount = this.codeMirror.lineCount();
+      for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+        const line = this.codeMirror.getLine(lineIndex);
+        const images = line.matchAll(/!\[.*\]\(.*\)/g);
+        for (const image of images) {
+          let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
+          if (imageUrl) {
+            imageUrl = imageUrl.slice(1, imageUrl.length - 1);
+            console.log(`Found image ${imageUrl} on line ${lineIndex}`);
+
+            let widget: HTMLElement = this.renderer.createElement('img');
+            this.renderer.setAttribute(widget, 'src', imageUrl);
+            this.renderer.setStyle(widget, 'width', '100%');
+            this.codeMirror.addLineWidget(lineIndex, widget);
+          }
+        }
+      }
+      this.codeMirror.refresh();
+    }
+  }
+  
   closeEditor() {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit(true);
     }
   }
-  
+
   setName(name: string) {
     this.entity.name = name;
   }
@@ -140,7 +166,7 @@ export class EditorComponent implements OnInit {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;
   }
-  
+
   private registerCodeMirrorExtraKeys() {
     if (this.codeMirror) {
       this.codeMirror.setOption(
