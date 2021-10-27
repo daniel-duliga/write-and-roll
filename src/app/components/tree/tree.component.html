@@ -1,22 +1,18 @@
 <div class="container">
-    <div class="title shadow-small-down">
-        <mat-icon>{{this.icon}}</mat-icon>
-        &nbsp;
-        <span>{{this.title}}</span>
-        <div style="flex-grow: 1;"></div>
+    <!-- Filter -->
+    <div class="filter">
+        <mat-form-field appearance="outline" class="form-field">
+            <mat-icon matPrefix>search</mat-icon>
+            <input type="text" placeholder="Filter" aria-label="Filter" matInput [(ngModel)]="filter"
+                (ngModelChange)="filterItems()">
+            <button *ngIf="filter" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
         <button mat-icon-button class="" (click)="new()" matTooltip="New">
             <mat-icon>add</mat-icon>
         </button>
     </div>
-    <!-- Filter -->
-    <mat-form-field appearance="outline" class="form-field">
-        <mat-icon matPrefix>search</mat-icon>
-        <input type="text" placeholder="Filter" aria-label="Filter" matInput [(ngModel)]="filter"
-            (ngModelChange)="filterItems()">
-        <button *ngIf="filter" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </mat-form-field>
     <!-- Tree -->
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
         <!-- Tree node template for leaf nodes -->

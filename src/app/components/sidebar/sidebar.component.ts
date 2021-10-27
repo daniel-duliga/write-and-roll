@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { PagesConfig } from '../../pages/pages-config';
+import { SidebarService } from './sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -6,39 +9,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-  expanded = false;
+  expanded = true;
   inBetween = false;
   minimized = false;
-  items: { link: string, tooltip: string, icon: string, text: string }[] = [
-    {
-      link: "/chronicles",
-      tooltip: "Chronicle",
-      icon: 'book',
-      text: 'Chronicles'
-    },
-    {
-      link: "/random-tables",
-      tooltip: "Random Tables",
-      icon: 'view_list',
-      text: 'Random Tables'
-    },
-    {
-      link: "/actions",
-      tooltip: "Actions",
-      icon: 'code',
-      text: 'Actions'
-    },
-    {
-      link: "/import-export",
-      tooltip: "Import/Export",
-      icon: 'save',
-      text: 'Import/Export'
-    },
-  ];
+  items = PagesConfig.pages;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private sidebarService: SidebarService,
+  ) { }
 
   ngOnInit() { }
+
+  navigate(link: string) {
+    this.router.navigate([link]);
+    this.sidebarService.hideSidebar();
+  }
 
   toggleExpand() {
     if (!this.expanded) {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SidebarService } from './components/sidebar/sidebar.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,13 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'write-and-roll';
 
-  constructor() { }
+  constructor(
+    public sidebarService: SidebarService
+  ) { }
   
   ngOnInit(): void { }
+
+  hideSidebar() {
+    this.sidebarService.hideSidebar();
+  }
 }

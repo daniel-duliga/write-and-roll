@@ -38,6 +38,7 @@ import { ActionListComponent } from './pages/actions/action-list/action-list.com
 import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
 import { ImportExportComponent } from './pages/import-export/import-export.component';
 import { EditorComponent } from './components/editor/editor.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { EditorComponent } from './components/editor/editor.component';
     ActionCreateEditComponent,
     ImportExportComponent,
     EditorComponent,
+    HeaderComponent,
   ],
   imports: [
     // Core

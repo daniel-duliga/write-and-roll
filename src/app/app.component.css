@@ -1,13 +1,25 @@
 .container {
   height: 100%;
   width: 100%;
-  display: flex;
-  background-color: #F7F6F2;
+  background-color: #f7f6f2;
 }
 
 .sidebar {
-  z-index: 1;
+  z-index: 3;
   box-shadow: 5px 5px 5px rgb(0 0 0 / 10%);
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+}
+
+.pages {
+  width: 100%;
+  height: 100%;
 }
 
 .icon {

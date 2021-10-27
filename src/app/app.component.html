@@ -1,6 +1,9 @@
 <div class="container">
-    <app-sidebar class="sidebar"></app-sidebar>
-    <div style="width: 100%; height: 100%;">
-        <router-outlet></router-outlet>
+    <app-header></app-header>
+    <div class="content">
+        <app-sidebar *ngIf="this.sidebarService.sidebarVisible" class="sidebar"></app-sidebar>
+        <div class="pages" (click)="hideSidebar()">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>
