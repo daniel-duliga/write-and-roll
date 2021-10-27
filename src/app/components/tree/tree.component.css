@@ -7,10 +7,14 @@
 .filter {
   display: flex;
   align-items: center;
+  height: 33px;
+  z-index: 1;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .form-field {
-  width: calc(100% - 56px);
+  width: calc(100%);
 }
 
 .tree {
@@ -76,14 +80,4 @@
   border-radius: 0 !important;
   border-bottom: 1px solid lightgray;
   font-size: 10pt;
-}
-
-.button-small {
-  margin: 10px 20px 0 20px;
-}
-
-.button-new {
-  position: absolute;
-  bottom: 25px;
-  right: 25px;
 }

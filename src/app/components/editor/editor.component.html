@@ -1,6 +1,6 @@
 <div class="container">
-    <div class="header">
-        <button mat-stroked-button class="header-button" matTooltip="Close" (click)="this.closeEditor()">
+    <div class="header shadow-small-down">
+        <button mat-button class="header-button" matTooltip="Close" (click)="this.closeEditor()">
             <mat-icon class="header-button-icon">close</mat-icon>
         </button>
         
@@ -16,14 +16,14 @@
             (onOptionChange)="this.changeEntity($event)"
         ></app-auto-complete-field>
         
-        <button mat-stroked-button class="header-button" (click)="toggleSearch()">
+        <button mat-button class="header-button" (click)="toggleSearch()">
             <mat-icon *ngIf="!search" class="header-button-icon">search</mat-icon>
             <mat-icon *ngIf="search" class="header-button-icon">done</mat-icon>
         </button>
         <button
             *ngIf="this.isDirty"
             class="header-button"
-            mat-stroked-button
+            mat-button
             matTooltip="Save (CTRL + S)"
             matTooltipPosition="above"
             [style]="isDirty ? { 'color': 'red' } : {}"
@@ -34,7 +34,7 @@
         <button
             *ngIf="this.showNewButton"
             class="header-button" 
-            mat-stroked-button
+            mat-button
             matTooltip="New"
             (click)="this.openNewEditor()"
         >
