@@ -1,25 +1,58 @@
 .container {
   height: 100%;
-  width: 100%;
+  width: calc(100% - 2px);
   display: flex;
   flex-direction: column;
 }
 
-.title-container {
+.header {
   display: flex;
   align-items: center;
+
+  box-shadow: 0px 5px 5px rgb(0 0 0 / 5%);
   z-index: 1;
-  box-shadow: 5px 5px 5px rgb(0 0 0 / 5%);
+  
+  border-bottom: 1px solid darkgray;
+}
+
+.header-button {
+  width: 37px;
+  height: 33px;
+  min-width: unset !important;
+  
+  border-radius: 0;
+  padding: 0;
+}
+
+.header-button-icon {
+  transform: scale(0.9);
+}
+
+.title {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  font-size: 12pt;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.search-field {
+  width: 100%;
+  height: 100%;
 }
 
 .editor {
   overflow: auto;
   display: flex;
-
   height: 100%;
-
-  border-left: 1px solid darkgray;
   border-right: 1px solid darkgray;
+  border-left: 1px solid darkgray;
 }
 
 .code-mirror {
@@ -30,19 +63,6 @@
   background-color: white;
   box-shadow: 5px -5px 10px 0px rgb(0 0 0 / 10%);
   z-index: 1;
-}
-
-.button {
-  width: 100%;
-}
-
-.add-button {
-  line-height: 31px;
-  border-bottom: none !important;
-}
-
-.close-button {
-  transform: scale(0.8);
 }
 
 .commands-input {

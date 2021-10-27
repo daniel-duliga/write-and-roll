@@ -19,6 +19,9 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #F7F6F2;
 }
+* {
+  font-family: JetBrainsMono
+}
 
 /* CodeMirror */
 @import "~codemirror/lib/codemirror";

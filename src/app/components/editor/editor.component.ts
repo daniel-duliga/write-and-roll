@@ -31,14 +31,18 @@ export class EditorComponent implements OnInit {
   initialName: string = '';
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
+  search = true;
 
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
-
   public get isDirty(): boolean {
     return this.entity.rawContent !== this.initialContent;
+  }
+  public get formattedName(): string {
+    const nameSegments = this.entity.name.split('/');
+    return nameSegments[nameSegments.length - 1];
   }
   //#endregion
 
@@ -51,7 +55,8 @@ export class EditorComponent implements OnInit {
   //#region lifecycle methods
   ngOnInit(): void {
     this.otherEntities = this.entityService.getAllPaths();
-    this.getChronicle(this.name);
+    this.getAndSetChronicle(this.name);
+    this.search = this.name === '';
   }
 
   ngAfterViewInit() {
@@ -81,7 +86,7 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region public methods
-  public postProcessCodeMirror() {
+  postProcessCodeMirror() {
     if (this.mode !== 'markdown') {
       return;
     }
@@ -114,7 +119,6 @@ export class EditorComponent implements OnInit {
         }
       }
       
-      console.log(`Scrolling to: Y = ${y}`);
       this.codeMirror.scrollTo(null, y);
     }
   }
@@ -125,13 +129,18 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  setName(name: string) {
+  toggleSearch() {
+    this.search = !this.search;
+  }
+
+  changeEntityName(name: string) {
     this.entity.name = name;
   }
 
-  changeChronicle(name: string) {
+  changeEntity(name: string) {
     if (this.validateUnsavedChanges()) {
-      this.getChronicle(name);
+      this.getAndSetChronicle(name);
+      this.search = false;
       this.onChanged.emit(name);
     }
   }
@@ -178,7 +187,7 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private getChronicle(name: string) {
+  private getAndSetChronicle(name: string) {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;
   }

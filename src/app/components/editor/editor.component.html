@@ -1,36 +1,44 @@
 <div class="container">
-    <div class="title-container">
-        <button mat-stroked-button class="button button-small" matTooltip="Close" (click)="this.closeEditor()">
-            <mat-icon class="close-button">close</mat-icon>
+    <div class="header">
+        <button mat-stroked-button class="header-button" matTooltip="Close" (click)="this.closeEditor()">
+            <mat-icon class="header-button-icon">close</mat-icon>
         </button>
+        
+        <div *ngIf="!search" class="title" (click)="toggleSearch()">{{ this.formattedName }}</div>
         <app-auto-complete-field
-            class="title"
+            *ngIf="search"
+            class="search-field"
             style="width: 100%;"
             [message]="'Name'"
             [options]="this.otherEntities"
             [initialValue]="this.entity.name"
-            (onTextChange)="this.setName($event)"
-            (onOptionChange)="this.changeChronicle($event)"
+            (onTextChange)="this.changeEntityName($event)"
+            (onOptionChange)="this.changeEntity($event)"
         ></app-auto-complete-field>
+        
+        <button mat-stroked-button class="header-button" (click)="toggleSearch()">
+            <mat-icon *ngIf="!search" class="header-button-icon">search</mat-icon>
+            <mat-icon *ngIf="search" class="header-button-icon">done</mat-icon>
+        </button>
         <button
             *ngIf="this.isDirty"
+            class="header-button"
             mat-stroked-button
-            class="button button-small"
             matTooltip="Save (CTRL + S)"
             matTooltipPosition="above"
             [style]="isDirty ? { 'color': 'red' } : {}"
             (click)="this.save()"
         >
-            <mat-icon>save</mat-icon>
+            <mat-icon class="header-button-icon">save</mat-icon>
         </button>
         <button
             *ngIf="this.showNewButton"
-            mat-icon-button
-            class="button button-small add-button"
+            class="header-button" 
+            mat-stroked-button
             matTooltip="New"
             (click)="this.openNewEditor()"
         >
-            <mat-icon>add</mat-icon>
+            <mat-icon class="header-button-icon">add</mat-icon>
         </button>
     </div>
     <div class="editor">
