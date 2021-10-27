@@ -26,7 +26,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: AutoCompleteFieldComponent;
 
-  entity!: Entity;
+  entity: Entity = { name: '', rawContent: '', validate: () => '' };
   otherEntities: string[] = [];
   initialName: string = '';
   initialContent: string = '';
@@ -54,9 +54,9 @@ export class EditorComponent implements OnInit {
 
   //#region lifecycle methods
   ngOnInit(): void {
-    this.otherEntities = this.entityService.getAllPaths();
+    this.otherEntities = this.entityService.getAllPaths(true);
     this.getAndSetChronicle(this.name);
-    this.search = this.name === '';
+    this.automaticToggleSearchMode();
   }
 
   ngAfterViewInit() {
@@ -98,7 +98,7 @@ export class EditorComponent implements OnInit {
         lineWidget.clear();
       }
       this.lineWidgets = [];
-      
+
       const linesCount = this.codeMirror.lineCount();
       for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
         const line = this.codeMirror.getLine(lineIndex);
@@ -118,7 +118,7 @@ export class EditorComponent implements OnInit {
           }
         }
       }
-      
+
       this.codeMirror.scrollTo(null, y);
     }
   }
@@ -140,7 +140,7 @@ export class EditorComponent implements OnInit {
   changeEntity(name: string) {
     if (this.validateUnsavedChanges()) {
       this.getAndSetChronicle(name);
-      this.search = false;
+      this.automaticToggleSearchMode();
       this.onChanged.emit(name);
     }
   }
@@ -170,6 +170,8 @@ export class EditorComponent implements OnInit {
     this.entityService.create(this.entity.name, this.entity.rawContent);
 
     this.initialContent = this.entity.rawContent;
+
+    this.otherEntities = this.entityService.getAllPaths(true);
   }
 
   async showCommands(command: string) {
@@ -191,7 +193,9 @@ export class EditorComponent implements OnInit {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;
   }
-
+  private automaticToggleSearchMode() {
+    this.search = this.name === '' || this.name.endsWith('/');
+  }
   private registerCodeMirrorExtraKeys() {
     if (this.codeMirror) {
       this.codeMirror.setOption(
@@ -202,7 +206,6 @@ export class EditorComponent implements OnInit {
       });
     }
   }
-
   private validateUnsavedChanges() {
     return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
   }

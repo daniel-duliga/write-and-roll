@@ -5,11 +5,12 @@
 }
 
 /* You can add global styles to this file, and also import other style files */
-
+* {
+  font-family: JetBrainsMono
+}
 html {
   top: 0 !important;
 }
-
 html,
 body {
   height: 100%;
@@ -19,8 +20,8 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: #F7F6F2;
 }
-* {
-  font-family: JetBrainsMono
+img {
+  min-width: unset !important;
 }
 
 /* CodeMirror */

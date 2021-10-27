@@ -12,12 +12,33 @@ export class EntityService {
     localStorage.setItem(`${this.collectionName}/data/${path}`, content);
   }
 
-  getAllPaths(): string[] {
-    return Object
+  getAllPaths(includeFolders: boolean = false): string[] {
+    var paths = Object
       .keys(localStorage)
       .filter(x => x.startsWith(`${this.collectionName}/data/`))
       .map(x => x.replace(`${this.collectionName}/data/`, ''))
       .sort((a, b) => a.localeCompare(b));
+
+    if (includeFolders) {
+      for (const path of paths) {
+        let segments = path.split('/');
+        segments = segments.slice(0, segments.length - 1).reverse();
+        let newPath = '';
+        while (segments.length > 0) {
+          let segment = segments.pop();
+          if (segment) {
+            newPath = newPath.concat(segment, '/');
+            if (!paths.includes(newPath)) {
+              paths.push(newPath);
+            }
+          }
+        }
+      }
+
+      paths = paths.sort((a, b) => a.localeCompare(b));
+    }
+    
+    return paths;
   }
 
   getAllFolderPaths(): string[] {
