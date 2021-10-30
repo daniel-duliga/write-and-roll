@@ -2,10 +2,11 @@
   "name": "write-and-roll",
   "version": "0.0.0",
   "scripts": {
-    "start": "ng serve",
-    "build-and-start-dev-server": "ng build && http-server.cmd -p 8080 -c-1 dist/write-and-roll",
-    "build": "ng build",
+    "serve": "ng serve",
+    "start-dev-server": "ng build && http-server.cmd -p 8080 -c-1 dist/write-and-roll",
+    "deploy-to-github-pages": "ng deploy --base-href=/write-and-roll/",
     "watch": "ng build --watch --configuration development",
+    "build": "ng build",
     "test": "ng test",
     "ng": "ng"
   },
@@ -38,6 +39,7 @@
     "@types/file-saver": "^2.0.3",
     "@types/jasmine": "~3.8.0",
     "@types/node": "^12.11.1",
+    "angular-cli-ghpages": "^1.0.0-rc.2",
     "jasmine-core": "~3.8.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
