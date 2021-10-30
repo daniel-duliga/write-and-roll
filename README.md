@@ -1,6 +1,6 @@
 # Write and Roll
 
-[![Build and deploy Azure](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml/badge.svg)](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml)
+[![Build and deploy to GitHub Pages](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml/badge.svg?branch=main)](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml)
 
 **Demo:** https://daniel-duliga.github.io/write-and-roll
 
