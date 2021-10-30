@@ -6,8 +6,12 @@
 
 ## Credits
 
-- [ngx-codemirror](https://github.com/scttcper/ngx-codemirror)
+Text editing
 - [CodeMirror](https://github.com/codemirror/CodeMirror)
-- [FileSaver.js](https://github.com/eligrey/FileSaver.js)
+- [ngx-codemirror](https://github.com/scttcper/ngx-codemirror)
 - [ngx-easymde](https://github.com/dmcbane/ngx-easymde)
+
+Other
+- [angular-cli-ghpages](https://github.com/angular-schule/angular-cli-ghpages)
+- [FileSaver.js](https://github.com/eligrey/FileSaver.js)
 - [ngx-papaparse](https://github.com/alberthaff/ngx-papaparse)
