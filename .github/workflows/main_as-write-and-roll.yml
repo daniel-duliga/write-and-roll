@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,5 +26,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm install
-          npm run build --if-present
           npm run ng -- deploy --base-href=/write-and-roll/ --name="daniel-duliga" --email=daniel.vasile.duliga@gmail.com
