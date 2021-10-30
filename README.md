@@ -15,3 +15,4 @@ Other
 - [angular-cli-ghpages](https://github.com/angular-schule/angular-cli-ghpages)
 - [FileSaver.js](https://github.com/eligrey/FileSaver.js)
 - [ngx-papaparse](https://github.com/alberthaff/ngx-papaparse)
+- [Gane-icons.net](https://game-icons.net/)
