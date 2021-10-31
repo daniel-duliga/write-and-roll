@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PromptService } from '../components/prompts/prompt.service';
+import { EditorComponent } from '../components/editor/editor.component';
 import { ActionEntityService } from '../entities/services/action-entity.service';
 import { RandomTableEntityService } from '../entities/services/random-table-entity.service';
 import { ActionsService } from '../pages/actions/actions.service';
@@ -16,18 +16,13 @@ export class CommandService {
     '🔥 Roll Action',
     '🎲 Roll Dice',
   ];
+  editorComponent!: EditorComponent;
 
   constructor(
-    private promptService: PromptService,
     private actionEntityService: ActionEntityService,
     private actionService: ActionsService,
     private randomTableEntityService: RandomTableEntityService,
   ) { }
-
-  async showCommands(dialog: MatDialog): Promise<string> {
-    const command = await this.promptService.openAutoCompletePrompt(dialog, "Command", this.commands);
-    return await this.handleCommandSelected(dialog, command);
-  }
 
   async handleCommandSelected(dialog: MatDialog, option: string): Promise<string> {
     let result = option;
@@ -36,10 +31,10 @@ export class CommandService {
         return await this.executeRollActionCommand(dialog);
       }
       case '🎲 Roll Dice': {
-        return await this.executeRollDiceCommand(dialog);
+        return await this.executeRollDiceCommand();
       }
       case '🎱 Roll Table': {
-        return await this.executeRollTableCommand(dialog);
+        return await this.executeRollTableCommand();
       }
       default: {
         return result;
@@ -49,19 +44,19 @@ export class CommandService {
 
   async executeRollActionCommand(dialog: MatDialog): Promise<string> {
     const actions = this.actionEntityService.getAllPaths();
-    const actionName = await this.promptService.openAutoCompletePrompt(dialog, "Action", actions);
+    const actionName = await this.editorComponent.prompt(actions);
     const action = this.actionEntityService.get(actionName);
     return this.actionService.run(action.rawContent, dialog);
   }
 
-  async executeRollDiceCommand(dialog: MatDialog): Promise<string> {
-    const formula = await this.promptService.openInputPrompt(dialog, "Formula");
+  async executeRollDiceCommand(): Promise<string> {
+    const formula = await this.editorComponent.promptInput();
     return DiceUtil.rollDiceFormula(formula).toString();
   }
 
-  async executeRollTableCommand(dialog: MatDialog): Promise<string> {
+  async executeRollTableCommand(): Promise<string> {
     const tables = this.randomTableEntityService.getAllPaths();
-    const tableName = await this.promptService.openAutoCompletePrompt(dialog, "Table", tables);
+    const tableName = await this.editorComponent.prompt(tables);
     const table = this.randomTableEntityService.get(tableName);
     return TablesUtil.rollOnTable(table.content);
   }

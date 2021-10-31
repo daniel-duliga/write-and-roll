@@ -59,8 +59,9 @@
             class="commands-input"
             #commands
             [message]="'Command'"
-            [options]="this.commandService.commands"
-            (onOptionChange)="this.showCommands($event)"
+            [options]="this.commandsOptions"
+            (onOptionChange)="this.commandsOptionChanged($event)"
+            (keydown.enter)="this.commandsOptionChanged(commands.inputControl.value)"
         ></app-auto-complete-field>
     </div>
 </div>

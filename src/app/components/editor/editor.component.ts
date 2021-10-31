@@ -1,7 +1,8 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
-import { LineHandle, LineWidget } from 'codemirror';
+import { LineWidget } from 'codemirror';
+import { Subject } from 'rxjs';
 import { CommandService } from 'src/app/commands/command.service';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
@@ -33,6 +34,10 @@ export class EditorComponent implements OnInit {
   lineWidgets: LineWidget[] = [];
   search = true;
 
+  commandsOptions: string[] = [];
+  commandsOptionSelected: Subject<string> = new Subject();
+  commandsMode: "commands" | "prompt" = "commands";
+
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
@@ -50,9 +55,12 @@ export class EditorComponent implements OnInit {
     public commandService: CommandService,
     public dialog: MatDialog,
     private renderer: Renderer2
-  ) { }
+  ) {
+    this.commandService.editorComponent = this;
+    this.commandsOptions = this.commandService.commands;
+  }
 
-  //#region lifecycle methods
+  //#region lifecycle events
   ngOnInit(): void {
     this.otherEntities = this.entityService.getAllPaths(true);
     this.getAndSetChronicle(this.name);
@@ -173,11 +181,19 @@ export class EditorComponent implements OnInit {
 
     this.otherEntities = this.entityService.getAllPaths(true);
   }
+  //#endregion
 
-  async showCommands(command: string) {
-    const result = await this.commandService.handleCommandSelected(this.dialog, command);
-    this.handleCommand(result);
-    this.commands.autocompleteTrigger.closePanel();
+  //#region commands
+  async commandsOptionChanged(command: string) {
+    if (command) {
+      if (this.commandsMode === "commands") {
+        const result = await this.commandService.handleCommandSelected(this.dialog, command);
+        this.handleCommand(result);
+        this.onCommandHandled();
+      } else if (this.commandsMode === "prompt") {
+        this.commandsOptionSelected.next(command);
+      }
+    }
   }
 
   handleCommand(option: string) {
@@ -185,6 +201,23 @@ export class EditorComponent implements OnInit {
       this.codeMirror.replaceSelection(`\`${option}\``);
       this.codeMirror.focus();
     }
+  }
+
+  private onCommandHandled() {
+    this.commands.inputControl.setValue('');
+    this.commands.setOptions(this.commandService.commands);
+    this.commands.autocompleteTrigger.closePanel();
+    this.commandsMode = "commands";
+  }
+
+  promptInput(): Promise<string> {
+    return this.prompt([]);
+  }
+
+  prompt(options: string[]): Promise<string> {
+    this.commandsMode = "prompt";
+    this.commands.setOptions(options, true);
+    return new Promise(resolve => this.commandsOptionSelected.subscribe(result => resolve(result)));
   }
   //#endregion
 
