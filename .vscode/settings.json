@@ -9,6 +9,7 @@
         "preconnect",
         "sidenav",
         "trpg",
-        "unparse"
+        "unparse",
+        "uuidv"
     ]
 }

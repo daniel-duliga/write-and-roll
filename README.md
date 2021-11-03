@@ -61,3 +61,4 @@ Other
 - [FileSaver.js](https://github.com/eligrey/FileSaver.js)
 - [ngx-papaparse](https://github.com/alberthaff/ngx-papaparse)
 - [Game-icons.net](https://game-icons.net/)
+- [uuid](https://github.com/uuidjs/uuid)

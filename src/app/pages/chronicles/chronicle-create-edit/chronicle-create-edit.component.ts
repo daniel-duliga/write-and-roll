@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChronicleEntityService } from 'src/app/entities/services/chronicle-entity.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-chronicle-create-edit',
@@ -8,7 +9,7 @@ import { ChronicleEntityService } from 'src/app/entities/services/chronicle-enti
   styleUrls: ['./chronicle-create-edit.component.css']
 })
 export class ChronicleCreateEditComponent implements OnInit {
-  openChronicles: string[] = [];
+  openChronicles: { id: string, name: string }[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -22,18 +23,18 @@ export class ChronicleCreateEditComponent implements OnInit {
 
   //#region public methods
   openNewEditor() {
-    this.openChronicles.push('');
+    this.openChronicles.push({ id: uuidv4(), name: '' });
   }
 
-  updateChronicleName(oldName: string, newName: string) {
-    const oldNameIndex = this.openChronicles.findIndex(x => x === oldName);
+  updateChronicleName(id: string, newName: string) {
+    const oldNameIndex = this.openChronicles.findIndex(x => x.id === id);
     if (oldNameIndex) {
-      this.openChronicles[oldNameIndex] = newName;
+      this.openChronicles[oldNameIndex].name = newName;
     }
   }
 
-  closeEditor(chronicleName: string) {
-    this.openChronicles = this.openChronicles.filter(x => x !== chronicleName);
+  closeEditor(id: string) {
+    this.openChronicles = this.openChronicles.filter(x => x.id !== id);
     if (this.openChronicles.length === 0) {
       this.router.navigate(['/chronicles']);
     }
@@ -45,9 +46,9 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       if (name) {
-        this.openChronicles.push(name);
+        this.openChronicles.push({ id: uuidv4(), name: name });
       } else {
-        this.openChronicles.push('');
+        this.openChronicles.push({ id: uuidv4(), name: '' });
       }
     });
   }
