@@ -42,7 +42,7 @@ img {
   padding: 0.2em 0 0.5em 0;
 }
 .mat-option {
-  height: 33px !important;
+  height: 32px !important;
   font-size: 14px !important;
 }
 .mat-form-field-appearance-outline .mat-form-field-outline-start {
@@ -50,6 +50,9 @@ img {
 }
 .mat-form-field-appearance-outline .mat-form-field-outline-end {
   border-radius: 0 !important;
+}
+.active-link {
+  background-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Custom */
@@ -59,16 +62,16 @@ img {
   background-color: white;
 }
 .button {
-  height: 33px !important;
+  height: 32px !important;
   box-shadow: none !important;
   background-color: white;
   border: 1px solid darkgray !important;
   border-radius: 0 !important;
 }
 .button-small {
-  width: 33px !important;
-  height: 33px !important;
-  min-width: 33px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
   padding: 0 !important;
 }
 .shadow-small-down {

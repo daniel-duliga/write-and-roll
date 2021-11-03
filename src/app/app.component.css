@@ -5,14 +5,13 @@
 }
 
 .content {
-  height: calc(100% - 43px);
+  height: 100%;
   display: flex;
 }
 
 .sidebar {
   z-index: 3;
   box-shadow: 5px 5px 5px rgb(0 0 0 / 10%);
-  position: absolute;
   top: 0;
   height: 100%;
 }

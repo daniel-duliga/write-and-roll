@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PagesConfig } from '../../pages/pages-config';
-import { SidebarService } from './sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,14 +15,12 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private sidebarService: SidebarService,
   ) { }
 
   ngOnInit() { }
 
   navigate(link: string) {
     this.router.navigate([link]);
-    this.sidebarService.hideSidebar();
   }
 
   toggleExpand() {

@@ -1,8 +1,7 @@
 <div class="container">
-    <app-header></app-header>
     <div class="content">
-        <app-sidebar *ngIf="this.sidebarService.sidebarVisible" class="sidebar"></app-sidebar>
-        <div class="pages" (click)="hideSidebar()">
+        <app-sidebar class="sidebar"></app-sidebar>
+        <div class="pages">
             <router-outlet></router-outlet>
         </div>
     </div>

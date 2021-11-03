@@ -5,8 +5,8 @@
             mat-list-item
             class="list-item"
             matTooltip="{{item.tooltip}}"
-            (click)="navigate(item.link)"
-            [routerLinkActive]="['active-link']"
+            routerLink="{{item.link}}"
+            routerLinkActive="active-link"
             [matTooltipPosition]="'after'"
         >
             <mat-icon>{{item.icon}}</mat-icon>
@@ -15,11 +15,11 @@
         
         <div class="spacer"></div>
         
-        <!-- <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
+        <a mat-list-item (click)="toggleExpand()" matTooltip="{{ expanded ? 'Collapse' : 'Expand' }}" [matTooltipPosition]="'after'">
             <mat-icon *ngIf="!inBetween && !expanded">chevron_right</mat-icon>
             <mat-icon *ngIf="!inBetween && expanded">chevron_left</mat-icon>
             <mat-icon *ngIf="inBetween">first_page</mat-icon>
-        </a> -->
+        </a>
     </mat-nav-list>
 </div>
 <div *ngIf="minimized" class="minimize-container" (click)="toggleMinimize()">
