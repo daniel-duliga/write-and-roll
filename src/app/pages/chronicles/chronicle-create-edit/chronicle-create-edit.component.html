@@ -1,6 +1,7 @@
 <div class="container">
     <app-editor
         class="editor"
+        #editor
         *ngFor="let chronicle of openChronicles"
         [name]="chronicle.name"
         [mode]="'markdown'"
