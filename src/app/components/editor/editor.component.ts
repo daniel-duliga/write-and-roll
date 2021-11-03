@@ -1,12 +1,9 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
-import { Subject } from 'rxjs';
-import { CommandService } from 'src/app/commands/command.service';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
-import { AutoCompleteFieldComponent } from '../fields/auto-complete-field/auto-complete-field.component';
+import { CommandsComponent } from '../commands/commands.component';
 
 @Component({
   selector: 'app-editor',
@@ -25,7 +22,7 @@ export class EditorComponent implements OnInit {
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
-  @ViewChild('commands') commands!: AutoCompleteFieldComponent;
+  @ViewChild('commands') commands!: CommandsComponent;
 
   entity: Entity = { name: '', rawContent: '', validate: () => '' };
   otherEntities: string[] = [];
@@ -33,10 +30,6 @@ export class EditorComponent implements OnInit {
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
   search = true;
-
-  commandsOptions: string[] = [];
-  commandsOptionSelected: Subject<string> = new Subject();
-  commandsMode: "commands" | "prompt" = "commands";
 
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
@@ -52,13 +45,8 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   constructor(
-    public commandService: CommandService,
-    public dialog: MatDialog,
     private renderer: Renderer2
-  ) {
-    this.commandService.editorComponent = this;
-    this.commandsOptions = this.commandService.commands;
-  }
+  ) { }
 
   //#region lifecycle events
   ngOnInit(): void {
@@ -79,7 +67,7 @@ export class EditorComponent implements OnInit {
   //#region host listener methods
   @HostListener('keydown.control.space', ['$event'])
   async onShowCommands(e: Event) {
-    this.commands.autocompleteInput.nativeElement.focus();
+    this.commands.focus();
   }
 
   @HostListener('keydown.control.s', ['$event'])
@@ -94,7 +82,67 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region public methods
-  postProcessCodeMirror() {
+  closeEditor() {
+    if (this.validateUnsavedChanges()) {
+      this.onClosed.emit(true);
+    }
+  }
+
+  toggleSearch() {
+    this.search = !this.search;
+  }
+
+  changeEntityName(name: string) {
+    this.entity.name = name;
+  }
+
+  changeEntity(name: string) {
+    if (this.validateUnsavedChanges()) {
+      this.getAndSetChronicle(name);
+      this.automaticToggleSearchMode();
+      this.onChanged.emit(name);
+    }
+  }
+
+  openNewEditor() {
+    this.onNew.emit(true);
+  }
+
+  handleCommand(option: string) {
+    if (option && this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
+    }
+  }
+
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+
+    // Validation
+    const errors = this.entity.validate();
+    if (errors !== '') {
+      alert(errors);
+      return;
+    }
+
+    // Save
+    if (this.initialName) {
+      this.entityService.delete(this.initialName);
+    }
+
+    this.entityService.create(this.entity.name, this.entity.rawContent);
+
+    this.initialContent = this.entity.rawContent;
+
+    this.otherEntities = this.entityService.getAllPaths(true);
+  }
+  //#endregion
+
+  //#region private methods
+  private postProcessCodeMirror() {
     if (this.mode !== 'markdown') {
       return;
     }
@@ -131,97 +179,6 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  closeEditor() {
-    if (this.validateUnsavedChanges()) {
-      this.onClosed.emit(true);
-    }
-  }
-
-  toggleSearch() {
-    this.search = !this.search;
-  }
-
-  changeEntityName(name: string) {
-    this.entity.name = name;
-  }
-
-  changeEntity(name: string) {
-    if (this.validateUnsavedChanges()) {
-      this.getAndSetChronicle(name);
-      this.automaticToggleSearchMode();
-      this.onChanged.emit(name);
-    }
-  }
-
-  openNewEditor() {
-    this.onNew.emit(true);
-  }
-
-  save($event: Event | null = null) {
-    // If triggered by key combination, prevent default browser save action
-    if ($event) {
-      $event.preventDefault();
-    }
-
-    // Validation
-    const errors = this.entity.validate();
-    if (errors !== '') {
-      alert(errors);
-      return;
-    }
-
-    // Save
-    if (this.initialName) {
-      this.entityService.delete(this.initialName);
-    }
-
-    this.entityService.create(this.entity.name, this.entity.rawContent);
-
-    this.initialContent = this.entity.rawContent;
-
-    this.otherEntities = this.entityService.getAllPaths(true);
-  }
-  //#endregion
-
-  //#region commands
-  async commandsOptionChanged(command: string) {
-    if (command) {
-      if (this.commandsMode === "commands") {
-        const result = await this.commandService.handleCommandSelected(this.dialog, command);
-        this.handleCommand(result);
-        this.onCommandHandled();
-      } else if (this.commandsMode === "prompt") {
-        this.commandsOptionSelected.next(command);
-      }
-    }
-  }
-
-  handleCommand(option: string) {
-    if (option && this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
-    }
-  }
-
-  private onCommandHandled() {
-    this.commands.inputControl.setValue('');
-    this.commands.setOptions(this.commandService.commands);
-    this.commands.autocompleteTrigger.closePanel();
-    this.commandsMode = "commands";
-  }
-
-  promptInput(): Promise<string> {
-    return this.prompt([]);
-  }
-
-  prompt(options: string[]): Promise<string> {
-    this.commandsMode = "prompt";
-    this.commands.setOptions(options, true);
-    return new Promise(resolve => this.commandsOptionSelected.subscribe(result => resolve(result)));
-  }
-  //#endregion
-
-  //#region private methods
   private getAndSetChronicle(name: string) {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;

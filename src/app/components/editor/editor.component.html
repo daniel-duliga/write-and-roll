@@ -55,13 +55,6 @@
         ></ngx-codemirror>
     </div>
     <div *ngIf="this.showCommandsSection" class="commands">
-        <app-auto-complete-field
-            class="commands-input"
-            #commands
-            [message]="'Command'"
-            [options]="this.commandsOptions"
-            (onOptionChange)="this.commandsOptionChanged($event)"
-            (keydown.enter)="this.commandsOptionChanged(commands.inputControl.value)"
-        ></app-auto-complete-field>
+        <app-commands #commands (onCommandExecuted)="this.handleCommand($event)"></app-commands>
     </div>
 </div>
