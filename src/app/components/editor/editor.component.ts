@@ -61,6 +61,7 @@ export class EditorComponent implements OnInit {
       this.codeMirror.on('changes', () => this.postProcessCodeMirror());
       this.codeMirror.focus();
     }
+    this.refresh();
   }
   //#endregion
 
@@ -82,6 +83,14 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region public methods
+  refresh() {
+    setTimeout(() => {
+      if (this.codeMirror) {
+        this.codeMirror.refresh();
+      }
+    }, 250);
+  }
+
   closeEditor() {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit(true);
