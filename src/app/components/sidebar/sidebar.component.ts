@@ -8,7 +8,7 @@ import { PagesConfig } from '../../pages/pages-config';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-  expanded = true;
+  expanded = false;
   inBetween = false;
   minimized = false;
   items = PagesConfig.pages;
