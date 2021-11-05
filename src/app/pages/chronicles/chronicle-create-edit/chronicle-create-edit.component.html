@@ -8,6 +8,6 @@
         [entityService]="this.chronicleEntityService"
         (onChanged)="this.updateChronicleName(chronicle.id, $event)"
         (onClosed)="this.closeEditor(chronicle.id)"
-        (onNew)="this.openNewEditor()"
+        (onNew)="this.openNewEditor(chronicle.id)"
     ></app-editor>
 </div>
