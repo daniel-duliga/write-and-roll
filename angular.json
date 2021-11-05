@@ -1,13 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "cli": {
-    "cache": {
-      "enabled": true,
-      "path": ".cache",
-      "environment": "all"
-    }
-  },
   "newProjectRoot": "projects",
   "projects": {
     "write-and-roll": {
@@ -39,7 +32,9 @@
               "node_modules/easymde/dist/easymde.min.css",
               "src/styles.css"
             ],
-            "scripts": ["node_modules/easymde/dist/easymde.min.js"],
+            "scripts": [
+              "node_modules/easymde/dist/easymde.min.js"
+            ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json"
           },
