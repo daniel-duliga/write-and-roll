@@ -1,7 +1,7 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChronicleEntityService } from 'src/app/entities/services/chronicle-entity.service';
-import { EditorComponent } from 'src/app/components/editor/editor.component';
+import { EditorComponent, MoveDirection } from 'src/app/components/editor/editor.component';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -51,6 +51,20 @@ export class ChronicleCreateEditComponent implements OnInit {
       this.openChronicles[oldNameIndex].name = newName;
     }
     this.refreshEditors();
+  }
+
+  moveEditor(id: string, direction: MoveDirection) {
+    const editorIndex = this.openChronicles.findIndex(x => x.id === id);
+    if (editorIndex !== -1) {
+      const editor = this.openChronicles[editorIndex];
+      if (direction === "left" && editorIndex !== 0) {
+        this.openChronicles.splice(editorIndex, 1);
+        this.openChronicles.splice(editorIndex - 1, 0, editor);
+      } else if (direction === "right" && editorIndex !== this.openChronicles.length - 1) {
+        this.openChronicles.splice(editorIndex, 1);
+        this.openChronicles.splice(editorIndex + 1, 0, editor);
+      }
+    }
   }
   //#endregion
 

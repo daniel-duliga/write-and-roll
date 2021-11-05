@@ -4,42 +4,58 @@
             <mat-icon class="header-button-icon">close</mat-icon>
         </button>
         
-        <div *ngIf="!search" class="title" (click)="toggleSearch()">{{ this.formattedName }}</div>
-        <app-auto-complete-field
-            *ngIf="search"
-            class="search-field"
-            style="width: 100%;"
-            [message]="'Name'"
-            [options]="this.otherEntities"
-            [initialValue]="this.entity.name"
-            (onTextChange)="this.changeEntityName($event)"
-            (onOptionChange)="this.changeEntity($event)"
-        ></app-auto-complete-field>
+        <span class="buttons-container" *ngIf="this.isDirty">
+            <div class="header-separator"></div>
+            <button
+                class="header-button"
+                mat-button
+                matTooltip="Save (CTRL + S)"
+                [style]="isDirty ? { 'color': 'red' } : {}"
+                (click)="this.save()"
+            >
+                <mat-icon class="header-button-icon">save</mat-icon>
+            </button>
+        </span>
+
+        <div class="title" *ngIf="!search" matTooltip="Edit" (click)="toggleSearch()">
+            {{ this.formattedName }}
+            <div class="header-separator"></div>
+            <button mat-button class="header-button" (click)="toggleSearch()">
+                <mat-icon class="header-button-icon">edit_note</mat-icon>
+            </button>
+        </div>
         
-        <button mat-button class="header-button" (click)="toggleSearch()">
-            <mat-icon *ngIf="!search" class="header-button-icon">search</mat-icon>
-            <mat-icon *ngIf="search" class="header-button-icon">done</mat-icon>
-        </button>
-        <button
-            *ngIf="this.isDirty"
-            class="header-button"
-            mat-button
-            matTooltip="Save (CTRL + S)"
-            matTooltipPosition="above"
-            [style]="isDirty ? { 'color': 'red' } : {}"
-            (click)="this.save()"
-        >
-            <mat-icon class="header-button-icon">save</mat-icon>
-        </button>
-        <button
-            *ngIf="this.showNewButton"
-            class="header-button" 
-            mat-button
-            matTooltip="New"
-            (click)="this.openNewEditor()"
-        >
-            <mat-icon class="header-button-icon">add</mat-icon>
-        </button>
+        <div class="title-edit" *ngIf="search">
+            <app-auto-complete-field
+                class="search-field"
+                style="width: 100%;"
+                [message]="'Name'"
+                [options]="this.otherEntities"
+                [initialValue]="this.entity.name"
+                (onTextChange)="this.changeEntityName($event)"
+                (onOptionChange)="this.changeEntity($event)"
+            ></app-auto-complete-field>
+            <button mat-button class="header-button" matTooltip="Done" (click)="toggleSearch()">
+                <mat-icon class="header-button-icon">done</mat-icon>
+            </button>
+        </div>
+        
+        <span class="buttons-container" *ngIf="this.mode === 'markdown'">
+            <div class="header-separator"></div>
+            
+            <button class="header-button" mat-button matTooltip="Move left" (click)="move('left')">
+                <mat-icon class="header-button-icon">chevron_left</mat-icon>
+            </button>
+            <button class="header-button" mat-button matTooltip="Move right" (click)="move('right')">
+                <mat-icon class="header-button-icon">chevron_right</mat-icon>
+            </button>
+            
+            <div class="header-separator"></div>
+            
+            <button class="header-button" mat-button matTooltip="New" (click)="this.openNewEditor()">
+                <mat-icon class="header-button-icon">add</mat-icon>
+            </button>
+        </span>
     </div>
     <div class="editor">
         <ngx-codemirror
@@ -54,7 +70,7 @@
             }"
         ></ngx-codemirror>
     </div>
-    <div *ngIf="this.showCommandsSection" class="commands">
+    <div *ngIf="this.mode === 'markdown'" class="commands">
         <app-commands #commands (onCommandExecuted)="this.handleCommand($event)"></app-commands>
     </div>
 </div>

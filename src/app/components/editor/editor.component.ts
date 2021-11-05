@@ -5,6 +5,9 @@ import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
 import { CommandsComponent } from '../commands/commands.component';
 
+export type MoveDirection = "left" | "right";
+export type EditorMode = "markdown" | "javascript" | "default";
+
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -12,14 +15,13 @@ import { CommandsComponent } from '../commands/commands.component';
 })
 export class EditorComponent implements OnInit {
   @Input() name: string = '';
-  @Input() mode: string = '';
   @Input() entityService!: EntityService;
-  @Input() showNewButton: boolean = true;
-  @Input() showCommandsSection: boolean = true;
+  @Input() mode: EditorMode = "default";
 
   @Output() onChanged: EventEmitter<string> = new EventEmitter();
   @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();
+  @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
@@ -82,15 +84,7 @@ export class EditorComponent implements OnInit {
   }
   //#endregion
 
-  //#region public methods
-  refresh() {
-    setTimeout(() => {
-      if (this.codeMirror) {
-        this.codeMirror.refresh();
-      }
-    }, 250);
-  }
-
+  //#region header buttons event handlers
   closeEditor() {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit(true);
@@ -101,27 +95,12 @@ export class EditorComponent implements OnInit {
     this.search = !this.search;
   }
 
-  changeEntityName(name: string) {
-    this.entity.name = name;
-  }
-
-  changeEntity(name: string) {
-    if (this.validateUnsavedChanges()) {
-      this.getAndSetChronicle(name);
-      this.automaticToggleSearchMode();
-      this.onChanged.emit(name);
-    }
+  move(direction: MoveDirection) {
+    this.onMove.emit(direction);
   }
 
   openNewEditor() {
     this.onNew.emit(true);
-  }
-
-  handleCommand(option: string) {
-    if (option && this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
-    }
   }
 
   save($event: Event | null = null) {
@@ -147,6 +126,35 @@ export class EditorComponent implements OnInit {
     this.initialContent = this.entity.rawContent;
 
     this.otherEntities = this.entityService.getAllPaths(true);
+  }
+  //#endregion
+
+  //#region public methods
+  refresh() {
+    setTimeout(() => {
+      if (this.codeMirror) {
+        this.codeMirror.refresh();
+      }
+    }, 250);
+  }
+
+  changeEntityName(name: string) {
+    this.entity.name = name;
+  }
+
+  changeEntity(name: string) {
+    if (this.validateUnsavedChanges()) {
+      this.getAndSetChronicle(name);
+      this.automaticToggleSearchMode();
+      this.onChanged.emit(name);
+    }
+  }
+
+  handleCommand(option: string) {
+    if (option && this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
+    }
   }
   //#endregion
 

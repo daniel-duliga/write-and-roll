@@ -28,8 +28,8 @@
   align-items: center;
 }
 
-.header-button-icon {
-  transform: scale(0.9);
+.header-separator {
+  width: 15px;
 }
 
 .title {
@@ -44,6 +44,15 @@
   font-weight: 500;
 
   cursor: pointer;
+}
+
+.title-edit {
+  display: flex;
+  width: 100%;
+}
+
+.buttons-container {
+  display: flex;
 }
 
 .search-field {

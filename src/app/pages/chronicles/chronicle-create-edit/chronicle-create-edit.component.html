@@ -1,13 +1,15 @@
 <div class="container">
     <app-editor
-        class="editor"
+        class="editor shadow-small-left"
         #editor
-        *ngFor="let chronicle of openChronicles"
+        *ngFor="let chronicle of openChronicles; let i = index"
         [name]="chronicle.name"
         [mode]="'markdown'"
         [entityService]="this.chronicleEntityService"
+        [ngStyle]="{ 'z-index': openChronicles.length - i }"
         (onChanged)="this.updateChronicleName(chronicle.id, $event)"
         (onClosed)="this.closeEditor(chronicle.id)"
         (onNew)="this.openNewEditor(chronicle.id)"
+        (onMove)="this.moveEditor(chronicle.id, $event)"
     ></app-editor>
 </div>
