@@ -25,8 +25,14 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   //#region public methods
-  openNewEditor() {
-    this.openChronicles.push({ id: uuidv4(), name: '' });
+  openNewEditor(currentEditorId: string) {
+    const newEditor = { id: uuidv4(), name: '' };
+    const currentEditorIndex = this.openChronicles.findIndex(x => x.id === currentEditorId);
+    if (currentEditorIndex === -1) {
+      this.openChronicles.push(newEditor);
+    } else {
+      this.openChronicles.splice(currentEditorIndex + 1, 0, newEditor);
+    }
     this.refreshEditors();
   }
 
