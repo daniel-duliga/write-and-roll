@@ -1,9 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
 import { CommandsComponent } from '../commands/commands.component';
+import { PromptService } from '../prompts/prompt.service';
 
 export type MoveDirection = "left" | "right";
 export type EditorMode = "markdown" | "javascript" | "default";
@@ -14,24 +16,20 @@ export type EditorMode = "markdown" | "javascript" | "default";
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() name: string = '';
-  @Input() entityService!: EntityService;
+  @Input() name: string = ''; // only used for loading the initial entity
   @Input() mode: EditorMode = "default";
+  @Input() entityService!: EntityService;
 
-  @Output() onChanged: EventEmitter<string> = new EventEmitter();
-  @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
-  @Output() onNew: EventEmitter<boolean> = new EventEmitter();
+  @Output() onClosed: EventEmitter<void> = new EventEmitter();
+  @Output() onNew: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  entity: Entity = { name: '', rawContent: '', validate: () => '' };
-  otherEntities: string[] = [];
-  initialName: string = '';
+  entity: Entity = new Entity();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
-  search = true;
   minimized = false;
 
   //#region properties
@@ -48,14 +46,14 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   constructor(
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dialog: MatDialog,
+    private promptService: PromptService,
   ) { }
 
   //#region lifecycle events
   ngOnInit(): void {
-    this.otherEntities = this.entityService.getAllPaths(true);
-    this.getAndSetChronicle(this.name);
-    this.automaticToggleSearchMode();
+    this.getAndSetEntity(this.name);
   }
 
   ngAfterViewInit() {
@@ -84,7 +82,27 @@ export class EditorComponent implements OnInit {
   //#region header buttons event handlers
   closeEditor() {
     if (this.validateUnsavedChanges()) {
-      this.onClosed.emit(true);
+      this.onClosed.emit();
+    }
+  }
+
+  async rename() {
+    const initialName = this.entity.name;
+    const nameSegments = this.entity.name.split('/');
+    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', nameSegments[nameSegments.length - 1]);
+    if (newName) {
+      nameSegments[nameSegments.length - 1] = newName;
+      this.entity.name = nameSegments.join('/');
+      
+      this.entityService.delete(initialName);
+      this.save();
+    }
+  }
+
+  delete() {
+    if (confirm(`Are you sure you want to delete '${this.entity.name}'?`)) {
+      this.entityService.delete(this.entity.name);
+      this.onClosed.emit();
     }
   }
 
@@ -96,16 +114,12 @@ export class EditorComponent implements OnInit {
     this.minimized = false;
   }
 
-  toggleSearch() {
-    this.search = !this.search;
-  }
-
   move(direction: MoveDirection) {
     this.onMove.emit(direction);
   }
 
   openNewEditor() {
-    this.onNew.emit(true);
+    this.onNew.emit();
   }
 
   save($event: Event | null = null) {
@@ -122,15 +136,10 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    if (this.initialName) {
-      this.entityService.delete(this.initialName);
-    }
+    const newEntity = this.entityService.create(this.entity.name, this.entity.rawContent);
 
-    this.entityService.create(this.entity.name, this.entity.rawContent);
-
+    // Reflect saved data
     this.initialContent = this.entity.rawContent;
-
-    this.otherEntities = this.entityService.getAllPaths(true);
   }
   //#endregion
 
@@ -141,19 +150,6 @@ export class EditorComponent implements OnInit {
         this.codeMirror.refresh();
       }
     }, 250);
-  }
-
-  changeEntityName(name: string) {
-    this.name = name;
-    this.entity.name = name;
-  }
-
-  changeEntity(name: string) {
-    if (this.validateUnsavedChanges()) {
-      this.getAndSetChronicle(name);
-      this.automaticToggleSearchMode();
-      this.onChanged.emit(name);
-    }
   }
 
   handleCommand(option: string) {
@@ -202,14 +198,13 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private getAndSetChronicle(name: string) {
-    this.entity = this.entityService.get(name);
-    this.initialContent = this.entity.rawContent;
-    this.changeEntityName(this.entity.name);
-  }
-
-  private automaticToggleSearchMode() {
-    this.search = this.name === '' || this.name.endsWith('/');
+  private getAndSetEntity(name: string) {
+    const newEntity = this.entityService.get(name);
+    if (newEntity) {
+      this.entity = newEntity;
+      this.initialContent = this.entity.rawContent;
+      this.entity.name = name;
+    }
   }
 
   private configureCodeMirror() {

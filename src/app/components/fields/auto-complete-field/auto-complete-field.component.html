@@ -1,5 +1,5 @@
 <mat-form-field class="form-field container" appearance="outline">
-    <input 
+    <input
         type="text"
         placeholder="{{ this.message }}"
         matInput
@@ -9,7 +9,7 @@
         [matAutocomplete]="autoComplete"
         (ngModelChange)="onTextChanged($event)"
     >
-    <mat-autocomplete 
+    <mat-autocomplete
         #autoComplete="matAutocomplete"
         (opened)="onPanelOpened()"
         (optionSelected)="onOptionChanged($event.option.value)"

@@ -16,17 +16,13 @@ export class RandomTableListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.randomTablePaths = this.randomTableEntityService.getAllPaths();
+    this.randomTablePaths = this.randomTableEntityService.getAll();
   }
 
   new() {
     this.router.navigate(['/random-tables/create-edit']);
   }
   
-  add(folderPath: string) {
-    this.edit(folderPath);
-  }
-
   edit(path: string) {
     this.router.navigate(['/random-tables/create-edit', path]);
   }

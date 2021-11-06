@@ -59,13 +59,13 @@ export class CommandsComponent implements OnInit {
     let result = option;
     switch (option) {
       case '🔥 Roll Action': {
-        return await this.executeRollActionCommand(dialog);
+        return await this.executeRollActionCommand(dialog) ?? '';
       }
       case '🎲 Roll Dice': {
         return await this.executeRollDiceCommand();
       }
       case '🎱 Roll Table': {
-        return await this.executeRollTableCommand();
+        return await this.executeRollTableCommand() ?? '';
       }
       default: {
         return result;
@@ -73,11 +73,16 @@ export class CommandsComponent implements OnInit {
     }
   }
 
-  private async executeRollActionCommand(dialog: MatDialog): Promise<string> {
-    const actions = this.actionEntityService.getAllPaths();
+  private async executeRollActionCommand(dialog: MatDialog): Promise<string | null> {
+    const actions = this.actionEntityService.getAll();
     const actionName = await this.prompt(actions);
     const action = this.actionEntityService.get(actionName);
-    return this.actionService.run(action.rawContent, dialog);
+    if (action) {
+      return this.actionService.run(action.rawContent, dialog);
+    } else {
+      console.log(`Action '${actionName}' not found.`);
+      return null;
+    }
   }
 
   private async executeRollDiceCommand(): Promise<string> {
@@ -85,11 +90,16 @@ export class CommandsComponent implements OnInit {
     return DiceUtil.rollDiceFormula(formula).toString();
   }
 
-  private async executeRollTableCommand(): Promise<string> {
-    const tables = this.randomTableEntityService.getAllPaths();
+  private async executeRollTableCommand(): Promise<string | null> {
+    const tables = this.randomTableEntityService.getAll();
     const tableName = await this.prompt(tables);
     const table = this.randomTableEntityService.get(tableName);
-    return TablesUtil.rollOnTable(table.content);
+    if (table) {
+      return TablesUtil.rollOnTable(table.content);
+    } else {
+      console.log(`Random table '${tableName}' not found.`);
+      return null;
+    }
   }
 
   private onCommandHandled() {

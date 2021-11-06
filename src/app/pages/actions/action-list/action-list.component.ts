@@ -16,17 +16,13 @@ export class ActionListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.actionPaths = this.actionEntityService.getAllPaths();
+    this.actionPaths = this.actionEntityService.getAll();
   }
 
   new() {
     this.router.navigate(['/actions/create-edit']);
   }
   
-  add(folderPath: string) {
-    this.edit(folderPath);
-  }
-
   edit(path: string) {
     this.router.navigate(['/actions/create-edit', path]);
   }

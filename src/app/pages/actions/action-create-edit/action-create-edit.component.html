@@ -1,18 +1,5 @@
-<app-editor
-    [name]="this.entity.name"
+<app-entity-editor
     [mode]="'javascript'"
-    [entityService]="this.actionEntityService"
-    (onChanged)="this.onChanged($event)"
-    (onClosed)="this.closeEditor()"
-></app-editor>
-<button
-    mat-mini-fab
-    color=""
-    aria-label="Run button"
-    class="run-button"
-    matTooltip="Run"
-    matTooltipPosition="before"
-    (click)="this.run()"
->
-    <mat-icon>play_arrow</mat-icon>
-</button>
+    [entityService]="entityService"
+    (onClosed)="navigateBack()"
+></app-entity-editor>

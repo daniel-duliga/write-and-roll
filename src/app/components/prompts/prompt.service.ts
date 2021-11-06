@@ -7,17 +7,18 @@ import { InputComponent } from './input/input.component';
   providedIn: 'root'
 })
 export class PromptService {
-  private promptsWidth = '100%';
+  private promptPosition = {
+    top: '100px'
+  };
 
   constructor() { }
 
-  openInputPrompt(dialog: MatDialog, message: string): Promise<string> {
+  openInputPrompt(dialog: MatDialog, message: string, initialValue: string = ''): Promise<string> {
     const openedDialog = dialog.open(
-      InputComponent,
-      {
-        width: this.promptsWidth,
-        data: { message: message }
-      });
+      InputComponent, {
+      position: this.promptPosition,
+      data: { message: message, initialValue: initialValue },
+    });
     return openedDialog.afterClosed().toPromise().then(((result: string) => result));
   }
 
@@ -25,7 +26,8 @@ export class PromptService {
     const openedDialog = dialog.open(
       AutoCompletePromptComponent,
       {
-        width: this.promptsWidth,
+        width: '100%',
+        position: this.promptPosition,
         data: {
           message: message,
           options: options

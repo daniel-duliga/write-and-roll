@@ -17,7 +17,6 @@ export class TreeComponent implements OnInit {
 
   @Output() onExpanded: EventEmitter<ExpansionModelItem> = new EventEmitter();
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();
-  @Output() onAdd: EventEmitter<string> = new EventEmitter();
   @Output() onEdit: EventEmitter<string> = new EventEmitter();
   @Output() onDelete: EventEmitter<string> = new EventEmitter();
 
@@ -54,10 +53,6 @@ export class TreeComponent implements OnInit {
 
   expandNode(node: TreeNodeWrapper) {
     this.onExpanded.emit(new ExpansionModelItem(node.path, this.treeControl.isExpanded(node)));
-  }
-
-  add(path: string) {
-    this.onAdd.emit(path);
   }
 
   edit(path: string) {

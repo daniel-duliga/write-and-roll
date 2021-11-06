@@ -1,6 +1,4 @@
-<app-editor
-    [name]="this.entity.name"
-    [mode]="'javascript'"
-    [entityService]="this.randomTableEntityService"
-    (onClosed)="this.closeEditor()"
-></app-editor>
+<app-entity-editor
+    [entityService]="entityService"
+    (onClosed)="navigateBack()"
+></app-entity-editor>

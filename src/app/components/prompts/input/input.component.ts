@@ -12,13 +12,15 @@ export class InputComponent implements OnInit {
 
   form!: FormGroup;
   message: string = 'Option';
+  initialValue: string = '';
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { message: string },
+    @Inject(MAT_DIALOG_DATA) public data: { message: string, initialValue: string },
     public dialogRef: MatDialogRef<InputComponent>,
     private formBuilder: FormBuilder
   ) {
     this.message = data.message;
+    this.initialValue = data.initialValue;
   }
 
   ngOnInit() {

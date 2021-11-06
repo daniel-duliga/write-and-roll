@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { EntityEditorComponentBase } from 'src/app/entities/entity-editor-component-base';
+import { Router } from '@angular/router';
 import { RandomTableEntityService } from 'src/app/entities/services/random-table-entity.service';
 
 @Component({
@@ -8,21 +7,16 @@ import { RandomTableEntityService } from 'src/app/entities/services/random-table
   templateUrl: './random-table-create-edit.component.html',
   styleUrls: ['./random-table-create-edit.component.css']
 })
-export class RandomTableCreateEditComponent extends EntityEditorComponentBase implements OnInit {
+export class RandomTableCreateEditComponent implements OnInit {
 
   constructor(
-    public randomTableEntityService: RandomTableEntityService,
-    private route: ActivatedRoute,
+    public entityService: RandomTableEntityService,
     private router: Router
-  ) {
-    super();
-  }
+  ) { }
+  
+  ngOnInit(): void { }
 
-  ngOnInit() {
-    this.getDataFromRoute(this.route, this.randomTableEntityService);
-  }
-
-  closeEditor() {
+  navigateBack() {
     this.router.navigate(["/random-tables"]);
   }
 }
