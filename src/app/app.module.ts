@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -86,6 +87,7 @@ import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-creat
     CdkTreeModule,
     MatSnackBarModule,
     MatCheckboxModule,
+    MatMenuModule,
 
     // Third-party
     CodemirrorModule,

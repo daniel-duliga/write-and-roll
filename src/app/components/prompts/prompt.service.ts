@@ -13,11 +13,11 @@ export class PromptService {
 
   constructor() { }
 
-  openInputPrompt(dialog: MatDialog, message: string): Promise<string> {
+  openInputPrompt(dialog: MatDialog, message: string, initialValue: string = ''): Promise<string> {
     const openedDialog = dialog.open(
       InputComponent, {
       position: this.promptPosition,
-      data: { message: message },
+      data: { message: message, initialValue: initialValue },
     });
     return openedDialog.afterClosed().toPromise().then(((result: string) => result));
   }

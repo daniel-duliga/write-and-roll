@@ -1,9 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
 import { CommandsComponent } from '../commands/commands.component';
+import { PromptService } from '../prompts/prompt.service';
 
 export type MoveDirection = "left" | "right";
 export type EditorMode = "markdown" | "javascript" | "default";
@@ -14,7 +16,7 @@ export type EditorMode = "markdown" | "javascript" | "default";
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() name: string = '';
+  @Input() name: string = ''; // only used for loading the initial entity
   @Input() mode: EditorMode = "default";
   @Input() entityService!: EntityService;
 
@@ -25,7 +27,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  entity: Entity = { name: '', rawContent: '', validate: () => '' };
+  entity: Entity = new Entity();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
   minimized = false;
@@ -44,7 +46,9 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   constructor(
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private dialog: MatDialog,
+    private promptService: PromptService,
   ) { }
 
   //#region lifecycle events
@@ -79,6 +83,25 @@ export class EditorComponent implements OnInit {
   closeEditor() {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit(true);
+    }
+  }
+
+  async rename() {
+    const initialName = this.entity.name;
+    const nameSegments = this.entity.name.split('/');
+    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', nameSegments[nameSegments.length - 1]);
+    if (newName) {
+      nameSegments[nameSegments.length - 1] = newName;
+      this.entity.name = nameSegments.join('/');
+      
+      this.entityService.delete(initialName);
+      this.save();
+    }
+  }
+
+  delete() {
+    if (confirm(`Are you sure you want to delete ${this.entity.name}`)) {
+      // todo
     }
   }
 
@@ -179,7 +202,6 @@ export class EditorComponent implements OnInit {
     if (newEntity) {
       this.entity = newEntity;
       this.initialContent = this.entity.rawContent;
-      this.name = name;
       this.entity.name = name;
     }
   }
