@@ -59,12 +59,8 @@ export class EditorComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    if (this.codeMirror) {
-      this.codeMirror.on('changes', () => this.postProcessCodeMirror());
-      this.codeMirror.focus();
-    }
+    this.configureCodeMirror();
     this.refresh();
-    this.registerCodeMirrorExtraKeys();
   }
   //#endregion
 
@@ -148,6 +144,7 @@ export class EditorComponent implements OnInit {
   }
 
   changeEntityName(name: string) {
+    this.name = name;
     this.entity.name = name;
   }
 
@@ -208,20 +205,24 @@ export class EditorComponent implements OnInit {
   private getAndSetChronicle(name: string) {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;
+    this.changeEntityName(this.entity.name);
   }
 
   private automaticToggleSearchMode() {
     this.search = this.name === '' || this.name.endsWith('/');
   }
 
-  private registerCodeMirrorExtraKeys() {
+  private configureCodeMirror() {
     if (this.codeMirror) {
-      this.codeMirror.setOption(
-        "extraKeys", {
+      this.codeMirror.setOption("extraKeys", {
         Enter: function (cm) {
           cm.execCommand("newlineAndIndentContinueMarkdownList");
         }
       });
+
+      this.codeMirror.on('changes', () => this.postProcessCodeMirror());
+
+      this.codeMirror.focus();
     }
   }
 

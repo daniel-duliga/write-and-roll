@@ -1,11 +1,12 @@
-<div class="container" *ngIf="!minimized">
-    <div class="header shadow-small-down">
+<div class="container" [ngStyle]="{ 'display': minimized ? 'none' : 'flex' }">
+    <div class="header">
         <!-- Close button -->
         <button mat-button class="header-button" matTooltip="Close" (click)="this.closeEditor()">
             <mat-icon class="close-button-icon">close</mat-icon>
         </button>
         
         <!-- Title & search -->
+        <div class="header-separator"></div>
         <div class="title" *ngIf="!search" matTooltip="Edit" (click)="toggleSearch()">
             {{ this.formattedName }}
         </div>
@@ -20,7 +21,7 @@
                 (onOptionChange)="this.changeEntity($event)"
             ></app-auto-complete-field>
             <button mat-button class="header-button" matTooltip="Done" (click)="toggleSearch()">
-                <mat-icon class="header-button-icon">done</mat-icon>
+                <mat-icon>done</mat-icon>
             </button>
         </div>
 
@@ -34,7 +35,7 @@
                 [style]="isDirty ? { 'color': 'red' } : {}"
                 (click)="this.save()"
             >
-                <mat-icon class="header-button-icon">save</mat-icon>
+                <mat-icon>save</mat-icon>
             </button>
         </span>
         
@@ -43,22 +44,22 @@
             <div class="header-separator"></div>
             
             <button class="header-button" mat-button matTooltip="Minimize" (click)="minimize()">
-                <mat-icon class="header-button-icon">keyboard_double_arrow_left</mat-icon>
+                <mat-icon>keyboard_double_arrow_left</mat-icon>
             </button>
             
             <div class="header-separator"></div>
             
             <button class="header-button" mat-button matTooltip="Move left" (click)="move('left')">
-                <mat-icon class="header-button-icon">chevron_left</mat-icon>
+                <mat-icon>chevron_left</mat-icon>
             </button>
             <button class="header-button" mat-button matTooltip="Move right" (click)="move('right')">
-                <mat-icon class="header-button-icon">chevron_right</mat-icon>
+                <mat-icon>chevron_right</mat-icon>
             </button>
             
             <div class="header-separator"></div>
             
             <button class="header-button" mat-button matTooltip="New" (click)="this.openNewEditor()">
-                <mat-icon class="header-button-icon">add</mat-icon>
+                <mat-icon>add</mat-icon>
             </button>
         </span>
     </div>
@@ -80,7 +81,8 @@
     </div>
 </div>
 <div class="container-minimized" *ngIf="minimized" matTooltip="Maximize" matTooltipPosition="right" (click)="maximize()">
-    <mat-icon class="header-button-icon">keyboard_double_arrow_right</mat-icon>
+    <mat-icon class=" minimized-">keyboard_double_arrow_right</mat-icon>
+    <div class="header-separator"></div>
     <div class="title-minimized">
         {{ this.formattedName }}
     </div>
