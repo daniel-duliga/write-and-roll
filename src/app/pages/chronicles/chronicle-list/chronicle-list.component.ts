@@ -16,7 +16,7 @@ export class ChronicleListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.journalPaths = this.chronicleEntityService.getAllPaths();
+    this.journalPaths = this.chronicleEntityService.getAll();
   }
 
   new() {

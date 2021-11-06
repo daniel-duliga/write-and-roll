@@ -1,4 +1,5 @@
 <app-editor
+    *ngIf="this.entity"
     [name]="this.entity.name"
     [mode]="'javascript'"
     [entityService]="this.randomTableEntityService"

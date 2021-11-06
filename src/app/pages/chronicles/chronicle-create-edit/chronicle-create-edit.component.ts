@@ -15,10 +15,11 @@ import { Editor } from 'src/app/components/editor/editor';
 export class ChronicleCreateEditComponent implements OnInit {
   @ViewChildren('editor') editors!: QueryList<EditorComponent>;
 
-  openChronicles: Editor[] = [];
+  openEntities: Editor[] = [];
+  addNewOption = '> Add New';
 
   constructor(
-    public chronicleEntityService: ChronicleEntityService,
+    public entityService: ChronicleEntityService,
     private route: ActivatedRoute,
     private router: Router,
     private promptService: PromptService,
@@ -31,30 +32,33 @@ export class ChronicleCreateEditComponent implements OnInit {
 
   //#region public methods
   async openNewEditor(currentEditorId: string) {
-    const otherChronicles = this.chronicleEntityService.getAllPaths(false);
-    const newOption = 'New';
-    otherChronicles.push(newOption);
-    let newChronicle = await this.promptService.openAutoCompletePrompt(this.dialog, "Chronicle", otherChronicles);
-    if (newChronicle) {
-      if (newChronicle === newOption) {
-        newChronicle = await this.promptService.openInputPrompt(this.dialog, 'Name');
-        this.chronicleEntityService.create(newChronicle, '');
-      }
-      const newEditor = new Editor(uuidv4(), newChronicle);
-      const currentEditorIndex = this.openChronicles.findIndex(x => x.id === currentEditorId);
-      if (currentEditorIndex === -1) {
-        this.openChronicles.push(newEditor);
-      } else {
-        this.openChronicles.splice(currentEditorIndex + 1, 0, newEditor);
-      }
+    const entities = this.entityService.getAll(false);
+    entities.push(this.addNewOption);
 
-      this.refreshEditors();
+    let targetPath: string | null = await this.promptService.openAutoCompletePrompt(this.dialog, "Chronicle", entities);
+    if (!targetPath) {
+      return;
+    } else if (targetPath === this.addNewOption) {
+      targetPath = await this.createNewEntity(targetPath);
+      if (!targetPath) {
+        return;
+      }
     }
+
+    const newEditor = new Editor(uuidv4(), targetPath);
+    const currentEditorIndex = this.openEntities.findIndex(x => x.id === currentEditorId);
+    if (currentEditorIndex === -1) {
+      this.openEntities.push(newEditor);
+    } else {
+      this.openEntities.splice(currentEditorIndex + 1, 0, newEditor);
+    }
+
+    this.refreshEditors();
   }
 
   closeEditor(id: string) {
-    this.openChronicles = this.openChronicles.filter(x => x.id !== id);
-    if (this.openChronicles.length === 0) {
+    this.openEntities = this.openEntities.filter(x => x.id !== id);
+    if (this.openEntities.length === 0) {
       this.router.navigate(['/chronicles']);
     } else {
       this.refreshEditors();
@@ -62,23 +66,23 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   updateChronicleName(id: string, newName: string) {
-    const oldNameIndex = this.openChronicles.findIndex(x => x.id === id);
+    const oldNameIndex = this.openEntities.findIndex(x => x.id === id);
     if (oldNameIndex) {
-      this.openChronicles[oldNameIndex].name = newName;
+      this.openEntities[oldNameIndex].name = newName;
     }
     this.refreshEditors();
   }
 
   moveEditor(id: string, direction: MoveDirection) {
-    const editorIndex = this.openChronicles.findIndex(x => x.id === id);
+    const editorIndex = this.openEntities.findIndex(x => x.id === id);
     if (editorIndex !== -1) {
-      const editor = this.openChronicles[editorIndex];
+      const editor = this.openEntities[editorIndex];
       if (direction === "left" && editorIndex !== 0) {
-        this.openChronicles.splice(editorIndex, 1);
-        this.openChronicles.splice(editorIndex - 1, 0, editor);
-      } else if (direction === "right" && editorIndex !== this.openChronicles.length - 1) {
-        this.openChronicles.splice(editorIndex, 1);
-        this.openChronicles.splice(editorIndex + 1, 0, editor);
+        this.openEntities.splice(editorIndex, 1);
+        this.openEntities.splice(editorIndex - 1, 0, editor);
+      } else if (direction === "right" && editorIndex !== this.openEntities.length - 1) {
+        this.openEntities.splice(editorIndex, 1);
+        this.openEntities.splice(editorIndex + 1, 0, editor);
       }
     }
   }
@@ -89,11 +93,46 @@ export class ChronicleCreateEditComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const name = params.get('name');
       if (name) {
-        this.openChronicles.push({ id: uuidv4(), name: name });
+        this.openEntities.push({ id: uuidv4(), name: name });
       } else {
-        this.openChronicles.push({ id: uuidv4(), name: '' });
+        this.openEntities.push({ id: uuidv4(), name: '' });
       }
     });
+  }
+
+  private async createNewEntity(path: string): Promise<string | null> {
+    const allFolders = this.entityService.getAllParents();
+    
+    const folders = allFolders;
+    folders.push(this.addNewOption);
+
+    let targetFolder = await this.promptService.openAutoCompletePrompt(this.dialog, 'Folder', folders);
+    if (!targetFolder) {
+      return null;
+    } else if (targetFolder === this.addNewOption) {
+      const parentFolder = await this.promptService.openAutoCompletePrompt(this.dialog, 'Parent Folder', allFolders);
+      targetFolder = await this.promptService.openInputPrompt(this.dialog, 'Folder Name');
+      if (!targetFolder) {
+        return null;
+      }
+      targetFolder = `${parentFolder}${targetFolder}/`;
+    }
+
+    const newName = await this.promptService.openInputPrompt(this.dialog, 'Name');
+    if (!newName) {
+      return null;
+    }
+
+    path = `${targetFolder}${newName}`;
+
+    const existingEntity = this.entityService.get(path);
+    if (existingEntity) {
+      alert(`Entity '${path}' already exists.'`);
+      return null;
+    }
+
+    this.entityService.create(path, '');
+    return path;
   }
 
   private refreshEditors() {

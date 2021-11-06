@@ -2,10 +2,10 @@
     <app-editor
         class="editor shadow-small-left"
         #editor
-        *ngFor="let chronicle of openChronicles; let i = index"
+        *ngFor="let chronicle of openEntities; let i = index"
         [name]="chronicle.name"
         [mode]="'markdown'"
-        [entityService]="this.chronicleEntityService"
+        [entityService]="this.entityService"
         [ngStyle]="{ 
             'z-index': i,
             'min-width': editor.minimized ? 'unset'  : '33%',

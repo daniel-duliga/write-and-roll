@@ -8,7 +8,8 @@ export class EntityService {
     this.collectionName = collectionName;
   }
 
-  create(path: string, content: string): Entity {
+  //#region public methods
+  create(path: string, content: string): Entity | null {
     // Ensure content ends with new line
     if (!content.endsWith('\n')) {
       content = content.concat('\n');
@@ -18,58 +19,31 @@ export class EntityService {
     return this.get(path);
   }
 
-  getAllPaths(includeFolders: boolean = false): string[] {
-    var paths = Object
-      .keys(localStorage)
-      .filter(x => x.startsWith(`${this.collectionName}/data/`))
-      .map(x => x.replace(`${this.collectionName}/data/`, ''))
-      .sort((a, b) => a.localeCompare(b));
-
-    if (includeFolders) {
-      for (const path of paths) {
-        let segments = path.split('/');
-        segments = segments.slice(0, segments.length - 1).reverse();
-        let newPath = '';
-        while (segments.length > 0) {
-          let segment = segments.pop();
-          if (segment) {
-            newPath = newPath.concat(segment, '/');
-            if (!paths.includes(newPath)) {
-              paths.push(newPath);
-            }
-          }
-        }
-      }
-
-      paths = paths.sort((a, b) => a.localeCompare(b));
+  getAll(includeParents: boolean = false): string[] {
+    let result = this.getLeaves();
+    if (includeParents) {
+      const parents = this.getParentsByLeaves(result);
+      result = result.concat(parents);
+      result = result.sort((a, b) => a.localeCompare(b));
     }
+
+    return result;
+  }
+
+  getAllParents(): string[] {
+    const leaves = this.getAll(false);
+    return this.getParentsByLeaves(leaves);
+  }
+
+  get(name: string): Entity | null {
+    let result: Entity | null = null;
     
-    return paths;
-  }
-
-  getAllFolderPaths(): string[] {
-    const folders = this.getAllPaths().map((x) => {
-      const segments = x.split('/');
-      segments.pop();
-      return segments.reduce((a, b) => a.concat('/', b));
-    });
-    const uniqueFolders = [...new Set(folders)];
-    return uniqueFolders.map(x => x.concat('/'));
-  }
-
-  get(name: string): Entity {
-    let entity: Entity | null = null;
     const rawContent = localStorage.getItem(`${this.collectionName}/data/${name}`);
     if (rawContent) {
-      entity = new Entity(name, rawContent);
-    } else {
-      entity = new Entity(`${name}/`, '');
+      result = new Entity(name, rawContent);
     }
-    return entity;
-  }
-
-  getNameWithoutCollection(name: string): string {
-    return name.replace(`${this.collectionName}/data/`, '');
+    
+    return result;
   }
 
   delete(name: string) {
@@ -95,4 +69,35 @@ export class EntityService {
     }
     localStorage.setItem(`${this.collectionName}/expansionModel`, JSON.stringify(expansionModel));
   }
+  //#endregion
+
+  //#region private methods
+  private getLeaves() {
+    return Object
+      .keys(localStorage)
+      .filter(x => x.startsWith(`${this.collectionName}/data/`))
+      .map(x => x.replace(`${this.collectionName}/data/`, ''))
+      .sort((a, b) => a.localeCompare(b));
+  }
+  
+  private getParentsByLeaves(leafPaths: string[]): string[] {
+    let result: string[] = [];
+    for (const leafPath of leafPaths) {
+      let segments = leafPath.split('/');
+      segments = segments.slice(0, segments.length - 1).reverse();
+      let newPath = '';
+      while (segments.length > 0) {
+        let segment = segments.pop();
+        if (segment) {
+          newPath = newPath.concat(segment, '/');
+          if (!result.includes(newPath)) {
+            result.push(newPath);
+          }
+        }
+      }
+    }
+    result = result.sort((a, b) => a.localeCompare(b));
+    return result;
+  }
+  //#endregion
 }

@@ -16,7 +16,7 @@ export class ActionListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.actionPaths = this.actionEntityService.getAllPaths();
+    this.actionPaths = this.actionEntityService.getAll();
   }
 
   new() {

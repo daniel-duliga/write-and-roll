@@ -50,7 +50,7 @@ export class EditorComponent implements OnInit {
 
   //#region lifecycle events
   ngOnInit(): void {
-    this.getAndSetChronicle(this.name);
+    this.getAndSetEntity(this.name);
   }
 
   ngAfterViewInit() {
@@ -113,10 +113,10 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    const savedEntity = this.entityService.create(this.entity.name, this.entity.rawContent);
+    const newEntity = this.entityService.create(this.entity.name, this.entity.rawContent);
 
     // Reflect saved data
-    this.initialContent = savedEntity.rawContent;
+    this.initialContent = this.entity.rawContent;
   }
   //#endregion
 
@@ -131,7 +131,7 @@ export class EditorComponent implements OnInit {
 
   changeEntity(name: string) {
     if (this.validateUnsavedChanges()) {
-      this.getAndSetChronicle(name);
+      this.getAndSetEntity(name);
       this.onChanged.emit(name);
     }
   }
@@ -182,11 +182,14 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private getAndSetChronicle(name: string) {
-    this.entity = this.entityService.get(name);
-    this.initialContent = this.entity.rawContent;
-    this.name = name;
-    this.entity.name = name;
+  private getAndSetEntity(name: string) {
+    const newEntity = this.entityService.get(name);
+    if (newEntity) {
+      this.entity = newEntity;
+      this.initialContent = this.entity.rawContent;
+      this.name = name;
+      this.entity.name = name;
+    }
   }
 
   private configureCodeMirror() {
