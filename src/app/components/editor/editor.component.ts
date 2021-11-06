@@ -20,8 +20,8 @@ export class EditorComponent implements OnInit {
   @Input() mode: EditorMode = "default";
   @Input() entityService!: EntityService;
 
-  @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
-  @Output() onNew: EventEmitter<boolean> = new EventEmitter();
+  @Output() onClosed: EventEmitter<void> = new EventEmitter();
+  @Output() onNew: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
@@ -82,7 +82,7 @@ export class EditorComponent implements OnInit {
   //#region header buttons event handlers
   closeEditor() {
     if (this.validateUnsavedChanges()) {
-      this.onClosed.emit(true);
+      this.onClosed.emit();
     }
   }
 
@@ -100,8 +100,9 @@ export class EditorComponent implements OnInit {
   }
 
   delete() {
-    if (confirm(`Are you sure you want to delete ${this.entity.name}`)) {
-      // todo
+    if (confirm(`Are you sure you want to delete '${this.entity.name}'?`)) {
+      this.entityService.delete(this.entity.name);
+      this.onClosed.emit();
     }
   }
 
@@ -118,7 +119,7 @@ export class EditorComponent implements OnInit {
   }
 
   openNewEditor() {
-    this.onNew.emit(true);
+    this.onNew.emit();
   }
 
   save($event: Event | null = null) {
