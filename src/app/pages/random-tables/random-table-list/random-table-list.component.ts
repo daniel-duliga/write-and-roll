@@ -23,10 +23,6 @@ export class RandomTableListComponent implements OnInit {
     this.router.navigate(['/random-tables/create-edit']);
   }
   
-  add(folderPath: string) {
-    this.edit(folderPath);
-  }
-
   edit(path: string) {
     this.router.navigate(['/random-tables/create-edit', path]);
   }

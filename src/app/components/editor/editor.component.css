@@ -12,6 +12,10 @@
   writing-mode: vertical-lr;
 }
 
+.maximize-button {
+  margin-top: 5px;
+}
+
 .container {
   height: 100%;
   width: 100%;

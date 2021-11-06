@@ -1,6 +1,7 @@
 <div class="container">
-    <!-- Filter -->
+    <!-- Header -->
     <div class="filter shadow-small-down">
+        <!-- Filter -->
         <mat-form-field appearance="outline" class="form-field">
             <mat-icon matPrefix>search</mat-icon>
             <input type="text" placeholder="Filter" aria-label="Filter" matInput [(ngModel)]="filter"
@@ -9,10 +10,13 @@
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
+        
+        <!-- 'New' button -->
         <button mat-icon-button class="" (click)="new()" matTooltip="New">
             <mat-icon>add</mat-icon>
         </button>
     </div>
+    
     <!-- Tree -->
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
         <!-- Tree node template for leaf nodes -->
@@ -29,6 +33,7 @@
                 </div>
             </button>
         </cdk-nested-tree-node>
+        
         <!-- Tree node template for expandable nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
             <button 
@@ -41,9 +46,6 @@
                 <mat-icon *ngIf="!treeControl.isExpanded(node)">folder</mat-icon>
                 <mat-icon *ngIf="treeControl.isExpanded(node)">folder_open</mat-icon>
                 {{node.name}}
-                <button mat-icon-button class="action-button" (click)="add(node.path)">
-                    <mat-icon>add</mat-icon>
-                </button>
             </button>
             <div [class.tree-invisible]="!treeControl.isExpanded(node)">
                 <ng-container cdkTreeNodeOutlet></ng-container>

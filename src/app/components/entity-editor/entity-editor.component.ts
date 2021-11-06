@@ -17,7 +17,7 @@ export class EntityEditorComponent implements OnInit {
   @Input() entityService!: EntityService;
 
   @Output() onClosed: EventEmitter<void> = new EventEmitter();
-  
+
   @ViewChildren('editor') editorComponents!: QueryList<EditorComponent>;
 
   editors: Editor[] = [];
@@ -34,29 +34,20 @@ export class EntityEditorComponent implements OnInit {
   }
 
   //#region public methods
-  async openNewEditor(currentEditorId: string) {
+  async openNewEditor(currentEditorId: string | null = null): Promise<Editor | null> {
+    // Load the current entities
     const entities = this.entityService.getAll(false);
     entities.push(this.newOption);
 
-    let targetPath: string | null = await this.promptService.openAutoCompletePrompt(this.dialog, "Target", entities);
-    if (!targetPath) {
-      return;
-    } else if (targetPath === this.newOption) {
-      targetPath = await this.createNewEntity(targetPath);
-      if (!targetPath) {
-        return;
-      }
-    }
-
-    const newEditor = new Editor(uuidv4(), targetPath);
-    const currentEditorIndex = this.editors.findIndex(x => x.id === currentEditorId);
-    if (currentEditorIndex === -1) {
-      this.editors.push(newEditor);
+    // Get the target entity
+    let entityPath: string | null = await this.promptService.openAutoCompletePrompt(this.dialog, "Target", entities);
+    if (!entityPath) {
+      return null;
+    } else if (entityPath === this.newOption) {
+      return this.createEntityAndAddEditor(currentEditorId);
     } else {
-      this.editors.splice(currentEditorIndex + 1, 0, newEditor);
+      return this.addEditorForExistingEntity(currentEditorId, entityPath);
     }
-
-    this.refreshEditors();
   }
 
   closeEditor(id: string) {
@@ -85,19 +76,52 @@ export class EntityEditorComponent implements OnInit {
 
   //#region private methods
   private getDataFromRoute() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       const name = params.get('name');
       if (name) {
         this.editors.push(new Editor(uuidv4(), name));
       } else {
-        this.editors.push(new Editor(uuidv4(), ''));
+        const newEditor = await this.createEntityAndAddEditor(null);
+        if (!newEditor) {
+          this.onClosed.emit();
+        }
       }
     });
   }
 
-  private async createNewEntity(path: string): Promise<string | null> {
+  private async createEntityAndAddEditor(currentEditorId: string | null): Promise<Editor | null> {
+    const entityPath = await this.createNewEntity();
+    if (!entityPath) {
+      return null;
+    } else {
+      return this.addEditorForExistingEntity(currentEditorId, entityPath);
+    }
+  }
+
+  private addEditorForExistingEntity(currentEditorId: string | null, entityPath: string) {
+    // Compute the current editor index
+    let currentEditorIndex = -1;
+    if (currentEditorId) {
+      currentEditorIndex = this.editors.findIndex(x => x.id === currentEditorId);
+    }
+
+    // Add the new editor
+    const newEditor = new Editor(uuidv4(), entityPath);
+    if (currentEditorIndex === -1) {
+      this.editors.push(newEditor);
+    } else {
+      this.editors.splice(currentEditorIndex + 1, 0, newEditor);
+    }
+
+    // Refresh the UI
+    this.refreshEditors();
+
+    // Return
+    return newEditor;
+  }
+
+  private async createNewEntity(): Promise<string | null> {
     const allFolders = this.entityService.getAllParents();
-    
     const folders = allFolders;
     folders.push(this.newOption);
 
@@ -106,19 +130,19 @@ export class EntityEditorComponent implements OnInit {
       return null;
     } else if (targetFolder === this.newOption) {
       const parentFolder = await this.promptService.openAutoCompletePrompt(this.dialog, 'Parent Folder', allFolders);
-      targetFolder = await this.promptService.openInputPrompt(this.dialog, 'Folder Name');
+      targetFolder = await this.promptService.openInputPrompt(this.dialog, 'New Folder Name');
       if (!targetFolder) {
         return null;
       }
       targetFolder = `${parentFolder}${targetFolder}/`;
     }
 
-    const newName = await this.promptService.openInputPrompt(this.dialog, 'Name');
+    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name');
     if (!newName) {
       return null;
     }
 
-    path = `${targetFolder}${newName}`;
+    const path = `${targetFolder}${newName}`;
 
     const existingEntity = this.entityService.get(path);
     if (existingEntity) {
