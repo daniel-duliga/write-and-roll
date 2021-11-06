@@ -18,7 +18,6 @@ export class EditorComponent implements OnInit {
   @Input() mode: EditorMode = "default";
   @Input() entityService!: EntityService;
 
-  @Output() onChanged: EventEmitter<string> = new EventEmitter();
   @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
   @Output() onNew: EventEmitter<boolean> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
@@ -127,13 +126,6 @@ export class EditorComponent implements OnInit {
         this.codeMirror.refresh();
       }
     }, 250);
-  }
-
-  changeEntity(name: string) {
-    if (this.validateUnsavedChanges()) {
-      this.getAndSetEntity(name);
-      this.onChanged.emit(name);
-    }
   }
 
   handleCommand(option: string) {

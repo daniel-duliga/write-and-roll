@@ -1,19 +1,5 @@
-<div class="container">
-    <app-editor
-        class="editor shadow-small-left"
-        #editor
-        *ngFor="let chronicle of openEntities; let i = index"
-        [name]="chronicle.name"
-        [mode]="'markdown'"
-        [entityService]="this.entityService"
-        [ngStyle]="{ 
-            'z-index': i,
-            'min-width': editor.minimized ? 'unset'  : '33%',
-            'max-width': editor.minimized ? '33px'  : 'unset'
-        }"
-        (onChanged)="this.updateChronicleName(chronicle.id, $event)"
-        (onClosed)="this.closeEditor(chronicle.id)"
-        (onNew)="this.openNewEditor(chronicle.id)"
-        (onMove)="this.moveEditor(chronicle.id, $event)"
-    ></app-editor>
-</div>
+<app-entity-editor
+    [mode]="'markdown'"
+    [entityService]="entityService"
+    (onClosed)="navigateBack()"
+></app-entity-editor>

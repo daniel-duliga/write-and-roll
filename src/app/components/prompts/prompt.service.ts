@@ -7,7 +7,6 @@ import { InputComponent } from './input/input.component';
   providedIn: 'root'
 })
 export class PromptService {
-  private promptWidth = '100%';
   private promptPosition = {
     top: '100px'
   };
@@ -17,7 +16,6 @@ export class PromptService {
   openInputPrompt(dialog: MatDialog, message: string): Promise<string> {
     const openedDialog = dialog.open(
       InputComponent, {
-      width: this.promptWidth,
       position: this.promptPosition,
       data: { message: message },
     });
@@ -28,10 +26,8 @@ export class PromptService {
     const openedDialog = dialog.open(
       AutoCompletePromptComponent,
       {
-        width: this.promptWidth,
-        position: {
-          top: '100px'
-        },
+        width: '100%',
+        position: this.promptPosition,
         data: {
           message: message,
           options: options
