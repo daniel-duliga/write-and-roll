@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ChronicleEntityService } from 'src/app/entities/services/chronicle-entity.service';
 import { EditorComponent, MoveDirection } from 'src/app/components/editor/editor.component';
 import { v4 as uuidv4 } from 'uuid';
+import { PromptService } from 'src/app/components/prompts/prompt.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Editor } from 'src/app/components/editor/editor';
 
 @Component({
   selector: 'app-chronicle-create-edit',
@@ -12,12 +15,14 @@ import { v4 as uuidv4 } from 'uuid';
 export class ChronicleCreateEditComponent implements OnInit {
   @ViewChildren('editor') editors!: QueryList<EditorComponent>;
 
-  openChronicles: { id: string, name: string }[] = [];
+  openChronicles: Editor[] = [];
 
   constructor(
+    public chronicleEntityService: ChronicleEntityService,
     private route: ActivatedRoute,
     private router: Router,
-    public chronicleEntityService: ChronicleEntityService,
+    private promptService: PromptService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -25,15 +30,26 @@ export class ChronicleCreateEditComponent implements OnInit {
   }
 
   //#region public methods
-  openNewEditor(currentEditorId: string) {
-    const newEditor = { id: uuidv4(), name: '' };
-    const currentEditorIndex = this.openChronicles.findIndex(x => x.id === currentEditorId);
-    if (currentEditorIndex === -1) {
-      this.openChronicles.push(newEditor);
-    } else {
-      this.openChronicles.splice(currentEditorIndex + 1, 0, newEditor);
+  async openNewEditor(currentEditorId: string) {
+    const otherChronicles = this.chronicleEntityService.getAllPaths(false);
+    const newOption = 'New';
+    otherChronicles.push(newOption);
+    let newChronicle = await this.promptService.openAutoCompletePrompt(this.dialog, "Chronicle", otherChronicles);
+    if (newChronicle) {
+      if (newChronicle === newOption) {
+        newChronicle = await this.promptService.openInputPrompt(this.dialog, 'Name');
+        this.chronicleEntityService.create(newChronicle, '');
+      }
+      const newEditor = new Editor(uuidv4(), newChronicle);
+      const currentEditorIndex = this.openChronicles.findIndex(x => x.id === currentEditorId);
+      if (currentEditorIndex === -1) {
+        this.openChronicles.push(newEditor);
+      } else {
+        this.openChronicles.splice(currentEditorIndex + 1, 0, newEditor);
+      }
+
+      this.refreshEditors();
     }
-    this.refreshEditors();
   }
 
   closeEditor(id: string) {
@@ -44,7 +60,7 @@ export class ChronicleCreateEditComponent implements OnInit {
       this.refreshEditors();
     }
   }
-  
+
   updateChronicleName(id: string, newName: string) {
     const oldNameIndex = this.openChronicles.findIndex(x => x.id === id);
     if (oldNameIndex) {

@@ -8,8 +8,14 @@ export class EntityService {
     this.collectionName = collectionName;
   }
 
-  create(path: string, content: string) {
+  create(path: string, content: string): Entity {
+    // Ensure content ends with new line
+    if (!content.endsWith('\n')) {
+      content = content.concat('\n');
+    }
+    // Save
     localStorage.setItem(`${this.collectionName}/data/${path}`, content);
+    return this.get(path);
   }
 
   getAllPaths(includeFolders: boolean = false): string[] {

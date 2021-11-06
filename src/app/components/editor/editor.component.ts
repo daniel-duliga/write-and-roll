@@ -15,8 +15,8 @@ export type EditorMode = "markdown" | "javascript" | "default";
 })
 export class EditorComponent implements OnInit {
   @Input() name: string = '';
-  @Input() entityService!: EntityService;
   @Input() mode: EditorMode = "default";
+  @Input() entityService!: EntityService;
 
   @Output() onChanged: EventEmitter<string> = new EventEmitter();
   @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
@@ -27,11 +27,8 @@ export class EditorComponent implements OnInit {
   @ViewChild('commands') commands!: CommandsComponent;
 
   entity: Entity = { name: '', rawContent: '', validate: () => '' };
-  otherEntities: string[] = [];
-  initialName: string = '';
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
-  search = true;
   minimized = false;
 
   //#region properties
@@ -53,9 +50,7 @@ export class EditorComponent implements OnInit {
 
   //#region lifecycle events
   ngOnInit(): void {
-    this.otherEntities = this.entityService.getAllPaths(true);
     this.getAndSetChronicle(this.name);
-    this.automaticToggleSearchMode();
   }
 
   ngAfterViewInit() {
@@ -96,10 +91,6 @@ export class EditorComponent implements OnInit {
     this.minimized = false;
   }
 
-  toggleSearch() {
-    this.search = !this.search;
-  }
-
   move(direction: MoveDirection) {
     this.onMove.emit(direction);
   }
@@ -122,15 +113,10 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    if (this.initialName) {
-      this.entityService.delete(this.initialName);
-    }
+    const savedEntity = this.entityService.create(this.entity.name, this.entity.rawContent);
 
-    this.entityService.create(this.entity.name, this.entity.rawContent);
-
-    this.initialContent = this.entity.rawContent;
-
-    this.otherEntities = this.entityService.getAllPaths(true);
+    // Reflect saved data
+    this.initialContent = savedEntity.rawContent;
   }
   //#endregion
 
@@ -143,15 +129,9 @@ export class EditorComponent implements OnInit {
     }, 250);
   }
 
-  changeEntityName(name: string) {
-    this.name = name;
-    this.entity.name = name;
-  }
-
   changeEntity(name: string) {
     if (this.validateUnsavedChanges()) {
       this.getAndSetChronicle(name);
-      this.automaticToggleSearchMode();
       this.onChanged.emit(name);
     }
   }
@@ -205,11 +185,8 @@ export class EditorComponent implements OnInit {
   private getAndSetChronicle(name: string) {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;
-    this.changeEntityName(this.entity.name);
-  }
-
-  private automaticToggleSearchMode() {
-    this.search = this.name === '' || this.name.endsWith('/');
+    this.name = name;
+    this.entity.name = name;
   }
 
   private configureCodeMirror() {

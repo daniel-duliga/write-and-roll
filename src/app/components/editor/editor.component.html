@@ -7,22 +7,8 @@
         
         <!-- Title & search -->
         <div class="header-separator"></div>
-        <div class="title" *ngIf="!search" matTooltip="Edit" (click)="toggleSearch()">
+        <div class="title" matTooltip="Minimize" (click)="minimize()">
             {{ this.formattedName }}
-        </div>
-        <div class="title-edit" *ngIf="search">
-            <app-auto-complete-field
-                class="search-field"
-                style="width: 100%;"
-                [message]="'Name'"
-                [options]="this.otherEntities"
-                [initialValue]="this.entity.name"
-                (onTextChange)="this.changeEntityName($event)"
-                (onOptionChange)="this.changeEntity($event)"
-            ></app-auto-complete-field>
-            <button mat-button class="header-button" matTooltip="Done" (click)="toggleSearch()">
-                <mat-icon>done</mat-icon>
-            </button>
         </div>
 
         <!-- Save button -->
@@ -41,12 +27,6 @@
         
         <!-- Toolbar buttons -->
         <span class="buttons-container" *ngIf="this.mode === 'markdown'">
-            <div class="header-separator"></div>
-            
-            <button class="header-button" mat-button matTooltip="Minimize" (click)="minimize()">
-                <mat-icon>keyboard_double_arrow_left</mat-icon>
-            </button>
-            
             <div class="header-separator"></div>
             
             <button class="header-button" mat-button matTooltip="Move left" (click)="move('left')">
