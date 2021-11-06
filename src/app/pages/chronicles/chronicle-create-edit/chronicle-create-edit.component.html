@@ -6,7 +6,11 @@
         [name]="chronicle.name"
         [mode]="'markdown'"
         [entityService]="this.chronicleEntityService"
-        [ngStyle]="{ 'z-index': openChronicles.length - i }"
+        [ngStyle]="{ 
+            'z-index': openChronicles.length - i,
+            'min-width': editor.minimized ? 'unset'  : '25%',
+            'max-width': editor.minimized ? '32px'  : 'unset'
+        }"
         (onChanged)="this.updateChronicleName(chronicle.id, $event)"
         (onClosed)="this.closeEditor(chronicle.id)"
         (onNew)="this.openNewEditor(chronicle.id)"

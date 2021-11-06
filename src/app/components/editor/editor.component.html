@@ -1,30 +1,14 @@
-<div class="container">
+<div class="container" *ngIf="!minimized">
     <div class="header shadow-small-down">
+        <!-- Close button -->
         <button mat-button class="header-button" matTooltip="Close" (click)="this.closeEditor()">
-            <mat-icon class="header-button-icon">close</mat-icon>
+            <mat-icon class="close-button-icon">close</mat-icon>
         </button>
         
-        <span class="buttons-container" *ngIf="this.isDirty">
-            <div class="header-separator"></div>
-            <button
-                class="header-button"
-                mat-button
-                matTooltip="Save (CTRL + S)"
-                [style]="isDirty ? { 'color': 'red' } : {}"
-                (click)="this.save()"
-            >
-                <mat-icon class="header-button-icon">save</mat-icon>
-            </button>
-        </span>
-
+        <!-- Title & search -->
         <div class="title" *ngIf="!search" matTooltip="Edit" (click)="toggleSearch()">
             {{ this.formattedName }}
-            <div class="header-separator"></div>
-            <button mat-button class="header-button" (click)="toggleSearch()">
-                <mat-icon class="header-button-icon">edit_note</mat-icon>
-            </button>
         </div>
-        
         <div class="title-edit" *ngIf="search">
             <app-auto-complete-field
                 class="search-field"
@@ -39,8 +23,29 @@
                 <mat-icon class="header-button-icon">done</mat-icon>
             </button>
         </div>
+
+        <!-- Save button -->
+        <span class="buttons-container" *ngIf="this.isDirty">
+            <div class="header-separator"></div>
+            <button
+                class="header-button"
+                mat-button
+                matTooltip="Save (CTRL + S)"
+                [style]="isDirty ? { 'color': 'red' } : {}"
+                (click)="this.save()"
+            >
+                <mat-icon class="header-button-icon">save</mat-icon>
+            </button>
+        </span>
         
+        <!-- Toolbar buttons -->
         <span class="buttons-container" *ngIf="this.mode === 'markdown'">
+            <div class="header-separator"></div>
+            
+            <button class="header-button" mat-button matTooltip="Minimize" (click)="minimize()">
+                <mat-icon class="header-button-icon">keyboard_double_arrow_left</mat-icon>
+            </button>
+            
             <div class="header-separator"></div>
             
             <button class="header-button" mat-button matTooltip="Move left" (click)="move('left')">
@@ -72,5 +77,11 @@
     </div>
     <div *ngIf="this.mode === 'markdown'" class="commands">
         <app-commands #commands (onCommandExecuted)="this.handleCommand($event)"></app-commands>
+    </div>
+</div>
+<div class="container-minimized" *ngIf="minimized" matTooltip="Maximize" matTooltipPosition="right" (click)="maximize()">
+    <mat-icon class="header-button-icon">keyboard_double_arrow_right</mat-icon>
+    <div class="title-minimized">
+        {{ this.formattedName }}
     </div>
 </div>

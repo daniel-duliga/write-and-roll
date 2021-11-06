@@ -32,6 +32,7 @@ export class EditorComponent implements OnInit {
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
   search = true;
+  minimized = false;
 
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
@@ -58,12 +59,12 @@ export class EditorComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.registerCodeMirrorExtraKeys();
     if (this.codeMirror) {
       this.codeMirror.on('changes', () => this.postProcessCodeMirror());
       this.codeMirror.focus();
     }
     this.refresh();
+    this.registerCodeMirrorExtraKeys();
   }
   //#endregion
 
@@ -89,6 +90,14 @@ export class EditorComponent implements OnInit {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit(true);
     }
+  }
+
+  minimize() {
+    this.minimized = true;
+  }
+
+  maximize() {
+    this.minimized = false;
   }
 
   toggleSearch() {
@@ -200,9 +209,11 @@ export class EditorComponent implements OnInit {
     this.entity = this.entityService.get(name);
     this.initialContent = this.entity.rawContent;
   }
+
   private automaticToggleSearchMode() {
     this.search = this.name === '' || this.name.endsWith('/');
   }
+
   private registerCodeMirrorExtraKeys() {
     if (this.codeMirror) {
       this.codeMirror.setOption(
@@ -213,6 +224,7 @@ export class EditorComponent implements OnInit {
       });
     }
   }
+
   private validateUnsavedChanges() {
     return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
   }

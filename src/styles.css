@@ -1,13 +1,13 @@
 /* Fonts */
-@font-face {
+/* @font-face {
   font-family: JetBrainsMono;
   src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
-}
+} */
 
 /* You can add global styles to this file, and also import other style files */
-* {
+/* * {
   font-family: JetBrainsMono
-}
+} */
 html {
   top: 0 !important;
 }
@@ -48,9 +48,11 @@ img {
 }
 .mat-form-field-appearance-outline .mat-form-field-outline-start {
   border-radius: 0 !important;
+  border: none !important;
 }
 .mat-form-field-appearance-outline .mat-form-field-outline-end {
   border-radius: 0 !important;
+  border: none !important;
 }
 .active-link {
   background-color: rgba(0, 0, 0, 0.15) !important;
@@ -63,7 +65,7 @@ img {
   background-color: white;
 }
 .button {
-  height: 32px !important;
+  height: 31px !important;
   box-shadow: none !important;
   background-color: white;
   border: 1px solid darkgray !important;
@@ -82,5 +84,5 @@ img {
   box-shadow: 0px -5px 10px rgba(0, 0, 0, 10%) !important;
 }
 .shadow-small-left {
-  box-shadow: 5px 0px 10px rgba(0, 0, 0, 10%) !important;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 15%) !important;
 }
