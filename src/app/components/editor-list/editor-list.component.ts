@@ -8,7 +8,7 @@ import { Editor } from 'src/app/components/editor/editor';
 import { EntityService } from 'src/app/entities/services/entity.service';
 
 @Component({
-  selector: 'app-entity-editor',
+  selector: 'app-editor-list',
   templateUrl: './editor-list.component.html',
   styleUrls: ['./editor-list.component.css']
 })
@@ -17,9 +17,7 @@ export class EditorListComponent implements OnInit {
   @Input() mode: EditorMode = 'default';
   @Input() entityService!: EntityService;
 
-  @Output() onClosed: EventEmitter<void> = new EventEmitter();
-
-  @ViewChildren('editor') editorComponents!: QueryList<EditorComponent>;
+  @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
 
   editors: Editor[] = [];
   newOption = '+ Add New';
@@ -47,11 +45,13 @@ export class EditorListComponent implements OnInit {
   }
 
   closeEditor(id: string) {
-    this.editors = this.editors.filter(x => x.id !== id);
-    if (this.editors.length === 0) {
-      this.onClosed.emit();
-    } else {
-      this.refreshEditors();
+    let editor = this.editors.find(x => x.id === id);
+    if (editor) {
+      this.editors = this.editors.filter(x => x.id !== id);
+      this.entityService.removeOpenEntity(editor.entityId);
+      if (this.editors.length > 0) {
+        this.refreshEditors();
+      }
     }
   }
 
@@ -80,6 +80,7 @@ export class EditorListComponent implements OnInit {
   private openEditorForExistingEntity(entityPath: string) {
     const newEditor = new Editor(uuidv4(), entityPath);
     this.editors.push(newEditor);
+    this.entityService.addOpenedEntity(entityPath);
     this.refreshEditors();
     return newEditor;
   }

@@ -8,7 +8,7 @@ export class EntityService {
     this.collectionName = collectionName;
   }
 
-  //#region public methods
+  //#region crud
   create(path: string, content: string): Entity | null {
     // Ensure content ends with new line
     if (!content.endsWith('\n')) {
@@ -37,19 +37,21 @@ export class EntityService {
 
   get(name: string): Entity | null {
     let result: Entity | null = null;
-    
+
     const rawContent = localStorage.getItem(`${this.collectionName}/data/${name}`);
     if (rawContent) {
       result = new Entity(name, rawContent);
     }
-    
+
     return result;
   }
 
   delete(name: string) {
     return localStorage.removeItem(`${this.collectionName}/data/${name}`);
   }
+  //#endregion
 
+  //#region expansion model
   getExpansionModel(): ExpansionModelItem[] {
     let result: ExpansionModelItem[] = [];
     const rawExpansionModel = localStorage.getItem(`${this.collectionName}/expansionModel`);
@@ -59,7 +61,7 @@ export class EntityService {
     return result;
   }
 
-  setExpansionState(item: ExpansionModelItem) {
+  setExpansionModel(item: ExpansionModelItem) {
     const expansionModel = this.getExpansionModel();
     const existingItem = expansionModel.find(x => x.identifier == item.identifier);
     if (existingItem) {
@@ -71,6 +73,31 @@ export class EntityService {
   }
   //#endregion
 
+  //#region opened entities
+  addOpenedEntity(entity: string) {
+    const openedEntities = this.getOpenedEntities();
+    if (!openedEntities.includes(entity)) {
+      openedEntities.push(entity);
+      localStorage.setItem(`${this.collectionName}/openedEntities`, JSON.stringify(openedEntities));
+    }
+  }
+
+  removeOpenEntity(entity: string) {
+    let openedEntities = this.getOpenedEntities();
+    openedEntities = openedEntities.filter(x => x !== entity);
+    localStorage.setItem(`${this.collectionName}/openedEntities`, JSON.stringify(openedEntities));
+  }
+
+  getOpenedEntities(): string[] {
+    let result: string[] = [];
+    let rawResult = localStorage.getItem(`${this.collectionName}/openedEntities`);
+    if (rawResult) {
+      result = JSON.parse(rawResult);
+    }
+    return result;
+  }
+  //#endregion
+
   //#region private methods
   private getLeaves() {
     return Object
@@ -79,7 +106,7 @@ export class EntityService {
       .map(x => x.replace(`${this.collectionName}/data/`, ''))
       .sort((a, b) => a.localeCompare(b));
   }
-  
+
   private getParentsByLeaves(leafPaths: string[]): string[] {
     let result: string[] = [];
     for (const leafPath of leafPaths) {

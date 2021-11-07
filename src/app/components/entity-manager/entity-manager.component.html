@@ -1,20 +1,20 @@
 <div class="container">
     <app-tree
         class="tree"
-        #tree
-        [paths]="entityPaths"
+        #treeComponent
+        [paths]="treeEntities"
         [expansionModel]="entityService.getExpansionModel()"
-        (onExpanded)="entityService.setExpansionState($event)"
+        (onExpanded)="entityService.setExpansionModel($event)"
         (onNew)="new()"
         (onEdit)="edit($event)"
         (onRename)="rename($event)"
         (onDelete)="delete($event)"
     ></app-tree>
     <div class="editors-container">
-        <app-entity-editor
-            #editor
+        <app-editor-list
+            #editorListComponent
             [mode]="editorMode"
             [entityService]="entityService"
-        ></app-entity-editor>
+        ></app-editor-list>
     </div>
 </div>
