@@ -1,85 +1,35 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
-import { ActionListComponent } from './pages/actions/action-list/action-list.component';
-import { EntityEditorComponent } from './components/entity-editor/entity-editor.component';
-import { ChronicleListComponent } from './pages/chronicles/chronicle-list/chronicle-list.component';
-import { ImportExportComponent } from './pages/import-export/import-export.component';
-import { RandomTableCreateEditComponent } from './pages/random-tables/random-table-create-edit/random-table-create-edit.component';
-import { RandomTableListComponent } from './pages/random-tables/random-table-list/random-table-list.component';
-import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-create-edit/chronicle-create-edit.component';
+import { EntityManagerComponent } from './components/entity-manager/entity-manager.component';
+import { ImportExportComponent } from './components/import-export/import-export.component';
+import { ChronicleEntityService } from './entities/services/chronicle-entity.service';
+import { RandomTableEntityService } from './entities/services/random-table-entity.service';
+import { ActionEntityService } from './entities/services/action-entity.service';
+
+export const CHRONICLE_ENTITY_SERVICE_TOKEN = new InjectionToken<string>("CHRONICLES_SERVICE_TOKEN");
+export const RANDOM_TABLE_ENTITY_SERVICE_TOKEN = new InjectionToken<string>("RANDOM_TABLES_SERVICE_TOKEN");
+export const ACTIONS_ENTITY_SERVICE_TOKEN = new InjectionToken<string>("ACTIONS_SERVICE_TOKEN");
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'chronicles',
+    redirectTo: 'actions',
     pathMatch: 'full'
   },
   {
     path: 'chronicles',
-    children: [
-      {
-        path: '',
-        redirectTo: 'list',
-        pathMatch: 'full'
-      },
-      {
-        path: 'list',
-        component: ChronicleListComponent
-      },
-      {
-        path: 'create-edit',
-        component: ChronicleCreateEditComponent
-      },
-      {
-        path: 'create-edit/:name',
-        component: ChronicleCreateEditComponent
-      },
-    ]
+    component: EntityManagerComponent,
+    data: { entityServiceToken: CHRONICLE_ENTITY_SERVICE_TOKEN, editorMode: 'markdown' }
   },
   {
     path: 'random-tables',
-    children: [
-      {
-        path: '',
-        redirectTo: 'list',
-        pathMatch: 'full'
-      },
-      {
-        path: 'list',
-        component: RandomTableListComponent
-      },
-      {
-        path: 'create-edit',
-        component: RandomTableCreateEditComponent
-      },
-      {
-        path: 'create-edit/:name',
-        component: RandomTableCreateEditComponent
-      },
-    ]
+    component: EntityManagerComponent,
+    data: { entityServiceToken: RANDOM_TABLE_ENTITY_SERVICE_TOKEN }
   },
   {
     path: 'actions',
-    children: [
-      {
-        path: '',
-        redirectTo: 'list',
-        pathMatch: 'full'
-      },
-      {
-        path: 'list',
-        component: ActionListComponent
-      },
-      {
-        path: 'create-edit',
-        component: ActionCreateEditComponent
-      },
-      {
-        path: 'create-edit/:name',
-        component: ActionCreateEditComponent
-      },
-    ]
+    component: EntityManagerComponent,
+    data: { entityServiceToken: ACTIONS_ENTITY_SERVICE_TOKEN, editorMode: 'javascript' }
   },
   {
     path: 'import-export',
@@ -89,6 +39,20 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    {
+      provide: CHRONICLE_ENTITY_SERVICE_TOKEN,
+      useClass: ChronicleEntityService,
+    },
+    {
+      provide: RANDOM_TABLE_ENTITY_SERVICE_TOKEN,
+      useClass: RandomTableEntityService,
+    },
+    {
+      provide: ACTIONS_ENTITY_SERVICE_TOKEN,
+      useClass: ActionEntityService,
+    },
+  ]
 })
 export class AppRoutingModule { }

@@ -1,18 +1,21 @@
 <div class="container">
+    <div class="no-content-message" *ngIf="editors.length === 0">
+        No file opened.
+    </div>
     <app-editor
-        class="editor shadow-small-left"
+        class="editor"
         #editor
         *ngFor="let entity of editors; let i = index"
         [name]="entity.name"
-        [mode]="this.mode"
-        [entityService]="this.entityService"
+        [mode]="mode"
+        [entityService]="entityService"
         [ngStyle]="{ 
             'z-index': i,
             'min-width': editor.minimized ? 'unset'  : '33%',
             'max-width': editor.minimized ? '33px'  : 'unset'
         }"
-        (onClosed)="this.closeEditor(entity.id)"
-        (onNew)="this.openNewEditor(entity.id)"
-        (onMove)="this.moveEditor(entity.id, $event)"
+        (onClosed)="closeEditor(entity.id)"
+        (onMove)="moveEditor(entity.id, $event)"
+        (onMinMaximized)="refreshEditors()"
     ></app-editor>
 </div>

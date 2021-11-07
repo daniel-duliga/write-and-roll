@@ -21,8 +21,8 @@ export class EditorComponent implements OnInit {
   @Input() entityService!: EntityService;
 
   @Output() onClosed: EventEmitter<void> = new EventEmitter();
-  @Output() onNew: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
+  @Output() onMinMaximized: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
@@ -47,8 +47,6 @@ export class EditorComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-    private dialog: MatDialog,
-    private promptService: PromptService,
   ) { }
 
   //#region lifecycle events
@@ -86,40 +84,13 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  async rename() {
-    const initialName = this.entity.name;
-    const nameSegments = this.entity.name.split('/');
-    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', nameSegments[nameSegments.length - 1]);
-    if (newName) {
-      nameSegments[nameSegments.length - 1] = newName;
-      this.entity.name = nameSegments.join('/');
-      
-      this.entityService.delete(initialName);
-      this.save();
-    }
-  }
-
-  delete() {
-    if (confirm(`Are you sure you want to delete '${this.entity.name}'?`)) {
-      this.entityService.delete(this.entity.name);
-      this.onClosed.emit();
-    }
-  }
-
-  minimize() {
-    this.minimized = true;
-  }
-
-  maximize() {
-    this.minimized = false;
+  minimizeOrMaximize(minimized: boolean) {
+    this.minimized = minimized;
+    this.onMinMaximized.emit();
   }
 
   move(direction: MoveDirection) {
     this.onMove.emit(direction);
-  }
-
-  openNewEditor() {
-    this.onNew.emit();
   }
 
   save($event: Event | null = null) {
@@ -136,7 +107,7 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    const newEntity = this.entityService.create(this.entity.name, this.entity.rawContent);
+    this.entityService.create(this.entity.name, this.entity.rawContent);
 
     // Reflect saved data
     this.initialContent = this.entity.rawContent;
@@ -157,6 +128,10 @@ export class EditorComponent implements OnInit {
       this.codeMirror.replaceSelection(`\`${option}\``);
       this.codeMirror.focus();
     }
+  }
+
+  setName(name: string) {
+    this.entity.name = name;
   }
   //#endregion
 

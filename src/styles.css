@@ -52,35 +52,16 @@ img {
 .mat-form-field-wrapper {
   padding-bottom: 0;
 }
-
-/* Custom */
 .form-field .mat-form-field-wrapper {
   margin: 0 !important;
   padding: 0 !important;
   background-color: white;
 }
-.button {
-  height: 33px !important;
-  box-shadow: none !important;
-  background-color: white;
-  border: 1px solid darkgray !important;
+.mat-form-field-outline-start, .mat-form-field-outline-end {
   border-radius: 0 !important;
 }
-.button-small {
-  width: 33 !important;
-  height: 33px !important;
-  min-width: 33px !important;
-  padding: 0 !important;
-}
-.shadow-small-down {
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 20%) !important;
-}
-.shadow-small-up {
-  box-shadow: 0px -3px 5px rgba(0, 0, 0, 20%) !important;
-}
-.shadow-small-right {
-  box-shadow: 3px 0px 5px rgba(0, 0, 0, 20%) !important;
-}
-.shadow-small-left {
-  box-shadow: -3px 0px 5px rgba(0, 0, 0, 20%) !important;
+.mat-autocomplete-panel-above .mat-autocomplete-panel {
+  border: 1px solid darkgray;
+  border-radius: 0 !important;
+  transform: translateY(5px);
 }

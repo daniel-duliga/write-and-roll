@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ApiService } from 'src/app/api/api.service';
+import { ApiService } from 'src/app/services/api.service';
 
 @Injectable({
   providedIn: 'root'
