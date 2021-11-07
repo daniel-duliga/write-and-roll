@@ -18,11 +18,12 @@ export type EditorMode = "markdown" | "javascript" | "default";
 export class EditorComponent implements OnInit {
   @Input() name: string = ''; // only used for loading the initial entity
   @Input() mode: EditorMode = "default";
+  @Input() minimized = false;
   @Input() entityService!: EntityService;
 
   @Output() onClosed: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
-  @Output() onMinMaximized: EventEmitter<void> = new EventEmitter();
+  @Output() onMinimized: EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
@@ -30,7 +31,6 @@ export class EditorComponent implements OnInit {
   entity: Entity = new Entity();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
-  minimized = false;
 
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
@@ -84,9 +84,9 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  minimizeOrMaximize(minimized: boolean) {
+  toggleMinimize(minimized: boolean) {
     this.minimized = minimized;
-    this.onMinMaximized.emit();
+    this.onMinimized.emit(minimized);
   }
 
   move(direction: MoveDirection) {

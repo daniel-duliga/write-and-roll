@@ -1,3 +1,4 @@
+import { Editor } from "../models/editor";
 import { Entity } from "../models/entity";
 import { ExpansionModelItem } from "../models/expansion-model-item";
 
@@ -8,7 +9,7 @@ export class EntityService {
     this.collectionName = collectionName;
   }
 
-  //#region public methods
+  //#region crud
   create(path: string, content: string): Entity | null {
     // Ensure content ends with new line
     if (!content.endsWith('\n')) {
@@ -37,19 +38,21 @@ export class EntityService {
 
   get(name: string): Entity | null {
     let result: Entity | null = null;
-    
+
     const rawContent = localStorage.getItem(`${this.collectionName}/data/${name}`);
     if (rawContent) {
       result = new Entity(name, rawContent);
     }
-    
+
     return result;
   }
 
   delete(name: string) {
     return localStorage.removeItem(`${this.collectionName}/data/${name}`);
   }
+  //#endregion
 
+  //#region expansion model
   getExpansionModel(): ExpansionModelItem[] {
     let result: ExpansionModelItem[] = [];
     const rawExpansionModel = localStorage.getItem(`${this.collectionName}/expansionModel`);
@@ -59,7 +62,7 @@ export class EntityService {
     return result;
   }
 
-  setExpansionState(item: ExpansionModelItem) {
+  setExpansionModel(item: ExpansionModelItem) {
     const expansionModel = this.getExpansionModel();
     const existingItem = expansionModel.find(x => x.identifier == item.identifier);
     if (existingItem) {
@@ -71,6 +74,36 @@ export class EntityService {
   }
   //#endregion
 
+  //#region opened entities
+  addOpenedEditor(editor: Editor) {
+    const openedEditors = this.getOpenedEditors();
+    if (!openedEditors.find(x => x.entityId === editor.entityId)) {
+      openedEditors.push(editor);
+      localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
+    }
+  }
+
+  updateOpenedEditor(editor: Editor) {
+    this.removeOpenEditor(editor);
+    this.addOpenedEditor(editor);
+  }
+
+  removeOpenEditor(editor: Editor) {
+    let openedEditors = this.getOpenedEditors();
+    openedEditors = openedEditors.filter(x => x.entityId !== editor.entityId);
+    localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
+  }
+
+  getOpenedEditors(): Editor[] {
+    let result: Editor[] = [];
+    let rawResult = localStorage.getItem(`${this.collectionName}/openedEditors`);
+    if (rawResult) {
+      result = JSON.parse(rawResult);
+    }
+    return result;
+  }
+  //#endregion
+
   //#region private methods
   private getLeaves() {
     return Object
@@ -79,7 +112,7 @@ export class EntityService {
       .map(x => x.replace(`${this.collectionName}/data/`, ''))
       .sort((a, b) => a.localeCompare(b));
   }
-  
+
   private getParentsByLeaves(leafPaths: string[]): string[] {
     let result: string[] = [];
     for (const leafPath of leafPaths) {

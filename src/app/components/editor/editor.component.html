@@ -3,7 +3,7 @@
     <div class="header">
         <!-- Title -->
         <div class="header-separator"></div>
-        <div class="title" matTooltip="Minimize" (click)="minimizeOrMaximize(true)">
+        <div class="title" matTooltip="Minimize" (click)="toggleMinimize(true)">
             {{ this.formattedName }}
         </div>
 
@@ -59,7 +59,13 @@
 </div>
 
 <!-- Minimized -->
-<div class="container-minimized" *ngIf="minimized" matTooltip="Maximize" matTooltipPosition="right" (click)="minimizeOrMaximize(false)">
+<div 
+    class="container-minimized"
+    *ngIf="minimized"
+    matTooltip="Maximize"
+    matTooltipPosition="right"
+    (click)="toggleMinimize(false)"
+>
     <mat-icon class="maximize-button">keyboard_double_arrow_right</mat-icon>
     <div class="header-separator"></div>
     <div class="title-minimized">

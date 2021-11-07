@@ -14,11 +14,11 @@ import { TreeComponent } from '../tree/tree.component';
   styleUrls: ['./entity-manager.component.css']
 })
 export class EntityManagerComponent implements OnInit {
-  @ViewChild('editor') editor!: EditorListComponent;
-  @ViewChild('tree') tree!: TreeComponent;
+  @ViewChild('treeComponent') treeComponent!: TreeComponent;
+  @ViewChild('editorListComponent') editorListComponent!: EditorListComponent;
 
   public entityService!: EntityService;
-  entityPaths: string[] = [];
+  treeEntities: string[] = [];
   editorMode: EditorMode = 'default';
 
   constructor(
@@ -33,32 +33,39 @@ export class EntityManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getEntityPaths();
+    this.getAndSetTreeEntities();
+  }
+
+  ngAfterViewInit() {
+    const openedEditors = this.entityService.getOpenedEditors();
+    for (const editor of openedEditors) {
+      this.editorListComponent.openEditor(editor.entityId, editor.minimized);
+    }
   }
 
   //#region public methods
   async new() {
-    await this.editor.createEntityAndOpenEditor();
+    await this.editorListComponent.createEntityAndOpenEditor();
     this.refreshEntities();
   }
 
   edit(path: string) {
-    this.editor.openEditor(path);
+    this.editorListComponent.openEditor(path);
   }
-  
+
   async rename(path: string) {
     let entity: Entity | null = null;
-    const openedEditor = this.editor.editorComponents.find(x => x.entity.name === path);
-    if(openedEditor) {
+    const openedEditor = this.editorListComponent.editorComponents.find(x => x.entity.name === path);
+    if (openedEditor) {
       entity = openedEditor?.entity;
     } else {
       entity = this.entityService.get(path);
     }
-    
+
     if (!entity) {
       return;
     }
-    
+
     const initialName = entity.name;
     const nameSegments = entity.name.split('/');
     const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', nameSegments[nameSegments.length - 1]);
@@ -77,7 +84,7 @@ export class EntityManagerComponent implements OnInit {
   }
 
   delete(path: string) {
-    const openedEditor = this.editor.editorComponents.find(x => x.entity.name === path);
+    const openedEditor = this.editorListComponent.editorComponents.find(x => x.entity.name === path);
     if (openedEditor) {
       openedEditor.closeEditor();
     }
@@ -87,12 +94,12 @@ export class EntityManagerComponent implements OnInit {
 
   //#region private methods
   private refreshEntities() {
-    this.getEntityPaths();
-    this.tree.refreshItems(this.entityPaths);
+    this.getAndSetTreeEntities();
+    this.treeComponent.refreshItems(this.treeEntities);
   }
 
-  private getEntityPaths() {
-    this.entityPaths = this.entityService.getAll();
+  private getAndSetTreeEntities() {
+    this.treeEntities = this.entityService.getAll();
   }
   //#endregion
 }
