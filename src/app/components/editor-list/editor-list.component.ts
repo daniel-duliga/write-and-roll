@@ -9,10 +9,11 @@ import { EntityService } from 'src/app/entities/services/entity.service';
 
 @Component({
   selector: 'app-entity-editor',
-  templateUrl: './entity-editor.component.html',
-  styleUrls: ['./entity-editor.component.css']
+  templateUrl: './editor-list.component.html',
+  styleUrls: ['./editor-list.component.css']
 })
-export class EntityEditorComponent implements OnInit {
+export class EditorListComponent implements OnInit {
+  @Input() entityName: string | null = null;
   @Input() mode: EditorMode = 'default';
   @Input() entityService!: EntityService;
 
@@ -21,7 +22,7 @@ export class EntityEditorComponent implements OnInit {
   @ViewChildren('editor') editorComponents!: QueryList<EditorComponent>;
 
   editors: Editor[] = [];
-  newOption = '> Add New';
+  newOption = '+ Add New';
 
   constructor(
     private route: ActivatedRoute,
@@ -29,24 +30,19 @@ export class EntityEditorComponent implements OnInit {
     private dialog: MatDialog,
   ) { }
 
-  ngOnInit() {
-    this.getDataFromRoute();
-  }
+  ngOnInit() { }
 
   //#region public methods
-  async openNewEditor(currentEditorId: string | null = null): Promise<Editor | null> {
-    // Load the current entities
-    const entities = this.entityService.getAll(false);
-    entities.push(this.newOption);
+  openEditor(entityName: string) {
+    this.openEditorForExistingEntity(entityName);
+  }
 
-    // Get the target entity
-    let entityPath: string | null = await this.promptService.openAutoCompletePrompt(this.dialog, "Target", entities);
+  public async createEntityAndOpenEditor(): Promise<Editor | null> {
+    const entityPath = await this.createNewEntity();
     if (!entityPath) {
       return null;
-    } else if (entityPath === this.newOption) {
-      return this.createEntityAndAddEditor(currentEditorId);
     } else {
-      return this.addEditorForExistingEntity(currentEditorId, entityPath);
+      return this.openEditorForExistingEntity(entityPath);
     }
   }
 
@@ -72,51 +68,19 @@ export class EntityEditorComponent implements OnInit {
       }
     }
   }
+
+  refreshEditors() {
+    for (const editor of this.editorComponents) {
+      editor.refresh();
+    }
+  }
   //#endregion
 
   //#region private methods
-  private getDataFromRoute() {
-    this.route.paramMap.subscribe(async params => {
-      const name = params.get('name');
-      if (name) {
-        this.editors.push(new Editor(uuidv4(), name));
-      } else {
-        const newEditor = await this.createEntityAndAddEditor(null);
-        if (!newEditor) {
-          this.onClosed.emit();
-        }
-      }
-    });
-  }
-
-  private async createEntityAndAddEditor(currentEditorId: string | null): Promise<Editor | null> {
-    const entityPath = await this.createNewEntity();
-    if (!entityPath) {
-      return null;
-    } else {
-      return this.addEditorForExistingEntity(currentEditorId, entityPath);
-    }
-  }
-
-  private addEditorForExistingEntity(currentEditorId: string | null, entityPath: string) {
-    // Compute the current editor index
-    let currentEditorIndex = -1;
-    if (currentEditorId) {
-      currentEditorIndex = this.editors.findIndex(x => x.id === currentEditorId);
-    }
-
-    // Add the new editor
+  private openEditorForExistingEntity(entityPath: string) {
     const newEditor = new Editor(uuidv4(), entityPath);
-    if (currentEditorIndex === -1) {
-      this.editors.push(newEditor);
-    } else {
-      this.editors.splice(currentEditorIndex + 1, 0, newEditor);
-    }
-
-    // Refresh the UI
+    this.editors.push(newEditor);
     this.refreshEditors();
-
-    // Return
     return newEditor;
   }
 
@@ -152,12 +116,6 @@ export class EntityEditorComponent implements OnInit {
 
     this.entityService.create(path, '');
     return path;
-  }
-
-  private refreshEditors() {
-    for (const editor of this.editorComponents) {
-      editor.refresh();
-    }
   }
   //#endregion
 }

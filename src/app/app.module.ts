@@ -24,23 +24,18 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { EasymdeModule } from 'ngx-easymde';
 
 // Internal
-import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
-import { ActionListComponent } from './pages/actions/action-list/action-list.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
+import { AutoCompleteFieldComponent } from './components/auto-complete-field/auto-complete-field.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
-import { ChronicleListComponent } from './pages/chronicles/chronicle-list/chronicle-list.component';
+import { EntityManagerComponent } from './components/entity-manager/entity-manager.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { EditorComponent } from './components/editor/editor.component';
-import { EntityEditorComponent } from './components/entity-editor/entity-editor.component';
-import { ImportExportComponent } from './pages/import-export/import-export.component';
+import { EditorListComponent } from './components/editor-list/editor-list.component';
+import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
-import { RandomTableCreateEditComponent } from './pages/random-tables/random-table-create-edit/random-table-create-edit.component';
-import { RandomTableListComponent } from './pages/random-tables/random-table-list/random-table-list.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TreeComponent } from './components/tree/tree.component';
-import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-create-edit/chronicle-create-edit.component';
 
 @NgModule({
   declarations: [
@@ -48,18 +43,13 @@ import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-creat
     AutoCompletePromptComponent,
     InputComponent,
     SidebarComponent,
-    RandomTableCreateEditComponent,
-    RandomTableListComponent,
     TreeComponent,
     AutoCompleteFieldComponent,
-    ChronicleListComponent,
-    EntityEditorComponent,
-    ActionListComponent,
-    ActionCreateEditComponent,
+    EntityManagerComponent,
+    EditorListComponent,
     ImportExportComponent,
     EditorComponent,
     CommandsComponent,
-    ChronicleCreateEditComponent,
   ],
   imports: [
     // Core

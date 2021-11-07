@@ -1,6 +1,6 @@
 <div class="container">
     <!-- Header -->
-    <div class="filter shadow-small-down">
+    <div class="filter">
         <!-- Filter -->
         <mat-form-field appearance="outline" class="form-field">
             <mat-icon matPrefix>search</mat-icon>
@@ -12,7 +12,7 @@
         </mat-form-field>
         
         <!-- 'New' button -->
-        <button mat-icon-button class="" (click)="new()" matTooltip="New">
+        <button mat-button class="button" (click)="this.onNew.emit()" matTooltip="New">
             <mat-icon>add</mat-icon>
         </button>
     </div>
@@ -22,14 +22,27 @@
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
             <button mat-button class="tree-node-button">
-                <div class="item-container" (click)="edit(node.path)">
+                <div class="item-container" (click)="this.onEdit.emit(node.path)">
+                    <!-- Options Menu -->
+                    <button class="button" mat-button matTooltip="Options" [matMenuTriggerFor]="menu" (click)="foo($event)">
+                        <mat-icon class="close-button-icon">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="this.onRename.emit(node.path)">
+                            <mat-icon>drive_file_rename_outline</mat-icon>
+                            <span>Rename</span>
+                        </button>
+                        <button mat-menu-item (click)="this.delete(node.path, $event)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
+                    
+                    <!-- Item name -->
                     <div class="item">
                         <mat-icon>description</mat-icon>
                         {{node.name}}
                     </div>
-                    <button mat-icon-button (click)="delete(node.path, $event)" class="action-button">
-                        <mat-icon>delete</mat-icon>
-                    </button>
                 </div>
             </button>
         </cdk-nested-tree-node>

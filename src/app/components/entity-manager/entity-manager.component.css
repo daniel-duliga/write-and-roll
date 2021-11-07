@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.tree {
+    min-width: 350px;
+    max-width: 350px;
+    box-shadow: 5px 0px 5px rgb(0 0 0 / 10%);
+    z-index: 1;
+}
+
+.editors-container {
+    border: 1px solid darkgray;
+    width: 100%;
+    overflow: auto;
+}

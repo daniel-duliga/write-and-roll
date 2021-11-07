@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PagesConfig } from '../../pages/pages-config';
+import { PagesConfig } from './pages-config';
 
 @Component({
   selector: 'app-sidebar',

@@ -13,9 +13,9 @@ export class Entity {
             errors += 'Name cannot end with "/".\n';
         }
 
-        if (this.rawContent.trim() === '') {
-            errors += 'Content is required.\n';
-        }
+        // if (this.rawContent.trim() === '') {
+        //     errors += 'Content is required.\n';
+        // }
 
         return errors;
     }
