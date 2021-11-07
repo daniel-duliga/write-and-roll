@@ -1,3 +1,4 @@
+import { Editor } from "../models/editor";
 import { Entity } from "../models/entity";
 import { ExpansionModelItem } from "../models/expansion-model-item";
 
@@ -74,23 +75,28 @@ export class EntityService {
   //#endregion
 
   //#region opened entities
-  addOpenedEntity(entity: string) {
-    const openedEntities = this.getOpenedEntities();
-    if (!openedEntities.includes(entity)) {
-      openedEntities.push(entity);
-      localStorage.setItem(`${this.collectionName}/openedEntities`, JSON.stringify(openedEntities));
+  addOpenedEditor(editor: Editor) {
+    const openedEditors = this.getOpenedEditors();
+    if (!openedEditors.find(x => x.entityId === editor.entityId)) {
+      openedEditors.push(editor);
+      localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
     }
   }
 
-  removeOpenEntity(entity: string) {
-    let openedEntities = this.getOpenedEntities();
-    openedEntities = openedEntities.filter(x => x !== entity);
-    localStorage.setItem(`${this.collectionName}/openedEntities`, JSON.stringify(openedEntities));
+  updateOpenedEditor(editor: Editor) {
+    this.removeOpenEditor(editor);
+    this.addOpenedEditor(editor);
   }
 
-  getOpenedEntities(): string[] {
-    let result: string[] = [];
-    let rawResult = localStorage.getItem(`${this.collectionName}/openedEntities`);
+  removeOpenEditor(editor: Editor) {
+    let openedEditors = this.getOpenedEditors();
+    openedEditors = openedEditors.filter(x => x.entityId !== editor.entityId);
+    localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
+  }
+
+  getOpenedEditors(): Editor[] {
+    let result: Editor[] = [];
+    let rawResult = localStorage.getItem(`${this.collectionName}/openedEditors`);
     if (rawResult) {
       result = JSON.parse(rawResult);
     }

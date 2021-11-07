@@ -4,7 +4,7 @@ import { EditorComponent, EditorMode, MoveDirection } from 'src/app/components/e
 import { v4 as uuidv4 } from 'uuid';
 import { PromptService } from 'src/app/components/prompts/prompt.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Editor } from 'src/app/components/editor/editor';
+import { Editor } from 'src/app/entities/models/editor';
 import { EntityService } from 'src/app/entities/services/entity.service';
 
 @Component({
@@ -31,16 +31,16 @@ export class EditorListComponent implements OnInit {
   ngOnInit() { }
 
   //#region public methods
-  openEditor(entityName: string) {
-    this.openEditorForExistingEntity(entityName);
+  openEditor(entityId: string, minimized = false) {
+    this.openEditorForExistingEntity(entityId, minimized);
   }
 
   public async createEntityAndOpenEditor(): Promise<Editor | null> {
-    const entityPath = await this.createNewEntity();
-    if (!entityPath) {
+    const entityId = await this.createNewEntity();
+    if (!entityId) {
       return null;
     } else {
-      return this.openEditorForExistingEntity(entityPath);
+      return this.openEditorForExistingEntity(entityId, false);
     }
   }
 
@@ -48,7 +48,7 @@ export class EditorListComponent implements OnInit {
     let editor = this.editors.find(x => x.id === id);
     if (editor) {
       this.editors = this.editors.filter(x => x.id !== id);
-      this.entityService.removeOpenEntity(editor.entityId);
+      this.entityService.removeOpenEditor(editor);
       if (this.editors.length > 0) {
         this.refreshEditors();
       }
@@ -69,6 +69,12 @@ export class EditorListComponent implements OnInit {
     }
   }
 
+  editorMinimized(editor: Editor, minimized: boolean) {
+    this.refreshEditors();
+    editor.minimized = minimized;
+    this.entityService.updateOpenedEditor(editor);
+  }
+
   refreshEditors() {
     for (const editor of this.editorComponents) {
       editor.refresh();
@@ -77,10 +83,10 @@ export class EditorListComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private openEditorForExistingEntity(entityPath: string) {
-    const newEditor = new Editor(uuidv4(), entityPath);
+  private openEditorForExistingEntity(entityPath: string, minimized: boolean) {
+    const newEditor = new Editor(uuidv4(), entityPath, minimized);
     this.editors.push(newEditor);
-    this.entityService.addOpenedEntity(entityPath);
+    this.entityService.addOpenedEditor(newEditor);
     this.refreshEditors();
     return newEditor;
   }
@@ -107,16 +113,16 @@ export class EditorListComponent implements OnInit {
       return null;
     }
 
-    const path = `${targetFolder}${newName}`;
+    const entityId = `${targetFolder}${newName}`;
 
-    const existingEntity = this.entityService.get(path);
+    const existingEntity = this.entityService.get(entityId);
     if (existingEntity) {
-      alert(`Entity '${path}' already exists.'`);
+      alert(`Entity '${entityId}' already exists.'`);
       return null;
     }
 
-    this.entityService.create(path, '');
-    return path;
+    this.entityService.create(entityId, '');
+    return entityId;
   }
   //#endregion
 }

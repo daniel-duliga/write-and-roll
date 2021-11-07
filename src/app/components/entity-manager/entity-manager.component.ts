@@ -37,9 +37,9 @@ export class EntityManagerComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    const openedEntities = this.entityService.getOpenedEntities();
-    for (const entity of openedEntities) {
-      this.editorListComponent.openEditor(entity);
+    const openedEditors = this.entityService.getOpenedEditors();
+    for (const editor of openedEditors) {
+      this.editorListComponent.openEditor(editor.entityId, editor.minimized);
     }
   }
 
@@ -52,20 +52,20 @@ export class EntityManagerComponent implements OnInit {
   edit(path: string) {
     this.editorListComponent.openEditor(path);
   }
-  
+
   async rename(path: string) {
     let entity: Entity | null = null;
     const openedEditor = this.editorListComponent.editorComponents.find(x => x.entity.name === path);
-    if(openedEditor) {
+    if (openedEditor) {
       entity = openedEditor?.entity;
     } else {
       entity = this.entityService.get(path);
     }
-    
+
     if (!entity) {
       return;
     }
-    
+
     const initialName = entity.name;
     const nameSegments = entity.name.split('/');
     const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', nameSegments[nameSegments.length - 1]);

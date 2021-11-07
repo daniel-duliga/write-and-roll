@@ -93,6 +93,7 @@
 .commands {
   background-color: white;
   z-index: 1;
+  padding: 1px;
 }
 
 .commands-input {

@@ -8,6 +8,7 @@
         *ngFor="let editor of editors; let i = index"
         [name]="editor.entityId"
         [mode]="mode"
+        [minimized]="editor.minimized"
         [entityService]="entityService"
         [ngStyle]="{ 
             'z-index': i,
@@ -16,6 +17,6 @@
         }"
         (onClosed)="closeEditor(editor.id)"
         (onMove)="moveEditor(editor.id, $event)"
-        (onMinMaximized)="refreshEditors()"
+        (onMinimized)="editorMinimized(editor, $event)"
     ></app-editor>
 </div>
