@@ -13,7 +13,7 @@ export const ACTIONS_ENTITY_SERVICE_TOKEN = new InjectionToken<string>("ACTIONS_
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'actions',
+    redirectTo: 'chronicles',
     pathMatch: 'full'
   },
   {

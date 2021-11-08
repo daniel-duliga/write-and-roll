@@ -22,6 +22,7 @@ export class TreeComponent implements OnInit {
   @Output() onRename: EventEmitter<string> = new EventEmitter();
   @Output() onDelete: EventEmitter<string> = new EventEmitter();
 
+  minimized = false;
   initialPaths: string[] = [];
   filter: string = '';
 
@@ -59,18 +60,22 @@ export class TreeComponent implements OnInit {
     this.onExpanded.emit(new ExpansionModelItem(node.path, this.treeControl.isExpanded(node)));
   }
 
-  foo(event: Event) {
+  stopEventPropagation(event: Event) {
     event.stopPropagation();
     event.preventDefault();
   }
 
   delete(path: string, event: Event) {
-    this.foo(event);
+    this.stopEventPropagation(event);
     if (confirm(`Are you sure you want to delete ${path}?`)) {
       this.onDelete.emit(path);
       this.paths = this.paths.filter(x => x != path);
       this.initializeDataSource();
     }
+  }
+
+  toggleMinimized() {
+    this.minimized = !this.minimized;
   }
   //#endregion
 
