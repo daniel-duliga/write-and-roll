@@ -1,11 +1,9 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
 import { CommandsComponent } from '../commands/commands.component';
-import { PromptService } from '../prompts/prompt.service';
 
 export type MoveDirection = "left" | "right";
 export type EditorMode = "markdown" | "javascript" | "default";
@@ -47,7 +45,9 @@ export class EditorComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-  ) { }
+  ) {
+    (window as any).markdownLinkClicked = this.markdownLinkClicked;
+  }
 
   //#region lifecycle events
   ngOnInit(): void {
@@ -77,7 +77,7 @@ export class EditorComponent implements OnInit {
   }
   //#endregion
 
-  //#region header buttons event handlers
+  //#region event handlers
   closeEditor() {
     if (this.validateUnsavedChanges()) {
       this.onClosed.emit();
@@ -112,6 +112,10 @@ export class EditorComponent implements OnInit {
     // Reflect saved data
     this.initialContent = this.entity.rawContent;
   }
+
+  markdownLinkClicked(entityId: string) {
+    alert(`Link for entity '${entityId}' clicked!`);
+  }
   //#endregion
 
   //#region public methods
@@ -135,44 +139,108 @@ export class EditorComponent implements OnInit {
   }
   //#endregion
 
-  //#region private methods
+  //#region codemirror postprocessing
   private postProcessCodeMirror() {
-    if (this.mode !== 'markdown') {
-      return;
-    }
+    if (this.mode !== 'markdown') { return; }
 
     if (this.codeMirror) {
-      const y = this.codeMirror.getScrollInfo().top;
-
-      for (const lineWidget of this.lineWidgets) {
-        lineWidget.clear();
-      }
-      this.lineWidgets = [];
-
-      const linesCount = this.codeMirror.lineCount();
-      for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-        const line = this.codeMirror.getLine(lineIndex);
-        const images = line.matchAll(/!\[.*\]\(.*\)/g);
-        for (const image of images) {
-          let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
-          if (imageUrl) {
-            imageUrl = imageUrl.slice(1, imageUrl.length - 1);
-
-            let widget: HTMLElement = this.renderer.createElement('img');
-            this.renderer.setAttribute(widget, 'src', imageUrl);
-            this.renderer.setStyle(widget, 'max-width', '100%');
-
-            const lineWidget = this.codeMirror.addLineWidget(lineIndex, widget);
-
-            this.lineWidgets.push(lineWidget);
-          }
-        }
-      }
-
-      this.codeMirror.scrollTo(null, y);
+      const currentScrollY = this.codeMirror.getScrollInfo().top;
+      this.clearLineWidgets();
+      this.clearTextMarkers();
+      this.processCodemirrorLines();
+      this.codeMirror.scrollTo(null, currentScrollY);
     }
   }
 
+  private clearLineWidgets() {
+    for (const lineWidget of this.lineWidgets) {
+      lineWidget.clear();
+    }
+    this.lineWidgets = [];
+  }
+
+  private clearTextMarkers() {
+    if (!this.codeMirror) { return; }
+
+    var textMarkers = this.codeMirror.getAllMarks();
+    for (const textMarker of textMarkers) {
+      textMarker.clear();
+    }
+  }
+
+  private processCodemirrorLines() {
+    if (!this.codeMirror) { return; }
+
+    const linesCount = this.codeMirror.lineCount();
+    for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+      const line = this.codeMirror.getLine(lineIndex);
+      this.renderImages(line, lineIndex);
+      this.renderInternalLinks(line, lineIndex);
+    }
+  }
+
+  private renderImages(line: string, lineIndex: number) {
+    if (!this.codeMirror) { return; }
+
+    const images = line.matchAll(/!\[[\w]+[^\)]+\]\([\w\s\:\/\.\-]+\)/g);
+    for (const image of images) {
+      let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
+      if (imageUrl) {
+        imageUrl = imageUrl.slice(1, imageUrl.length - 1);
+
+        let widget: HTMLElement = this.renderer.createElement('img');
+        this.renderer.setAttribute(widget, 'src', imageUrl);
+        this.renderer.setStyle(widget, 'max-width', '100%');
+
+        const lineWidget = this.codeMirror.addLineWidget(lineIndex, widget);
+        this.lineWidgets.push(lineWidget);
+      }
+    }
+  }
+
+  private renderInternalLinks(line: string, lineIndex: number) {
+    if (!this.codeMirror) { return; }
+
+    const links = line.matchAll(/\[[\w]+[^\)]+\]\(war:\/\/[\w\s/]+\)/g);
+    for (const link of links) {
+      var linkContent = link.toString();
+      
+      let entityNameRegExMatch = linkContent.match(/\[.*\]/g);
+      let entityIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
+      if (entityIdRegExMatch && entityNameRegExMatch) {
+        let entityName = entityNameRegExMatch.toString();
+        entityName = entityName.slice(1, entityName.length - 1);
+        
+        let entityId = entityIdRegExMatch.toString();
+        entityId = entityId.slice(7, entityId.length - 1);
+      
+        const linkIndexInLine = link.index ?? 0;
+      
+        // Highlight link name part
+        this.codeMirror.getDoc().markText(
+          { line: lineIndex, ch: linkIndexInLine },
+          { line: lineIndex, ch: linkIndexInLine + entityName.length + 2 },
+          {
+            className: 'markdown-link',
+            attributes: {
+              'entityId': entityName,
+              'onClick': `markdownLinkClicked('${entityId}')`
+            }});
+
+        // Hide link url part
+        this.codeMirror.getDoc().markText(
+          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length },
+          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length + entityIdRegExMatch.toString().length },
+          {
+            collapsed: true,
+          }
+        )
+      }
+    }
+  }
+  //#endregion
+
+  //#region private methods
   private getAndSetEntity(name: string) {
     const newEntity = this.entityService.get(name);
     if (newEntity) {

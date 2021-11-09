@@ -9,6 +9,8 @@
 ### Chronicles
 
 - Markdown editor
+  - Images rendering
+  - Internal links
 - Commands
     - Roll dice
     - Roll random tables

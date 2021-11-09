@@ -70,3 +70,7 @@ img {
 .shadow-right {
   box-shadow: 5px 0px 5px rgb(0 0 0 / 10%);
 }
+.markdown-link {
+  cursor: pointer;
+  font-weight: bold;
+}
