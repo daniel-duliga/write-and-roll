@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, NgZone, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { EditorComponent, EditorMode, MoveDirection } from 'src/app/components/editor/editor.component';
 import { v4 as uuidv4 } from 'uuid';
 import { PromptService } from 'src/app/components/prompts/prompt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Editor } from 'src/app/entities/models/editor';
 import { EntityService } from 'src/app/entities/services/entity.service';
+import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 
 @Component({
   selector: 'app-editor-list',
@@ -23,12 +23,17 @@ export class EditorListComponent implements OnInit {
   newOption = '+ Add New';
 
   constructor(
-    private route: ActivatedRoute,
     private promptService: PromptService,
     private dialog: MatDialog,
+    private editorListService: EditorListService,
+    private ngZone: NgZone
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.editorListService.onEditorOpened.subscribe(entityId => {
+      this.ngZone.run(() => this.openEditor(entityId, false));
+    })
+  }
 
   //#region public methods
   openEditor(entityId: string, minimized = false) {
@@ -83,8 +88,8 @@ export class EditorListComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private openEditorForExistingEntity(entityPath: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), entityPath, minimized);
+  private openEditorForExistingEntity(entityId: string, minimized: boolean) {
+    const newEditor = new Editor(uuidv4(), entityId, minimized);
     this.editors.push(newEditor);
     this.entityService.addOpenedEditor(newEditor);
     this.refreshEditors();

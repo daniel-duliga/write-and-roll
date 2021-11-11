@@ -3,6 +3,7 @@ import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
 import { Entity } from 'src/app/entities/models/entity';
 import { EntityService } from 'src/app/entities/services/entity.service';
+import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 import { CommandsComponent } from '../commands/commands.component';
 
 export type MoveDirection = "left" | "right";
@@ -22,6 +23,7 @@ export class EditorComponent implements OnInit {
   @Output() onClosed: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
   @Output() onMinimized: EventEmitter<boolean> = new EventEmitter();
+  @Output() onLinkClicked: EventEmitter<string> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
@@ -45,8 +47,9 @@ export class EditorComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
+    private uiService: EditorListService
   ) {
-    (window as any).markdownLinkClicked = this.markdownLinkClicked;
+    (window as any).openLink = (entityId: string) => this.linkClicked(entityId);
   }
 
   //#region lifecycle events
@@ -113,8 +116,9 @@ export class EditorComponent implements OnInit {
     this.initialContent = this.entity.rawContent;
   }
 
-  markdownLinkClicked(entityId: string) {
-    alert(`Link for entity '${entityId}' clicked!`);
+  linkClicked(entityId: string) {
+    // this.onLinkClicked.emit(entityId);
+    this.uiService.onEditorOpened.next(entityId);
   }
   //#endregion
 
@@ -182,7 +186,7 @@ export class EditorComponent implements OnInit {
   private renderImages(line: string, lineIndex: number) {
     if (!this.codeMirror) { return; }
 
-    const images = line.matchAll(/!\[[\w]+[^\)]+\]\([\w\s\:\/\.\-]+\)/g);
+    const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
     for (const image of images) {
       let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
       if (imageUrl) {
@@ -224,7 +228,7 @@ export class EditorComponent implements OnInit {
             className: 'markdown-link',
             attributes: {
               'entityId': entityName,
-              'onClick': `markdownLinkClicked('${entityId}')`
+              'onClick': `openLink('${entityId}')`
             }});
 
         // Hide link url part

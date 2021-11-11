@@ -18,5 +18,6 @@
         (onClosed)="closeEditor(editor.id)"
         (onMove)="moveEditor(editor.id, $event)"
         (onMinimized)="editorMinimized(editor, $event)"
+        (onLinkClicked)="openEditor($event, false)"
     ></app-editor>
 </div>
