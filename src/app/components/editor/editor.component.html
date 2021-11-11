@@ -1,6 +1,6 @@
 <div class="container" [ngStyle]="{ 'display': minimized ? 'none' : 'flex' }">
     <!-- Header -->
-    <div class="header">
+    <div class="header shadow-down">
         <!-- Title -->
         <div class="header-separator"></div>
         <div class="title" matTooltip="Minimize" (click)="toggleMinimize(true)">
@@ -53,13 +53,13 @@
     </div>
     
     <!-- Commands -->
-    <div class="commands">
+    <div class="commands shadow-up">
         <app-commands #commands (onCommandExecuted)="this.handleCommand($event)"></app-commands>
     </div>
 </div>
 
 <!-- Minimized -->
-<div 
+<div
     class="container-minimized"
     *ngIf="minimized"
     matTooltip="Maximize"

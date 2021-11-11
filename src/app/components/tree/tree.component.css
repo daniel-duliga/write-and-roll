@@ -16,7 +16,7 @@
   align-items: center;
   width: 25px;
   cursor: pointer;
-  border-left: 1px solid darkgray;
+  border-left: 1px solid lightgray;
 }
 
 .filter {

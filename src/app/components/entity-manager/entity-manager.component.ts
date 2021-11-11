@@ -26,7 +26,7 @@ export class EntityManagerComponent implements OnInit {
     injector: Injector,
     private dialog: MatDialog,
     private promptService: PromptService,
-  ) {
+    ) {
     const entityServiceToken = route.snapshot.data["entityServiceToken"];
     this.editorMode = route.snapshot.data["editorMode"] ?? 'default';
     this.entityService = injector.get<EntityService>(entityServiceToken);
