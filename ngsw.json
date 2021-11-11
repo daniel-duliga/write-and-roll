@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1636483781111,
+  "timestamp": 1636659778088,
   "index": "/write-and-roll/index.html",
   "assetGroups": [
     {
@@ -12,12 +12,12 @@
       },
       "urls": [
         "/write-and-roll/index.html",
-        "/write-and-roll/main.cfdc5638d45a763a42ad.js",
+        "/write-and-roll/main.23566075c33e3dce82f9.js",
         "/write-and-roll/manifest.webmanifest",
         "/write-and-roll/polyfills.2df974ef106414532fbf.js",
         "/write-and-roll/runtime.f8583a24a9effc4ba8b9.js",
         "/write-and-roll/scripts.2cf69b85ee88e9af4a1d.js",
-        "/write-and-roll/styles.200bb90df8c731223309.css"
+        "/write-and-roll/styles.a769457d51a9554c0b69.css"
       ],
       "patterns": []
     },
@@ -57,13 +57,13 @@
     "/write-and-roll/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/write-and-roll/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/write-and-roll/favicon.svg": "3e2f0b06e0a0d9e4359097cb2c44ef866b54dcc4",
-    "/write-and-roll/index.html": "281166937e4e40f8d4759b0a138dbcded1a52eb4",
-    "/write-and-roll/main.cfdc5638d45a763a42ad.js": "f696cd3bc1b43f51a6c6203afdab623ff42abe9c",
+    "/write-and-roll/index.html": "9e896d375eb3b32a377d11c7cc70f8e1d84332dc",
+    "/write-and-roll/main.23566075c33e3dce82f9.js": "6643aaa785e9bb9311d3ce141d087cb5854e2b28",
     "/write-and-roll/manifest.webmanifest": "5d2ef0bd56a6c58477fed3bc651fdfa281954540",
     "/write-and-roll/polyfills.2df974ef106414532fbf.js": "31a930619b2fd26a66daf634bbd695cd26b89c8e",
     "/write-and-roll/runtime.f8583a24a9effc4ba8b9.js": "ee5979c06b6cdd456b4adee48720200e06342857",
     "/write-and-roll/scripts.2cf69b85ee88e9af4a1d.js": "12343347193d4c9e6546c365b6bd147bb8fdfd2f",
-    "/write-and-roll/styles.200bb90df8c731223309.css": "5e21e3afdf8b0bb8339d1dc2fe4c26177abeacbe"
+    "/write-and-roll/styles.a769457d51a9554c0b69.css": "ff2c11c8e1d31ef884721104f844283ae7c0e1bb"
   },
   "navigationUrls": [
     {
