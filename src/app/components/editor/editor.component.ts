@@ -192,12 +192,17 @@ export class EditorComponent implements OnInit {
       if (imageUrl) {
         imageUrl = imageUrl.slice(1, imageUrl.length - 1);
 
-        let widget: HTMLElement = this.renderer.createElement('img');
-        this.renderer.setAttribute(widget, 'src', imageUrl);
-        this.renderer.setStyle(widget, 'max-width', '100%');
+        let image: HTMLElement = this.renderer.createElement('img');
+        this.renderer.setAttribute(image, 'src', imageUrl);
+        this.renderer.setStyle(image, 'max-height', '480px');
+        this.renderer.setStyle(image, 'max-width', '100%');
+        
+        let imageContainer: HTMLElement = this.renderer.createElement('div');
+        this.renderer.setStyle(imageContainer, 'text-align', 'center');
+        imageContainer.appendChild(image);
 
-        const lineWidget = this.codeMirror.addLineWidget(lineIndex, widget);
-        this.lineWidgets.push(lineWidget);
+        const imageWidget = this.codeMirror.addLineWidget(lineIndex, imageContainer);
+        this.lineWidgets.push(imageWidget);
       }
     }
   }

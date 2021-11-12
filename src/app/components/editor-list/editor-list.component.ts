@@ -40,7 +40,7 @@ export class EditorListComponent implements OnInit {
     this.openEditorForExistingEntity(entityId, minimized);
   }
 
-  public async createEntityAndOpenEditor(): Promise<Editor | null> {
+  public async createTopLevelEntity(): Promise<Editor | null> {
     const entityId = await this.createNewEntity();
     if (!entityId) {
       return null;
@@ -96,29 +96,13 @@ export class EditorListComponent implements OnInit {
     return newEditor;
   }
 
-  private async createNewEntity(): Promise<string | null> {
-    const allFolders = this.entityService.getAllParents();
-    const folders = allFolders;
-    folders.push(this.newOption);
-
-    let targetFolder = await this.promptService.openAutoCompletePrompt(this.dialog, 'Folder', folders);
-    if (!targetFolder) {
-      return null;
-    } else if (targetFolder === this.newOption) {
-      const parentFolder = await this.promptService.openAutoCompletePrompt(this.dialog, 'Parent Folder', allFolders);
-      targetFolder = await this.promptService.openInputPrompt(this.dialog, 'New Folder Name');
-      if (!targetFolder) {
-        return null;
-      }
-      targetFolder = `${parentFolder}${targetFolder}/`;
-    }
-
-    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name');
-    if (!newName) {
+  private async createNewEntity(targetFolder: string = ''): Promise<string | null> {
+    const name = await this.promptService.openInputPrompt(this.dialog, 'Name');
+    if (!name) {
       return null;
     }
 
-    const entityId = `${targetFolder}${newName}`;
+    const entityId = `${targetFolder}${name}`;
 
     const existingEntity = this.entityService.get(entityId);
     if (existingEntity) {

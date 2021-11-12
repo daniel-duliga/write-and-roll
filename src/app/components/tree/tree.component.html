@@ -10,10 +10,22 @@
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
-        <!-- 'New' button -->
-        <button mat-button class="button" (click)="this.onNew.emit()" matTooltip="New">
-            <mat-icon>add</mat-icon>
+        
+        <!-- Options Menu -->
+        <button class="button" mat-button matTooltip="Options" [matMenuTriggerFor]="treeMenu">
+            <mat-icon class="close-button-icon">more_vert</mat-icon>
         </button>
+        <mat-menu #treeMenu="matMenu">
+            <button mat-menu-item (click)="onNewItem.emit()">
+                <mat-icon>description</mat-icon>
+                <span>Add Item</span>
+            </button>
+            <button mat-menu-item (click)="onNewFolder.emit()">
+                <mat-icon>folder</mat-icon>
+                <span>Add Folder</span>
+            </button>
+        </mat-menu>
+        
         <!-- Minimize button -->
         <button mat-button class="button" (click)="this.toggleMinimized()" matTooltip="Minimize tree">
             <mat-icon>keyboard_double_arrow_left</mat-icon>
@@ -22,6 +34,7 @@
     
     <!-- Tree -->
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+        
         <!-- Tree node template for leaf nodes -->
         <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
             <button mat-button class="tree-node-button">
@@ -31,12 +44,12 @@
                         class="button"
                         mat-button
                         matTooltip="Options"
-                        [matMenuTriggerFor]="menu"
+                        [matMenuTriggerFor]="nodeItemMenu"
                         (click)="stopEventPropagation($event)"
                     >
                         <mat-icon class="close-button-icon">more_vert</mat-icon>
                     </button>
-                    <mat-menu #menu="matMenu">
+                    <mat-menu #nodeItemMenu="matMenu">
                         <button mat-menu-item (click)="this.onRename.emit(node.path)">
                             <mat-icon>drive_file_rename_outline</mat-icon>
                             <span>Rename</span>
