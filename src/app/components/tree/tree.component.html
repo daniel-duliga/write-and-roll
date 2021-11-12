@@ -36,9 +36,29 @@
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
         
         <!-- Tree node template for leaf nodes -->
-        <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
+        <cdk-nested-tree-node *cdkTreeNodeDef="let node;" class="tree-node">
             <button mat-button class="tree-node-button">
                 <div class="item-container" (click)="this.onEdit.emit(node.path)">
+                    <!-- Item name -->
+                    <div class="item">
+                        <mat-icon>description</mat-icon>
+                        {{node.name}}
+                    </div>
+                    
+                    <!-- Expand toggle -->
+                    <button
+                        class="button"
+                        mat-button
+                        cdkTreeNodeToggle
+                        [matTooltip]="!treeControl.isExpanded(node) ? 'Expand' : 'Collapse'"
+                        *ngIf="node.children.length > 0"
+                        [attr.aria-label]="'Toggle ' + node.name"
+                        (click)="expandNode(node)"
+                    >
+                        <mat-icon *ngIf="!treeControl.isExpanded(node)">unfold_more</mat-icon>
+                        <mat-icon *ngIf="treeControl.isExpanded(node)">unfold_less</mat-icon>
+                    </button>
+
                     <!-- Options Menu -->
                     <button 
                         class="button"
@@ -59,28 +79,7 @@
                             <span>Delete</span>
                         </button>
                     </mat-menu>
-                    
-                    <!-- Item name -->
-                    <div class="item">
-                        <mat-icon>description</mat-icon>
-                        {{node.name}}
-                    </div>
                 </div>
-            </button>
-        </cdk-nested-tree-node>
-        
-        <!-- Tree node template for expandable nodes -->
-        <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
-            <button 
-                mat-button
-                [attr.aria-label]="'Toggle ' + node.name"
-                cdkTreeNodeToggle
-                class="folder-button tree-node-button"
-                (click)="expandNode(node)"
-            >
-                <mat-icon *ngIf="!treeControl.isExpanded(node)">folder</mat-icon>
-                <mat-icon *ngIf="treeControl.isExpanded(node)">folder_open</mat-icon>
-                {{node.name}}
             </button>
             <div [class.tree-invisible]="!treeControl.isExpanded(node)">
                 <ng-container cdkTreeNodeOutlet></ng-container>
