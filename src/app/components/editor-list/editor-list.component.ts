@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Editor } from 'src/app/entities/models/editor';
 import { EntityService } from 'src/app/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
+import { Item } from 'src/app/entities/models/item';
 
 @Component({
   selector: 'app-editor-list',
@@ -41,7 +42,7 @@ export class EditorListComponent implements OnInit {
   }
 
   public async createTopLevelEntity(): Promise<Editor | null> {
-    const entityId = await this.createNewEntity();
+    const entityId = await this.createNewItem();
     if (!entityId) {
       return null;
     } else {
@@ -96,22 +97,22 @@ export class EditorListComponent implements OnInit {
     return newEditor;
   }
 
-  private async createNewEntity(targetFolder: string = ''): Promise<string | null> {
+  private async createNewItem(parentPath: string = ''): Promise<string | null> {
     const name = await this.promptService.openInputPrompt(this.dialog, 'Name');
     if (!name) {
       return null;
     }
 
-    const entityId = `${targetFolder}${name}`;
+    const itemPath = `${parentPath}${name}`;
 
-    const existingEntity = this.entityService.get(entityId);
+    const existingEntity = this.entityService.get(itemPath);
     if (existingEntity) {
-      alert(`Entity '${entityId}' already exists.'`);
+      alert(`Item '${itemPath}' already exists.'`);
       return null;
     }
 
-    this.entityService.create(entityId, '');
-    return entityId;
+    this.entityService.create(new Item(itemPath, ''));
+    return itemPath;
   }
   //#endregion
 }

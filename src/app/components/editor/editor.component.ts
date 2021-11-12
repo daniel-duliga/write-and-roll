@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
-import { Entity } from 'src/app/entities/models/entity';
+import { Item } from 'src/app/entities/models/item';
 import { EntityService } from 'src/app/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 import { CommandsComponent } from '../commands/commands.component';
@@ -28,7 +28,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  entity: Entity = new Entity();
+  entity: Item = new Item();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
 
@@ -37,10 +37,10 @@ export class EditorComponent implements OnInit {
     return this.ngxCodeMirror.codeMirror;
   }
   public get isDirty(): boolean {
-    return this.entity.rawContent !== this.initialContent;
+    return this.entity.content !== this.initialContent;
   }
   public get formattedName(): string {
-    const nameSegments = this.entity.name.split('/');
+    const nameSegments = this.entity.path.split('/');
     return nameSegments[nameSegments.length - 1];
   }
   //#endregion
@@ -102,18 +102,16 @@ export class EditorComponent implements OnInit {
       $event.preventDefault();
     }
 
-    // Validation
-    const errors = this.entity.validate();
-    if (errors !== '') {
-      alert(errors);
-      return;
+    // Save
+    const existingItem = this.entityService.get(this.entity.content);
+    if (!existingItem) {
+      this.entityService.create(this.entity);
+    } else {
+      this.entityService.update(this.entity);
     }
 
-    // Save
-    this.entityService.create(this.entity.name, this.entity.rawContent);
-
     // Reflect saved data
-    this.initialContent = this.entity.rawContent;
+    this.initialContent = this.entity.content;
   }
 
   linkClicked(entityId: string) {
@@ -139,7 +137,7 @@ export class EditorComponent implements OnInit {
   }
 
   setName(name: string) {
-    this.entity.name = name;
+    this.entity.path = name;
   }
   //#endregion
 
@@ -254,8 +252,8 @@ export class EditorComponent implements OnInit {
     const newEntity = this.entityService.get(name);
     if (newEntity) {
       this.entity = newEntity;
-      this.initialContent = this.entity.rawContent;
-      this.entity.name = name;
+      this.initialContent = this.entity.content;
+      this.entity.path = name;
     }
   }
 

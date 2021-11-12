@@ -1,5 +1,5 @@
 import { Editor } from "../models/editor";
-import { Entity } from "../models/entity";
+import { Item } from "../models/item";
 import { ExpansionModelItem } from "../models/expansion-model-item";
 
 export class EntityService {
@@ -10,45 +10,75 @@ export class EntityService {
   }
 
   //#region crud
-  create(path: string, content: string): Entity | null {
-    // Ensure content ends with new line
-    if (!content.endsWith('\n')) {
-      content = content.concat('\n');
+  create(item: Item): Item | null {
+    if(!item.content) {
+      item.content = '\n';
     }
-    // Save
-    localStorage.setItem(`${this.collectionName}/data/${path}`, content);
-    return this.get(path);
+    localStorage.setItem(`${this.collectionName}/data/${item.path}`, item.content);
+    return this.get(item.path);
   }
 
-  getAll(includeParents: boolean = false): string[] {
-    let result = this.getLeaves();
-    if (includeParents) {
-      const parents = this.getParentsByLeaves(result);
-      result = result.concat(parents);
-      result = result.sort((a, b) => a.localeCompare(b));
-    }
-
-    return result;
+  getAll(): string[] {
+    return Object
+      .keys(localStorage)
+      .filter(x => x.startsWith(`${this.collectionName}/data/`))
+      .map(x => x.replace(`${this.collectionName}/data/`, ''))
+      .sort((a, b) => a.localeCompare(b));
   }
 
-  getAllParents(): string[] {
-    const leaves = this.getAll(false);
-    return this.getParentsByLeaves(leaves);
-  }
+  get(path: string): Item | null {
+    let result: Item | null = null;
 
-  get(name: string): Entity | null {
-    let result: Entity | null = null;
-
-    const rawContent = localStorage.getItem(`${this.collectionName}/data/${name}`);
+    const rawContent = localStorage.getItem(`${this.collectionName}/data/${path}`);
     if (rawContent) {
-      result = new Entity(name, rawContent);
+      result = new Item(path, rawContent);
     }
 
     return result;
   }
 
-  delete(name: string) {
-    return localStorage.removeItem(`${this.collectionName}/data/${name}`);
+  delete(path: string) {
+    return localStorage.removeItem(`${this.collectionName}/data/${path}`);
+  }
+
+  update(item: Item) {
+    let existingItem = this.get(`${this.collectionName}/data/${item.path}`);
+    if(existingItem) {
+      if(!item.content) {
+        item.content = '\n';
+      }
+      localStorage.setItem(item.path, item.content)
+    }
+  }
+  //#endregion
+
+  move(oldPath: string, newPath: string) {
+    let item = this.get(oldPath);
+    if (item) {
+      const oldPath = item.path;
+      this.delete(oldPath);
+      item.path = newPath;
+      this.create(item);
+    }
+  }
+
+  //#region children
+  getDescendantsRecursive(parentPath: string): Item[] {
+    const result: Item[] = [];
+
+    const childPaths = Object
+      .keys(localStorage)
+      .filter(x => x.startsWith(`${this.collectionName}/data/${parentPath}/`))
+      .map(x => x.replace(`${this.collectionName}/data/`, ''));
+
+    for (const childPath of childPaths) {
+      const child = this.get(childPath);
+      if(child) {
+        result.push(child);
+      }
+    }
+
+    return result;
   }
   //#endregion
 
@@ -100,36 +130,6 @@ export class EntityService {
     if (rawResult) {
       result = JSON.parse(rawResult);
     }
-    return result;
-  }
-  //#endregion
-
-  //#region private methods
-  private getLeaves() {
-    return Object
-      .keys(localStorage)
-      .filter(x => x.startsWith(`${this.collectionName}/data/`))
-      .map(x => x.replace(`${this.collectionName}/data/`, ''))
-      .sort((a, b) => a.localeCompare(b));
-  }
-
-  private getParentsByLeaves(leafPaths: string[]): string[] {
-    let result: string[] = [];
-    for (const leafPath of leafPaths) {
-      let segments = leafPath.split('/');
-      segments = segments.slice(0, segments.length - 1).reverse();
-      let newPath = '';
-      while (segments.length > 0) {
-        let segment = segments.pop();
-        if (segment) {
-          newPath = newPath.concat(segment, '/');
-          if (!result.includes(newPath)) {
-            result.push(newPath);
-          }
-        }
-      }
-    }
-    result = result.sort((a, b) => a.localeCompare(b));
     return result;
   }
   //#endregion
