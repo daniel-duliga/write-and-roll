@@ -17,7 +17,8 @@ export class TreeComponent implements OnInit {
   @Input() title: string = '';
 
   @Output() onExpanded: EventEmitter<ExpansionModelItem> = new EventEmitter();
-  @Output() onNew: EventEmitter<void> = new EventEmitter();
+  @Output() onNewFolder: EventEmitter<void> = new EventEmitter();
+  @Output() onNewItem: EventEmitter<void> = new EventEmitter();
   @Output() onEdit: EventEmitter<string> = new EventEmitter();
   @Output() onRename: EventEmitter<string> = new EventEmitter();
   @Output() onDelete: EventEmitter<string> = new EventEmitter();

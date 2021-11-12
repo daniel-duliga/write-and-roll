@@ -5,7 +5,7 @@
         [paths]="treeEntities"
         [expansionModel]="entityService.getExpansionModel()"
         (onExpanded)="entityService.setExpansionModel($event)"
-        (onNew)="new()"
+        (onNewItem)="createNewItem()"
         (onEdit)="edit($event)"
         (onRename)="rename($event)"
         (onDelete)="delete($event)"

@@ -44,8 +44,8 @@ export class EntityManagerComponent implements OnInit {
   }
 
   //#region public methods
-  async new() {
-    await this.editorListComponent.createEntityAndOpenEditor();
+  async createNewItem() {
+    await this.editorListComponent.createTopLevelEntity();
     this.refreshEntities();
   }
 
