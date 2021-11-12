@@ -1,11 +1,11 @@
-import { Entity } from "./entity";
+import { Item } from "./item";
 
-export class RandomTable extends Entity {
+export class RandomTable extends Item {
     constructor(
-        public name: string = '',
+        public path: string = '',
         public rawContent: string = '',
         public content: any = {}
     ) {
-        super(name, rawContent);
+        super(path, rawContent);
     }
 }

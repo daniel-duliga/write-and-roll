@@ -78,7 +78,7 @@ export class CommandsComponent implements OnInit {
     const actionName = await this.prompt(actions);
     const action = this.actionEntityService.get(actionName);
     if (action) {
-      return this.actionService.run(action.rawContent, dialog);
+      return this.actionService.run(action.content, dialog);
     } else {
       console.log(`Action '${actionName}' not found.`);
       return null;

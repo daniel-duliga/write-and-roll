@@ -1,9 +1,9 @@
 import { ActivatedRoute } from "@angular/router";
-import { Entity } from "./models/entity";
+import { Item } from "./models/item";
 import { EntityService } from "./services/entity.service";
 
 export class EntityEditorComponentBase {
-    public entity: Entity = new Entity();
+    public entity: Item = new Item();
 
     protected getDataFromRoute(route: ActivatedRoute, entityService: EntityService) {
         route.paramMap.subscribe(params => {

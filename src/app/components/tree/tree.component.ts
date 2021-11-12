@@ -68,11 +68,7 @@ export class TreeComponent implements OnInit {
 
   delete(path: string, event: Event) {
     this.stopEventPropagation(event);
-    if (confirm(`Are you sure you want to delete ${path}?`)) {
-      this.onDelete.emit(path);
-      this.paths = this.paths.filter(x => x != path);
-      this.initializeDataSource();
-    }
+    this.onDelete.emit(path);
   }
 
   toggleMinimized() {
