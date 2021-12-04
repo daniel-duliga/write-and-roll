@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1636757087849,
+  "timestamp": 1638618615291,
   "index": "/write-and-roll/index.html",
   "assetGroups": [
     {
@@ -12,12 +12,12 @@
       },
       "urls": [
         "/write-and-roll/index.html",
-        "/write-and-roll/main.67a1dd45f147eaa69082.js",
+        "/write-and-roll/main.a8f8d461f07f1dab.js",
         "/write-and-roll/manifest.webmanifest",
-        "/write-and-roll/polyfills.2df974ef106414532fbf.js",
-        "/write-and-roll/runtime.f8583a24a9effc4ba8b9.js",
-        "/write-and-roll/scripts.2cf69b85ee88e9af4a1d.js",
-        "/write-and-roll/styles.a769457d51a9554c0b69.css"
+        "/write-and-roll/polyfills.4b90a8de18e672ac.js",
+        "/write-and-roll/runtime.20280b076f4dbe20.js",
+        "/write-and-roll/scripts.b3f754b3f207ea7a.js",
+        "/write-and-roll/styles.01fae000a2be6451.css"
       ],
       "patterns": []
     },
@@ -57,13 +57,13 @@
     "/write-and-roll/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/write-and-roll/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/write-and-roll/favicon.svg": "3e2f0b06e0a0d9e4359097cb2c44ef866b54dcc4",
-    "/write-and-roll/index.html": "d503d0a19ef059738a87262d492492e7ae39a0ee",
-    "/write-and-roll/main.67a1dd45f147eaa69082.js": "7d38c07a9d020ebd8939d41cdfad0584fd0f9b6d",
+    "/write-and-roll/index.html": "be152338025b56c69bedbc1d77792b38eef3b857",
+    "/write-and-roll/main.a8f8d461f07f1dab.js": "c7f6c8768fb92394a8b2b4096af847e0b4d41753",
     "/write-and-roll/manifest.webmanifest": "5d2ef0bd56a6c58477fed3bc651fdfa281954540",
-    "/write-and-roll/polyfills.2df974ef106414532fbf.js": "31a930619b2fd26a66daf634bbd695cd26b89c8e",
-    "/write-and-roll/runtime.f8583a24a9effc4ba8b9.js": "ee5979c06b6cdd456b4adee48720200e06342857",
-    "/write-and-roll/scripts.2cf69b85ee88e9af4a1d.js": "12343347193d4c9e6546c365b6bd147bb8fdfd2f",
-    "/write-and-roll/styles.a769457d51a9554c0b69.css": "ff2c11c8e1d31ef884721104f844283ae7c0e1bb"
+    "/write-and-roll/polyfills.4b90a8de18e672ac.js": "e197e58852a6612be26cfafe032b8a26196c02b4",
+    "/write-and-roll/runtime.20280b076f4dbe20.js": "e6590c92ff6f50b47bae975e466e78e1b9881a60",
+    "/write-and-roll/scripts.b3f754b3f207ea7a.js": "2f1d54f2ddf29d926fe0eadcce0b1a95941452de",
+    "/write-and-roll/styles.01fae000a2be6451.css": "5c6313728273421f31f59230b27c24d4568866e0"
   },
   "navigationUrls": [
     {
