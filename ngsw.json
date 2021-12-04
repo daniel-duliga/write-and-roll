@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1638618615291,
+  "timestamp": 1638638631510,
   "index": "/write-and-roll/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "/write-and-roll/index.html",
-        "/write-and-roll/main.a8f8d461f07f1dab.js",
+        "/write-and-roll/main.50433a90475260b0.js",
         "/write-and-roll/manifest.webmanifest",
         "/write-and-roll/polyfills.4b90a8de18e672ac.js",
         "/write-and-roll/runtime.20280b076f4dbe20.js",
@@ -46,7 +46,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/write-and-roll/assets/data/Ironsworn.json": "3efb0a5ac2949613eb9c89b63c19757ae3190215",
+    "/write-and-roll/assets/data/Ironsworn.json": "3f963ecf9fc084e9e2661c7a8d3b20ddcc762662",
     "/write-and-roll/assets/fonts/JetBrainsMono-Regular.woff2": "c55f0309ef31b079ac7e71f71982dd54808a80b7",
     "/write-and-roll/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
     "/write-and-roll/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
@@ -57,8 +57,8 @@
     "/write-and-roll/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/write-and-roll/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/write-and-roll/favicon.svg": "3e2f0b06e0a0d9e4359097cb2c44ef866b54dcc4",
-    "/write-and-roll/index.html": "be152338025b56c69bedbc1d77792b38eef3b857",
-    "/write-and-roll/main.a8f8d461f07f1dab.js": "c7f6c8768fb92394a8b2b4096af847e0b4d41753",
+    "/write-and-roll/index.html": "e0e52e76451fffbdd389eedd3d6dbc4f50d02945",
+    "/write-and-roll/main.50433a90475260b0.js": "77ea2746cb3743f8ffad0b5a34450c3451d37ec2",
     "/write-and-roll/manifest.webmanifest": "5d2ef0bd56a6c58477fed3bc651fdfa281954540",
     "/write-and-roll/polyfills.4b90a8de18e672ac.js": "e197e58852a6612be26cfafe032b8a26196c02b4",
     "/write-and-roll/runtime.20280b076f4dbe20.js": "e6590c92ff6f50b47bae975e466e78e1b9881a60",
