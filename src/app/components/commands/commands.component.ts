@@ -91,11 +91,11 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollTableCommand(): Promise<string | null> {
-    const tables = this.randomTableEntityService.getAll();
+    const tables = this.randomTableEntityService.getAllNonEmpty();
     const tableName = await this.prompt(tables);
     const table = this.randomTableEntityService.get(tableName);
     if (table) {
-      return TablesUtil.rollOnTable(table.content);
+      return TablesUtil.rollOnTable(table.parsedContent);
     } else {
       console.log(`Random table '${tableName}' not found.`);
       return null;

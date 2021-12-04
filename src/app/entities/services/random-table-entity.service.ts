@@ -16,7 +16,7 @@ export class RandomTableEntityService extends EntityService {
     if (entity) {
       const randomTable = new RandomTable(entity.path, entity.content);
       if (entity.content) {
-        randomTable.content = this.papa.parse(entity.content).data;
+        randomTable.parsedContent = this.papa.parse(entity.content).data;
       }
       return randomTable;
     } else {

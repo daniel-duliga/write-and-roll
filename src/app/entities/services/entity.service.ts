@@ -11,9 +11,6 @@ export class EntityService {
 
   //#region crud
   create(item: Item): Item | null {
-    if(!item.content) {
-      item.content = '\n';
-    }
     localStorage.setItem(`${this.collectionName}/data/${item.path}`, item.content);
     return this.get(item.path);
   }
@@ -26,11 +23,21 @@ export class EntityService {
       .sort((a, b) => a.localeCompare(b));
   }
 
+  getAllNonEmpty(): string[] {
+    return Object
+      .keys(localStorage)
+      .filter(x => 
+        x.startsWith(`${this.collectionName}/data/`) &&
+        localStorage[x] !== ''
+      ).map(x => x.replace(`${this.collectionName}/data/`, ''))
+      .sort((a, b) => a.localeCompare(b));
+  }
+
   get(path: string): Item | null {
     let result: Item | null = null;
 
     const rawContent = localStorage.getItem(`${this.collectionName}/data/${path}`);
-    if (rawContent) {
+    if (rawContent !== null) {
       result = new Item(path, rawContent);
     }
 
