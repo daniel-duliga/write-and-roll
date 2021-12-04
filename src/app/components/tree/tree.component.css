@@ -1,14 +1,28 @@
 .container {
   height: 100%;
   display: flex;
+}
+
+.content {
+  height: 100%;
+  display: flex;
   flex-direction: column;
+  flex: 1;
+}
+
+.minimize-toggle {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  width: 25px;
+  cursor: pointer;
+  border-left: 1px solid lightgray;
 }
 
 .filter {
   display: flex;
   align-items: center;
   height: 32px;
-  z-index: 1;
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
 }
@@ -22,6 +36,8 @@
   overflow: auto;
   flex-grow: 1;
   background-color: white;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .item-container {
@@ -34,6 +50,7 @@
   justify-content: left;
   align-items: center;
   text-align: left;
+  width: 100%;
 }
 
 .tree-invisible {
@@ -69,15 +86,17 @@
   text-align: left;
 }
 
-.action-button {
-  float: right;
-  margin-left: auto;
-}
-
 .tree-node-button {
   width: 100%;
   border-left: 0 !important;
   border-radius: 0 !important;
   border-bottom: 1px solid lightgray;
   font-size: 10pt;
+  padding: 0;
+}
+
+.button {
+  min-width: 33px !important;
+  padding: 0;
+  border-radius: 0;
 }

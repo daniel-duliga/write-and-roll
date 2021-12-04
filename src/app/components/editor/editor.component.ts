@@ -1,9 +1,13 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
-import { Entity } from 'src/app/entities/models/entity';
+import { Item } from 'src/app/entities/models/item';
 import { EntityService } from 'src/app/entities/services/entity.service';
+import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 import { CommandsComponent } from '../commands/commands.component';
+
+export type MoveDirection = "left" | "right";
+export type EditorMode = "markdown" | "javascript" | "default";
 
 @Component({
   selector: 'app-editor',
@@ -11,56 +15,50 @@ import { CommandsComponent } from '../commands/commands.component';
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() name: string = '';
-  @Input() mode: string = '';
+  @Input() name: string = ''; // only used for loading the initial entity
+  @Input() mode: EditorMode = "default";
+  @Input() minimized = false;
   @Input() entityService!: EntityService;
-  @Input() showNewButton: boolean = true;
-  @Input() showCommandsSection: boolean = true;
 
-  @Output() onChanged: EventEmitter<string> = new EventEmitter();
-  @Output() onClosed: EventEmitter<boolean> = new EventEmitter();
-  @Output() onNew: EventEmitter<boolean> = new EventEmitter();
+  @Output() onClosed: EventEmitter<void> = new EventEmitter();
+  @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
+  @Output() onMinimized: EventEmitter<boolean> = new EventEmitter();
+  @Output() onLinkClicked: EventEmitter<string> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  entity: Entity = { name: '', rawContent: '', validate: () => '' };
-  otherEntities: string[] = [];
-  initialName: string = '';
+  entity: Item = new Item();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
-  search = true;
 
   //#region properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
   public get isDirty(): boolean {
-    return this.entity.rawContent !== this.initialContent;
+    return this.entity.content !== this.initialContent;
   }
   public get formattedName(): string {
-    const nameSegments = this.entity.name.split('/');
+    const nameSegments = this.entity.path.split('/');
     return nameSegments[nameSegments.length - 1];
   }
   //#endregion
 
   constructor(
-    private renderer: Renderer2
-  ) { }
+    private renderer: Renderer2,
+    private uiService: EditorListService
+  ) {
+    (window as any).openLink = (entityId: string) => this.linkClicked(entityId);
+  }
 
   //#region lifecycle events
   ngOnInit(): void {
-    this.otherEntities = this.entityService.getAllPaths(true);
-    this.getAndSetChronicle(this.name);
-    this.automaticToggleSearchMode();
+    this.getAndSetEntity(this.name);
   }
 
   ngAfterViewInit() {
-    this.registerCodeMirrorExtraKeys();
-    if (this.codeMirror) {
-      this.codeMirror.on('changes', () => this.postProcessCodeMirror());
-      this.codeMirror.focus();
-    }
+    this.configureCodeMirror();
     this.refresh();
   }
   //#endregion
@@ -82,6 +80,46 @@ export class EditorComponent implements OnInit {
   }
   //#endregion
 
+  //#region event handlers
+  closeEditor() {
+    if (this.validateUnsavedChanges()) {
+      this.onClosed.emit();
+    }
+  }
+
+  toggleMinimize(minimized: boolean) {
+    this.minimized = minimized;
+    this.onMinimized.emit(minimized);
+  }
+
+  move(direction: MoveDirection) {
+    this.onMove.emit(direction);
+  }
+
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+
+    // Save
+    const existingItem = this.entityService.get(this.entity.content);
+    if (!existingItem) {
+      this.entityService.create(this.entity);
+    } else {
+      this.entityService.update(this.entity);
+    }
+
+    // Reflect saved data
+    this.initialContent = this.entity.content;
+  }
+
+  linkClicked(entityId: string) {
+    // this.onLinkClicked.emit(entityId);
+    this.uiService.onEditorOpened.next(entityId);
+  }
+  //#endregion
+
   //#region public methods
   refresh() {
     setTimeout(() => {
@@ -91,32 +129,6 @@ export class EditorComponent implements OnInit {
     }, 250);
   }
 
-  closeEditor() {
-    if (this.validateUnsavedChanges()) {
-      this.onClosed.emit(true);
-    }
-  }
-
-  toggleSearch() {
-    this.search = !this.search;
-  }
-
-  changeEntityName(name: string) {
-    this.entity.name = name;
-  }
-
-  changeEntity(name: string) {
-    if (this.validateUnsavedChanges()) {
-      this.getAndSetChronicle(name);
-      this.automaticToggleSearchMode();
-      this.onChanged.emit(name);
-    }
-  }
-
-  openNewEditor() {
-    this.onNew.emit(true);
-  }
-
   handleCommand(option: string) {
     if (option && this.codeMirror) {
       this.codeMirror.replaceSelection(`\`${option}\``);
@@ -124,87 +136,141 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  save($event: Event | null = null) {
-    // If triggered by key combination, prevent default browser save action
-    if ($event) {
-      $event.preventDefault();
+  setName(name: string) {
+    this.entity.path = name;
+  }
+  //#endregion
+
+  //#region codemirror postprocessing
+  private postProcessCodeMirror() {
+    if (this.mode !== 'markdown') { return; }
+
+    if (this.codeMirror) {
+      const currentScrollY = this.codeMirror.getScrollInfo().top;
+      this.clearLineWidgets();
+      this.clearTextMarkers();
+      this.processCodemirrorLines();
+      this.codeMirror.scrollTo(null, currentScrollY);
     }
+  }
 
-    // Validation
-    const errors = this.entity.validate();
-    if (errors !== '') {
-      alert(errors);
-      return;
+  private clearLineWidgets() {
+    for (const lineWidget of this.lineWidgets) {
+      lineWidget.clear();
     }
+    this.lineWidgets = [];
+  }
 
-    // Save
-    if (this.initialName) {
-      this.entityService.delete(this.initialName);
+  private clearTextMarkers() {
+    if (!this.codeMirror) { return; }
+
+    var textMarkers = this.codeMirror.getAllMarks();
+    for (const textMarker of textMarkers) {
+      textMarker.clear();
     }
+  }
 
-    this.entityService.create(this.entity.name, this.entity.rawContent);
+  private processCodemirrorLines() {
+    if (!this.codeMirror) { return; }
 
-    this.initialContent = this.entity.rawContent;
+    const linesCount = this.codeMirror.lineCount();
+    for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+      const line = this.codeMirror.getLine(lineIndex);
+      this.renderImages(line, lineIndex);
+      this.renderInternalLinks(line, lineIndex);
+    }
+  }
 
-    this.otherEntities = this.entityService.getAllPaths(true);
+  private renderImages(line: string, lineIndex: number) {
+    if (!this.codeMirror) { return; }
+
+    const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
+    for (const image of images) {
+      let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
+      if (imageUrl) {
+        imageUrl = imageUrl.slice(1, imageUrl.length - 1);
+
+        let image: HTMLElement = this.renderer.createElement('img');
+        this.renderer.setAttribute(image, 'src', imageUrl);
+        this.renderer.setStyle(image, 'max-height', '480px');
+        this.renderer.setStyle(image, 'max-width', '100%');
+        
+        let imageContainer: HTMLElement = this.renderer.createElement('div');
+        this.renderer.setStyle(imageContainer, 'text-align', 'center');
+        imageContainer.appendChild(image);
+
+        const imageWidget = this.codeMirror.addLineWidget(lineIndex, imageContainer);
+        this.lineWidgets.push(imageWidget);
+      }
+    }
+  }
+
+  private renderInternalLinks(line: string, lineIndex: number) {
+    if (!this.codeMirror) { return; }
+
+    const links = line.matchAll(/\[[\w]+[^\)]+\]\(war:\/\/[\w\s/]+\)/g);
+    for (const link of links) {
+      var linkContent = link.toString();
+      
+      let entityNameRegExMatch = linkContent.match(/\[.*\]/g);
+      let entityIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
+      if (entityIdRegExMatch && entityNameRegExMatch) {
+        let entityName = entityNameRegExMatch.toString();
+        entityName = entityName.slice(1, entityName.length - 1);
+        
+        let entityId = entityIdRegExMatch.toString();
+        entityId = entityId.slice(7, entityId.length - 1);
+      
+        const linkIndexInLine = link.index ?? 0;
+      
+        // Highlight link name part
+        this.codeMirror.getDoc().markText(
+          { line: lineIndex, ch: linkIndexInLine },
+          { line: lineIndex, ch: linkIndexInLine + entityName.length + 2 },
+          {
+            className: 'markdown-link',
+            attributes: {
+              'entityId': entityName,
+              'onClick': `openLink('${entityId}')`
+            }});
+
+        // Hide link url part
+        this.codeMirror.getDoc().markText(
+          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length },
+          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length + entityIdRegExMatch.toString().length },
+          {
+            collapsed: true,
+          }
+        )
+      }
+    }
   }
   //#endregion
 
   //#region private methods
-  private postProcessCodeMirror() {
-    if (this.mode !== 'markdown') {
-      return;
-    }
-
-    if (this.codeMirror) {
-      const y = this.codeMirror.getScrollInfo().top;
-
-      for (const lineWidget of this.lineWidgets) {
-        lineWidget.clear();
-      }
-      this.lineWidgets = [];
-
-      const linesCount = this.codeMirror.lineCount();
-      for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-        const line = this.codeMirror.getLine(lineIndex);
-        const images = line.matchAll(/!\[.*\]\(.*\)/g);
-        for (const image of images) {
-          let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
-          if (imageUrl) {
-            imageUrl = imageUrl.slice(1, imageUrl.length - 1);
-
-            let widget: HTMLElement = this.renderer.createElement('img');
-            this.renderer.setAttribute(widget, 'src', imageUrl);
-            this.renderer.setStyle(widget, 'max-width', '100%');
-
-            const lineWidget = this.codeMirror.addLineWidget(lineIndex, widget);
-
-            this.lineWidgets.push(lineWidget);
-          }
-        }
-      }
-
-      this.codeMirror.scrollTo(null, y);
+  private getAndSetEntity(name: string) {
+    const newEntity = this.entityService.get(name);
+    if (newEntity) {
+      this.entity = newEntity;
+      this.initialContent = this.entity.content;
+      this.entity.path = name;
     }
   }
 
-  private getAndSetChronicle(name: string) {
-    this.entity = this.entityService.get(name);
-    this.initialContent = this.entity.rawContent;
-  }
-  private automaticToggleSearchMode() {
-    this.search = this.name === '' || this.name.endsWith('/');
-  }
-  private registerCodeMirrorExtraKeys() {
+  private configureCodeMirror() {
     if (this.codeMirror) {
-      this.codeMirror.setOption(
-        "extraKeys", {
+      this.codeMirror.setOption("extraKeys", {
         Enter: function (cm) {
           cm.execCommand("newlineAndIndentContinueMarkdownList");
         }
       });
+
+      this.codeMirror.on('changes', () => this.postProcessCodeMirror());
+
+      this.codeMirror.focus();
     }
   }
+
   private validateUnsavedChanges() {
     return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
   }

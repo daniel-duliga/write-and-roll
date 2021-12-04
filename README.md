@@ -1,6 +1,6 @@
 # Write and Roll
 
-[![Build and deploy to GitHub Pages](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml/badge.svg?branch=main)](https://github.com/daniel-duliga/write-and-roll/actions/workflows/main_as-write-and-roll.yml)
+[![Build and deploy to GitHub Pages](https://github.com/daniel-duliga/write-and-roll/actions/workflows/build-and-deploy-dry-run.yml/badge.svg)](https://github.com/daniel-duliga/write-and-roll/actions/workflows/build-and-deploy-dry-run.yml)
 
 **Demo:** https://daniel-duliga.github.io/write-and-roll
 
@@ -9,6 +9,8 @@
 ### Chronicles
 
 - Markdown editor
+  - Images rendering
+  - Internal links
 - Commands
     - Roll dice
     - Roll random tables

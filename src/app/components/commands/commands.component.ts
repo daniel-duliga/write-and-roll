@@ -3,10 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { ActionEntityService } from 'src/app/entities/services/action-entity.service';
 import { RandomTableEntityService } from 'src/app/entities/services/random-table-entity.service';
-import { ActionsService } from 'src/app/pages/actions/actions.service';
+import { ActionsService } from 'src/app/services/actions.service';
 import { DiceUtil } from 'src/app/trpg/dice/dice.util';
 import { TablesUtil } from 'src/app/trpg/tables.util';
-import { AutoCompleteFieldComponent } from '../fields/auto-complete-field/auto-complete-field.component';
+import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete-field.component';
 
 @Component({
   selector: 'app-commands',
@@ -59,13 +59,13 @@ export class CommandsComponent implements OnInit {
     let result = option;
     switch (option) {
       case '🔥 Roll Action': {
-        return await this.executeRollActionCommand(dialog);
+        return await this.executeRollActionCommand(dialog) ?? '';
       }
       case '🎲 Roll Dice': {
         return await this.executeRollDiceCommand();
       }
       case '🎱 Roll Table': {
-        return await this.executeRollTableCommand();
+        return await this.executeRollTableCommand() ?? '';
       }
       default: {
         return result;
@@ -73,11 +73,16 @@ export class CommandsComponent implements OnInit {
     }
   }
 
-  private async executeRollActionCommand(dialog: MatDialog): Promise<string> {
-    const actions = this.actionEntityService.getAllPaths();
+  private async executeRollActionCommand(dialog: MatDialog): Promise<string | null> {
+    const actions = this.actionEntityService.getAll();
     const actionName = await this.prompt(actions);
     const action = this.actionEntityService.get(actionName);
-    return this.actionService.run(action.rawContent, dialog);
+    if (action) {
+      return this.actionService.run(action.content, dialog);
+    } else {
+      console.log(`Action '${actionName}' not found.`);
+      return null;
+    }
   }
 
   private async executeRollDiceCommand(): Promise<string> {
@@ -85,11 +90,16 @@ export class CommandsComponent implements OnInit {
     return DiceUtil.rollDiceFormula(formula).toString();
   }
 
-  private async executeRollTableCommand(): Promise<string> {
-    const tables = this.randomTableEntityService.getAllPaths();
+  private async executeRollTableCommand(): Promise<string | null> {
+    const tables = this.randomTableEntityService.getAll();
     const tableName = await this.prompt(tables);
     const table = this.randomTableEntityService.get(tableName);
-    return TablesUtil.rollOnTable(table.content);
+    if (table) {
+      return TablesUtil.rollOnTable(table.content);
+    } else {
+      console.log(`Random table '${tableName}' not found.`);
+      return null;
+    }
   }
 
   private onCommandHandled() {

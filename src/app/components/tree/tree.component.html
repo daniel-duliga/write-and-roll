@@ -1,6 +1,7 @@
-<div class="container">
-    <!-- Filter -->
-    <div class="filter shadow-small-down">
+<div *ngIf="!minimized" class="content">
+    <!-- Header -->
+    <div class="filter">
+        <!-- Filter -->
         <mat-form-field appearance="outline" class="form-field">
             <mat-icon matPrefix>search</mat-icon>
             <input type="text" placeholder="Filter" aria-label="Filter" matInput [(ngModel)]="filter"
@@ -9,45 +10,83 @@
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
-        <button mat-icon-button class="" (click)="new()" matTooltip="New">
-            <mat-icon>add</mat-icon>
+        
+        <!-- Options Menu -->
+        <button class="button" mat-button matTooltip="Options" [matMenuTriggerFor]="treeMenu">
+            <mat-icon class="close-button-icon">more_vert</mat-icon>
+        </button>
+        <mat-menu #treeMenu="matMenu">
+            <button mat-menu-item (click)="onNewItem.emit()">
+                <mat-icon>description</mat-icon>
+                <span>Add Item</span>
+            </button>
+            <button mat-menu-item (click)="onNewFolder.emit()">
+                <mat-icon>folder</mat-icon>
+                <span>Add Folder</span>
+            </button>
+        </mat-menu>
+        
+        <!-- Minimize button -->
+        <button mat-button class="button" (click)="this.toggleMinimized()" matTooltip="Minimize tree">
+            <mat-icon>keyboard_double_arrow_left</mat-icon>
         </button>
     </div>
+    
     <!-- Tree -->
     <cdk-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+        
         <!-- Tree node template for leaf nodes -->
-        <cdk-nested-tree-node *cdkTreeNodeDef="let node" class="tree-node">
+        <cdk-nested-tree-node *cdkTreeNodeDef="let node;" class="tree-node">
             <button mat-button class="tree-node-button">
-                <div class="item-container" (click)="edit(node.path)">
+                <div class="item-container" (click)="this.onEdit.emit(node.path)">
+                    <!-- Item name -->
                     <div class="item">
                         <mat-icon>description</mat-icon>
                         {{node.name}}
                     </div>
-                    <button mat-icon-button (click)="delete(node.path, $event)" class="action-button">
-                        <mat-icon>delete</mat-icon>
+                    
+                    <!-- Expand toggle -->
+                    <button
+                        class="button"
+                        mat-button
+                        cdkTreeNodeToggle
+                        [matTooltip]="!treeControl.isExpanded(node) ? 'Expand' : 'Collapse'"
+                        *ngIf="node.children.length > 0"
+                        [attr.aria-label]="'Toggle ' + node.name"
+                        (click)="expandNode(node)"
+                    >
+                        <mat-icon *ngIf="!treeControl.isExpanded(node)">unfold_more</mat-icon>
+                        <mat-icon *ngIf="treeControl.isExpanded(node)">unfold_less</mat-icon>
                     </button>
+
+                    <!-- Options Menu -->
+                    <button 
+                        class="button"
+                        mat-button
+                        matTooltip="Options"
+                        [matMenuTriggerFor]="nodeItemMenu"
+                        (click)="stopEventPropagation($event)"
+                    >
+                        <mat-icon class="close-button-icon">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #nodeItemMenu="matMenu">
+                        <button mat-menu-item (click)="this.onRename.emit(node.path)">
+                            <mat-icon>drive_file_rename_outline</mat-icon>
+                            <span>Rename</span>
+                        </button>
+                        <button mat-menu-item (click)="this.delete(node.path, $event)">
+                            <mat-icon>delete</mat-icon>
+                            <span>Delete</span>
+                        </button>
+                    </mat-menu>
                 </div>
-            </button>
-        </cdk-nested-tree-node>
-        <!-- Tree node template for expandable nodes -->
-        <cdk-nested-tree-node *cdkTreeNodeDef="let node; when: hasChild" class="tree-node">
-            <button 
-                mat-button
-                [attr.aria-label]="'Toggle ' + node.name"
-                cdkTreeNodeToggle
-                class="folder-button tree-node-button"
-                (click)="expandNode(node)"
-            >
-                <mat-icon *ngIf="!treeControl.isExpanded(node)">folder</mat-icon>
-                <mat-icon *ngIf="treeControl.isExpanded(node)">folder_open</mat-icon>
-                {{node.name}}
-                <button mat-icon-button class="action-button" (click)="add(node.path)">
-                    <mat-icon>add</mat-icon>
-                </button>
             </button>
             <div [class.tree-invisible]="!treeControl.isExpanded(node)">
                 <ng-container cdkTreeNodeOutlet></ng-container>
             </div>
         </cdk-nested-tree-node>
     </cdk-tree>
+</div>
+<div *ngIf="minimized" class="minimize-toggle" (click)="toggleMinimized()" matTooltip="Maximize tree" matTooltipPosition="right">
+    <mat-icon>keyboard_double_arrow_right</mat-icon>
 </div>

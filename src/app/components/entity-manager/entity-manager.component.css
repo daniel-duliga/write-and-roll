@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    height: 100%;
+}
+
+.tree {
+    max-width: 350px;
+    z-index: 1;
+}
+
+.editors-container {
+    width: 100%;
+    overflow: auto;
+}

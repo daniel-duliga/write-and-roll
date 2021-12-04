@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PagesConfig } from '../../pages/pages-config';
+import { PagesConfig } from './pages-config';
 
 @Component({
   selector: 'app-sidebar',
@@ -8,7 +8,7 @@ import { PagesConfig } from '../../pages/pages-config';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-  expanded = true;
+  expanded = false;
   inBetween = false;
   minimized = false;
   items = PagesConfig.pages;

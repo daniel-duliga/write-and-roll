@@ -1,44 +1,41 @@
 // Core
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 // Angular Material
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { EasymdeModule } from 'ngx-easymde';
 
 // Internal
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { RandomTableCreateEditComponent } from './pages/random-tables/random-table-create-edit/random-table-create-edit.component';
-import { RandomTableListComponent } from './pages/random-tables/random-table-list/random-table-list.component';
-import { TreeComponent } from './components/tree/tree.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AutoCompleteFieldComponent } from './components/auto-complete-field/auto-complete-field.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
-import { InputComponent } from './components/prompts/input/input.component';
-import { AutoCompleteFieldComponent } from './components/fields/auto-complete-field/auto-complete-field.component';
-import { ChronicleCreateEditComponent } from './pages/chronicles/chronicle-create-edit/chronicle-create-edit.component';
-import { ChronicleListComponent } from './pages/chronicles/chronicle-list/chronicle-list.component';
-import { ActionListComponent } from './pages/actions/action-list/action-list.component';
-import { ActionCreateEditComponent } from './pages/actions/action-create-edit/action-create-edit.component';
-import { ImportExportComponent } from './pages/import-export/import-export.component';
-import { EditorComponent } from './components/editor/editor.component';
+import { EntityManagerComponent } from './components/entity-manager/entity-manager.component';
 import { CommandsComponent } from './components/commands/commands.component';
+import { EditorComponent } from './components/editor/editor.component';
+import { EditorListComponent } from './components/editor-list/editor-list.component';
+import { ImportExportComponent } from './components/import-export/import-export.component';
+import { InputComponent } from './components/prompts/input/input.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { TreeComponent } from './components/tree/tree.component';
 
 @NgModule({
   declarations: [
@@ -46,14 +43,10 @@ import { CommandsComponent } from './components/commands/commands.component';
     AutoCompletePromptComponent,
     InputComponent,
     SidebarComponent,
-    RandomTableCreateEditComponent,
-    RandomTableListComponent,
     TreeComponent,
     AutoCompleteFieldComponent,
-    ChronicleListComponent,
-    ChronicleCreateEditComponent,
-    ActionListComponent,
-    ActionCreateEditComponent,
+    EntityManagerComponent,
+    EditorListComponent,
     ImportExportComponent,
     EditorComponent,
     CommandsComponent,
@@ -84,6 +77,7 @@ import { CommandsComponent } from './components/commands/commands.component';
     CdkTreeModule,
     MatSnackBarModule,
     MatCheckboxModule,
+    MatMenuModule,
 
     // Third-party
     CodemirrorModule,
