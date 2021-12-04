@@ -23,7 +23,7 @@ export class ApiService {
   rollTable(tableName: string): string {
     const table = this.randomTableEntityService.get(tableName);
     if (table) {
-      return TablesUtil.rollOnTable(table.content);
+      return TablesUtil.rollOnTable(table.parsedContent);
     } else {
       return `Table ${tableName} not found`;
     }
