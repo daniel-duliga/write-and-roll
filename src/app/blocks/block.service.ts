@@ -31,34 +31,32 @@ export class BlockService {
         }
       }
     }
-    
-    console.log(this.index);
   }
 
   private parseBlock(blockMatch: RegExpMatchArray) {
-    const blockContent = blockMatch[0];
+    let content = blockMatch[0];
 
-    const typeMatches = blockContent.match(/[^```][\w]+\s+/);
+    const typeMatches = content.match(/[^```][\w]+\s+/);
     if (!typeMatches) {
       return;
     }
     const type = typeMatches[0].trim();
     
-    const nameMatches = blockContent.match(new RegExp(`[^(\`\`\`\\s*${type})].+`));
+    const nameMatches = content.match(new RegExp(`[^(\`\`\`\\s*${type})].+`));
     if (!nameMatches) {
       return;
     }
     const name = nameMatches[0].trim();
 
-    const content = blockContent.slice(blockContent.indexOf('\n') + 1, blockContent.lastIndexOf('\n'));
+    content = content.slice(content.indexOf('\n') + 1, content.lastIndexOf('\n'));
 
     switch (type) {
       case "action": {
-        this.index.actions.push(new Action(name, content));
+        this.index.addAction(new Action(name, content));
         break;
       }
       case "table": {
-        this.index.randomTables.push(new RandomTable(name, this.papa.parse(content).data));
+        this.index.addRandomTable(new RandomTable(name, this.papa.parse(content).data));
         break;
       }
       default: {
