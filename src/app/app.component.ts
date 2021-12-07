@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NewEntityService } from './services/new-entity.service';
+import { BlockService } from './blocks/block.service';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { NewEntityService } from './services/new-entity.service';
 export class AppComponent implements OnInit {
   title = 'write-and-roll';
 
-  constructor(private newEntityService: NewEntityService) { }
+  constructor(private newEntityService: BlockService) { }
 
   ngOnInit(): void {
     this.newEntityService.initialize();

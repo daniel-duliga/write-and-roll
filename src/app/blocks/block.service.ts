@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Papa } from 'ngx-papaparse';
+import { RandomTable } from './random-table';
 import { ChronicleEntityService } from '../entities/services/chronicle-entity.service';
+import { Action } from './action';
+import { BlocksIndex } from './block-index';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NewEntityService {
-  constructor(private chronicleService: ChronicleEntityService) { }
+export class BlockService {
+  readonly index = new BlocksIndex();
+
+  constructor(
+    private chronicleService: ChronicleEntityService,
+    private papa: Papa) {}
 
   initialize() {
     const chroniclePaths = this.chronicleService.getAllNonEmpty();
@@ -23,6 +31,8 @@ export class NewEntityService {
         }
       }
     }
+    
+    console.log(this.index);
   }
 
   private parseBlock(blockMatch: RegExpMatchArray) {
@@ -33,25 +43,27 @@ export class NewEntityService {
       return;
     }
     const type = typeMatches[0].trim();
-
+    
     const nameMatches = blockContent.match(new RegExp(`[^(\`\`\`\\s*${type})].+`));
     if (!nameMatches) {
       return;
     }
     const name = nameMatches[0].trim();
 
-    console.log(`Found ${type} '${name}'`);
+    const content = blockContent.slice(blockContent.indexOf('\n') + 1, blockContent.lastIndexOf('\n'));
 
-    // switch (type) {
-    //   case "action": {
-    //     break;
-    //   }
-    //   case "table": {
-    //     break;
-    //   }
-    //   default: {
-    //     console.log(`Found unknown type ${type[0]}.`);
-    //   }
-    // }
+    switch (type) {
+      case "action": {
+        this.index.actions.push(new Action(name, content));
+        break;
+      }
+      case "table": {
+        this.index.randomTables.push(new RandomTable(name, this.papa.parse(content).data));
+        break;
+      }
+      default: {
+        console.log(`Found unknown type ${type[0]}.`);
+      }
+    }
   }
 }
