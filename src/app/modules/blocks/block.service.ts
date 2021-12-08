@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { RandomTable } from './random-table';
-import { ChronicleEntityService } from '../entities/services/chronicle-entity.service';
 import { Action } from './action';
 import { BlocksIndex } from './block-index';
-import { Item } from '../entities/models/item';
+import { Item } from '../..//modules/entities/models/item';
 
 @Injectable({
   providedIn: 'root'

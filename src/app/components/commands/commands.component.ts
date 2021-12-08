@@ -1,11 +1,11 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { ActionEntityService } from 'src/app/entities/services/action-entity.service';
-import { RandomTableEntityService } from 'src/app/entities/services/random-table-entity.service';
+import { ActionEntityService } from 'src/app/modules/entities/services/action-entity.service';
+import { RandomTableEntityService } from 'src/app/modules/entities/services/random-table-entity.service';
 import { ActionsService } from 'src/app/services/actions.service';
-import { DiceUtil } from 'src/app/trpg/dice/dice.util';
-import { TablesUtil } from 'src/app/trpg/tables.util';
+import { DiceUtil } from 'src/app/modules/trpg/dice/dice.util';
+import { TablesUtil } from 'src/app/modules/trpg/tables.util';
 import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete-field.component';
 
 @Component({

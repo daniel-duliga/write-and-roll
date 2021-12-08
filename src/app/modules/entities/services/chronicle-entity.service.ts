@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BlockService } from 'src/app/blocks/block.service';
+import { BlockService } from 'src/app/modules/blocks/block.service';
 import { Item } from '../models/item';
 import { EntityService } from './entity.service';
 

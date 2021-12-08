@@ -1,8 +1,8 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
-import { Item } from 'src/app/entities/models/item';
-import { EntityService } from 'src/app/entities/services/entity.service';
+import { Item } from 'src/app/modules/entities/models/item';
+import { EntityService } from 'src/app/modules/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 import { CommandsComponent } from '../commands/commands.component';
 

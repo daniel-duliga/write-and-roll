@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PromptService } from '../components/prompts/prompt.service';
-import { RandomTableEntityService } from '../entities/services/random-table-entity.service';
-import { DiceUtil } from '../trpg/dice/dice.util';
-import { TablesUtil } from '../trpg/tables.util';
+import { RandomTableEntityService } from '../modules/entities/services/random-table-entity.service';
+import { DiceUtil } from '../modules/trpg/dice/dice.util';
+import { TablesUtil } from '../modules/trpg/tables.util';
 
 @Injectable({
   providedIn: 'root'

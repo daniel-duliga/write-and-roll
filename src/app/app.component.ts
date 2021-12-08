@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BlockService } from './blocks/block.service';
-import { ChronicleEntityService } from './entities/services/chronicle-entity.service';
+import { BlockService } from './modules/blocks/block.service';
+import { ChronicleEntityService } from './modules/entities/services/chronicle-entity.service';
 
 @Component({
   selector: 'app-root',
