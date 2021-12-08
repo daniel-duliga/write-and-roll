@@ -15,22 +15,16 @@ export class EntityService {
     return this.get(item.path);
   }
 
-  getAll(): string[] {
-    return Object
-      .keys(localStorage)
-      .filter(x => x.startsWith(`${this.collectionName}/data/`))
-      .map(x => x.replace(`${this.collectionName}/data/`, ''))
-      .sort((a, b) => a.localeCompare(b));
-  }
-
-  getAllNonEmpty(): string[] {
-    return Object
-      .keys(localStorage)
-      .filter(x => 
-        x.startsWith(`${this.collectionName}/data/`) &&
-        localStorage[x] !== ''
-      ).map(x => x.replace(`${this.collectionName}/data/`, ''))
-      .sort((a, b) => a.localeCompare(b));
+  getAllNonEmpty(): Item[] {
+    const result: Item[] = [];
+    const paths = this.getAllNonEmptyPaths();
+    for (const path of paths) {
+      let item = this.get(path);
+      if(item) {
+        result.push(item);
+      }
+    }
+    return result;
   }
 
   get(path: string): Item | null {
@@ -56,6 +50,26 @@ export class EntityService {
       }
       localStorage.setItem(item.path, item.content)
     }
+  }
+  //#endregion
+
+  //#region paths
+  getAllPaths(): string[] {
+    return Object
+      .keys(localStorage)
+      .filter(x => x.startsWith(`${this.collectionName}/data/`))
+      .map(x => x.replace(`${this.collectionName}/data/`, ''))
+      .sort((a, b) => a.localeCompare(b));
+  }
+
+  getAllNonEmptyPaths(): string[] {
+    return Object
+      .keys(localStorage)
+      .filter(x => 
+        x.startsWith(`${this.collectionName}/data/`) &&
+        localStorage[x] !== ''
+      ).map(x => x.replace(`${this.collectionName}/data/`, ''))
+      .sort((a, b) => a.localeCompare(b));
   }
   //#endregion
 

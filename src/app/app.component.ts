@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BlockService } from './blocks/block.service';
+import { ChronicleEntityService } from './entities/services/chronicle-entity.service';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +10,13 @@ import { BlockService } from './blocks/block.service';
 export class AppComponent implements OnInit {
   title = 'write-and-roll';
 
-  constructor(private newEntityService: BlockService) { }
+  constructor(
+    private newEntityService: BlockService,
+    private chronicleService: ChronicleEntityService,
+  ) { }
 
   ngOnInit(): void {
-    this.newEntityService.initialize();
+    const chronicles = this.chronicleService.getAllNonEmpty();
+    this.newEntityService.initialize(chronicles);
   }
 }

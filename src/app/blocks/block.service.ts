@@ -4,6 +4,7 @@ import { RandomTable } from './random-table';
 import { ChronicleEntityService } from '../entities/services/chronicle-entity.service';
 import { Action } from './action';
 import { BlocksIndex } from './block-index';
+import { Item } from '../entities/models/item';
 
 @Injectable({
   providedIn: 'root'
@@ -12,28 +13,26 @@ export class BlockService {
   readonly index = new BlocksIndex();
 
   constructor(
-    private chronicleService: ChronicleEntityService,
-    private papa: Papa) {}
+    private papa: Papa,
+  ) {}
 
-  initialize() {
-    const chroniclePaths = this.chronicleService.getAllNonEmpty();
-    for (const chroniclePath of chroniclePaths) {
-      const chronicle = this.chronicleService.get(chroniclePath);
-      if (!chronicle?.content) {
-        continue;
-      }
-      const chronicleContent = chronicle.content;
+  initialize(chronicles: Item[]) {
+    for (const chronicle of chronicles) {
+      this.processChronicle(chronicle);
+    }
+  }
 
-      const blockMatches = chronicleContent.matchAll(/^```[\s]*(action|table) [\s\S]*?```$/gm);
-      for (const blockMatch of blockMatches) {
-        if (blockMatch) {
-          this.parseBlock(blockMatch);
-        }
+  processChronicle(chronicle: Item) {
+    const chronicleContent = chronicle.content;
+    const blockMatches = chronicleContent.matchAll(/^```[\s]*(action|table) [\s\S]*?```$/gm);
+    for (const blockMatch of blockMatches) {
+      if (blockMatch) {
+        this.addBlockToIndex(blockMatch);
       }
     }
   }
 
-  private parseBlock(blockMatch: RegExpMatchArray) {
+  private addBlockToIndex(blockMatch: RegExpMatchArray) {
     let content = blockMatch[0];
 
     const typeMatches = content.match(/[^```][\w]+\s+/);

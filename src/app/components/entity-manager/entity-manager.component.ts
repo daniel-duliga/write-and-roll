@@ -113,7 +113,7 @@ export class EntityManagerComponent implements OnInit {
   }
 
   private getAndSetTreeEntities() {
-    this.treeEntities = this.entityService.getAll();
+    this.treeEntities = this.entityService.getAllPaths();
   }
   //#endregion
 }

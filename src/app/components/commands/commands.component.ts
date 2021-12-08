@@ -74,7 +74,7 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollActionCommand(dialog: MatDialog): Promise<string | null> {
-    const actions = this.actionEntityService.getAll();
+    const actions = this.actionEntityService.getAllPaths();
     const actionName = await this.prompt(actions);
     const action = this.actionEntityService.get(actionName);
     if (action) {
@@ -91,7 +91,7 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollTableCommand(): Promise<string | null> {
-    const tables = this.randomTableEntityService.getAllNonEmpty();
+    const tables = this.randomTableEntityService.getAllNonEmptyPaths();
     const tableName = await this.prompt(tables);
     const table = this.randomTableEntityService.get(tableName);
     if (table) {
