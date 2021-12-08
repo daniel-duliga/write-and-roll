@@ -13,6 +13,11 @@ export class ChronicleEntityService extends EntityService {
 
   override update(item: Item) {
     super.update(item);
-    this.blockService.processChronicle(item);
+    this.blockService.addBlocksFromChronicle(item);
+  }
+
+  override delete(path: string) {
+    super.delete(path);
+    this.blockService.removeBlocksByChronicle(path);
   }
 }

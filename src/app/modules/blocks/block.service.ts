@@ -22,15 +22,21 @@ export class BlockService {
   //#region public methods
   initialize(chronicles: Item[]) {
     for (const chronicle of chronicles) {
-      this.processChronicle(chronicle);
+      this.addBlocksFromChronicle(chronicle);
     }
     console.log(this);
   }
 
-  processChronicle(chronicle: Item) {
+  addBlocksFromChronicle(chronicle: Item) {
     const blocks = this.getBlocksFromChronicle(chronicle);
     this.updateIndex(blocks, chronicle);
   }
+
+  removeBlocksByChronicle(chronicle: string) {
+    this.actions = this.actions.filter(x => x.chronicle !== chronicle);
+    this.randomTables = this.randomTables.filter(x => x.chronicle !== chronicle);
+  }
+
   //#endregion
 
   //#region private methods
@@ -72,11 +78,6 @@ export class BlockService {
   private updateIndex(blocks: Block[], chronicle: Item) {
     this.removeBlocksByChronicle(chronicle.path);
     this.addBlocks(blocks);
-  }
-
-  private removeBlocksByChronicle(chronicle: string) {
-    this.actions = this.actions.filter(x => x.chronicle !== chronicle);
-    this.randomTables = this.randomTables.filter(x => x.chronicle !== chronicle);
   }
 
   private addBlocks(blocks: Block[]) {
