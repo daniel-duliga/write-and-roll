@@ -2,9 +2,9 @@ import { InjectionToken, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { EntityManagerComponent } from './components/entity-manager/entity-manager.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
-import { ChronicleEntityService } from './entities/services/chronicle-entity.service';
-import { RandomTableEntityService } from './entities/services/random-table-entity.service';
-import { ActionEntityService } from './entities/services/action-entity.service';
+import { ChronicleEntityService } from './modules/entities/services/chronicle-entity.service';
+import { RandomTableEntityService } from './modules/entities/services/random-table-entity.service';
+import { ActionEntityService } from './modules/entities/services/action-entity.service';
 
 export const CHRONICLE_ENTITY_SERVICE_TOKEN = new InjectionToken<string>("CHRONICLES_SERVICE_TOKEN");
 export const RANDOM_TABLE_ENTITY_SERVICE_TOKEN = new InjectionToken<string>("RANDOM_TABLES_SERVICE_TOKEN");

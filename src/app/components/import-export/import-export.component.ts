@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { Item } from 'src/app/entities/models/item';
+import { Item } from 'src/app/modules/entities/models/item';
 
 @Component({
   selector: 'app-import-export',

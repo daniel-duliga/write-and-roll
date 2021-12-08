@@ -3,10 +3,10 @@ import { EditorComponent, EditorMode, MoveDirection } from 'src/app/components/e
 import { v4 as uuidv4 } from 'uuid';
 import { PromptService } from 'src/app/components/prompts/prompt.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Editor } from 'src/app/entities/models/editor';
-import { EntityService } from 'src/app/entities/services/entity.service';
+import { Editor } from 'src/app/modules/entities/models/editor';
+import { EntityService } from 'src/app/modules/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
-import { Item } from 'src/app/entities/models/item';
+import { Item } from 'src/app/modules/entities/models/item';
 
 @Component({
   selector: 'app-editor-list',
