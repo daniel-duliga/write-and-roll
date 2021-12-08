@@ -10,9 +10,8 @@ export class EntityService {
   }
 
   //#region crud
-  create(item: Item): Item | null {
+  create(item: Item) {
     localStorage.setItem(`${this.collectionName}/data/${item.path}`, item.content);
-    return this.get(item.path);
   }
 
   getAllNonEmpty(): Item[] {
@@ -43,12 +42,9 @@ export class EntityService {
   }
 
   update(item: Item) {
-    let existingItem = this.get(`${this.collectionName}/data/${item.path}`);
+    let existingItem = this.get(item.path);
     if(existingItem) {
-      if(!item.content) {
-        item.content = '\n';
-      }
-      localStorage.setItem(item.path, item.content)
+      localStorage.setItem(`${this.collectionName}/data/${item.path}`, item.content)
     }
   }
   //#endregion

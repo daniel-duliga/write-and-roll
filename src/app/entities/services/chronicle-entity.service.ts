@@ -11,11 +11,8 @@ export class ChronicleEntityService extends EntityService {
     super('chronicles');
   }
 
-  override create(item: Item): Item | null {
-    const result = super.create(item);
-    if(result) {
-      this.blockService.processChronicle(item);
-    }
-    return result;
+  override update(item: Item) {
+    super.update(item);
+    this.blockService.processChronicle(item);
   }
 }

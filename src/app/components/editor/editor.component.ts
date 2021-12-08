@@ -103,7 +103,7 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    const existingItem = this.entityService.get(this.entity.content);
+    const existingItem = this.entityService.get(this.formattedName);
     if (!existingItem) {
       this.entityService.create(this.entity);
     } else {
