@@ -7,6 +7,8 @@ import { ActionsService } from 'src/app/services/actions.service';
 import { DiceUtil } from 'src/app/modules/trpg/dice/dice.util';
 import { TablesUtil } from 'src/app/modules/trpg/tables.util';
 import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete-field.component';
+import { BlockService } from 'src/app/modules/blocks/block.service';
+import { Action } from 'src/app/modules/blocks/action';
 
 @Component({
   selector: 'app-commands',
@@ -27,10 +29,11 @@ export class CommandsComponent implements OnInit {
   mode: "commands" | "prompt" = "commands";
 
   constructor(
+    public dialog: MatDialog,
     private actionEntityService: ActionEntityService,
     private actionService: ActionsService,
     private randomTableEntityService: RandomTableEntityService,
-    public dialog: MatDialog,
+    private blockService: BlockService
   ) { }
 
   ngOnInit(): void {
@@ -74,13 +77,12 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollActionCommand(dialog: MatDialog): Promise<string | null> {
-    const actions = this.actionEntityService.getAllPaths();
-    const actionName = await this.prompt(actions);
-    const action = this.actionEntityService.get(actionName);
+    const actionFriendlyName = await this.prompt(this.blockService.actions.friendlyNames);
+    const action = this.blockService.actions.getByFriendlyName(actionFriendlyName)?.content as Action | null;
     if (action) {
       return this.actionService.run(action.content, dialog);
     } else {
-      console.log(`Action '${actionName}' not found.`);
+      console.log(`Action '${actionFriendlyName}' not found.`);
       return null;
     }
   }

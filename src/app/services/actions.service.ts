@@ -17,9 +17,13 @@ export class ActionsService {
 
     // Execute action
     const command: Function = eval(`(async function() { ${action} })`);
-    const result: string = await command();
+    const result: string | null = await command();
     
     // Return result
-    return result.toString();
+    if(result) {
+      return result.toString();
+    } else {
+      return "";
+    }
   }
 }

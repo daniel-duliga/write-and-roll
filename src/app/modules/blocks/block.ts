@@ -1,8 +1,13 @@
+import { Action } from "./action";
+import { RandomTable } from "./random-table";
+
 export class Block {
+    public get friendlyName() : string {
+        return `${this.chronicleName}: ${this.content.name}`;
+    }
+    
     constructor(
-        public readonly name: string,
-        public readonly content: string,
-        public readonly type: string,
-        public readonly chronicle: string,
+        public readonly chronicleName: string,
+        public readonly content: Action | RandomTable
     ) { }
 }
