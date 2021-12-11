@@ -99,7 +99,7 @@ export class BlockService {
   }
 
   private addAction(action: Action) {
-    const existingActionIndex = this.actions.findIndex(x => x.name == action.name);
+    const existingActionIndex = this.actions.findIndex(x => x.chronicle == action.chronicle && x.name == action.name);
     if (existingActionIndex !== -1) {
       this.actions[existingActionIndex] = action;
     } else {
@@ -108,7 +108,7 @@ export class BlockService {
   }
 
   private addRandomTable(randomTable: RandomTable) {
-    const existingRandomTableIndex = this.actions.findIndex(x => x.name == randomTable.name);
+    const existingRandomTableIndex = this.randomTables.findIndex(x => x.chronicle == randomTable.chronicle && x.name == randomTable.name);
     if (existingRandomTableIndex !== -1) {
       this.randomTables[existingRandomTableIndex] = randomTable;
     } else {
