@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1639426699700,
+  "timestamp": 1639426945567,
   "index": "/write-and-roll/index.html",
   "assetGroups": [
     {
@@ -46,7 +46,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/write-and-roll/assets/data/Ironsworn.json": "6e9849401f92596760d9d0c1688bb4df1c83e685",
+    "/write-and-roll/assets/data/Ironsworn.json": "f3b78f5f34305db0974fe47efa1df2b0bad165c9",
     "/write-and-roll/assets/fonts/JetBrainsMono-Regular.woff2": "c55f0309ef31b079ac7e71f71982dd54808a80b7",
     "/write-and-roll/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
     "/write-and-roll/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
