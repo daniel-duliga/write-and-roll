@@ -1,9 +1,9 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget } from 'codemirror';
-import { Item } from 'src/app/modules/entities/models/item';
-import { EntityService } from 'src/app/modules/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
+import { Note } from 'src/app/modules/notes/models/note';
+import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { CommandsComponent } from '../commands/commands.component';
 
 export type MoveDirection = "left" | "right";
@@ -18,7 +18,6 @@ export class EditorComponent implements OnInit {
   @Input() name: string = ''; // only used for loading the initial entity
   @Input() mode: EditorMode = "default";
   @Input() minimized = false;
-  @Input() entityService!: EntityService;
 
   @Output() onClosed: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
@@ -28,7 +27,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  entity: Item = new Item();
+  note: Note = new Note();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
 
@@ -37,17 +36,18 @@ export class EditorComponent implements OnInit {
     return this.ngxCodeMirror.codeMirror;
   }
   public get isDirty(): boolean {
-    return this.entity.content !== this.initialContent;
+    return this.note.content !== this.initialContent;
   }
   public get formattedName(): string {
-    const nameSegments = this.entity.path.split('/');
+    const nameSegments = this.note.path.split('/');
     return nameSegments[nameSegments.length - 1];
   }
   //#endregion
 
   constructor(
     private renderer: Renderer2,
-    private uiService: EditorListService
+    private uiService: EditorListService,
+    private noteService: NoteService,
   ) {
     (window as any).openLink = (entityId: string) => this.linkClicked(entityId);
   }
@@ -103,15 +103,15 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    const existingItem = this.entityService.get(this.formattedName);
+    const existingItem = this.noteService.get(this.formattedName);
     if (!existingItem) {
-      this.entityService.create(this.entity);
+      this.noteService.create(this.note);
     } else {
-      this.entityService.update(this.entity);
+      this.noteService.update(this.note);
     }
 
     // Reflect saved data
-    this.initialContent = this.entity.content;
+    this.initialContent = this.note.content;
   }
 
   linkClicked(entityId: string) {
@@ -137,7 +137,7 @@ export class EditorComponent implements OnInit {
   }
 
   setName(name: string) {
-    this.entity.path = name;
+    this.note.path = name;
   }
   //#endregion
 
@@ -249,11 +249,11 @@ export class EditorComponent implements OnInit {
 
   //#region private methods
   private getAndSetEntity(name: string) {
-    const newEntity = this.entityService.get(name);
+    const newEntity = this.noteService.get(name);
     if (newEntity) {
-      this.entity = newEntity;
-      this.initialContent = this.entity.content;
-      this.entity.path = name;
+      this.note = newEntity;
+      this.initialContent = this.note.content;
+      this.note.path = name;
     }
   }
 

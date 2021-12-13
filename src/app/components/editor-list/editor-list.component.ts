@@ -3,10 +3,10 @@ import { EditorComponent, EditorMode, MoveDirection } from 'src/app/components/e
 import { v4 as uuidv4 } from 'uuid';
 import { PromptService } from 'src/app/components/prompts/prompt.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Editor } from 'src/app/modules/entities/models/editor';
-import { EntityService } from 'src/app/modules/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
-import { Item } from 'src/app/modules/entities/models/item';
+import { NoteService } from 'src/app/modules/notes/services/note.service';
+import { Editor } from 'src/app/modules/notes/models/editor';
+import { Note } from 'src/app/modules/notes/models/note';
 
 @Component({
   selector: 'app-editor-list',
@@ -16,7 +16,6 @@ import { Item } from 'src/app/modules/entities/models/item';
 export class EditorListComponent implements OnInit {
   @Input() entityName: string | null = null;
   @Input() mode: EditorMode = 'default';
-  @Input() entityService!: EntityService;
 
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
 
@@ -24,6 +23,7 @@ export class EditorListComponent implements OnInit {
   newOption = '+ Add New';
 
   constructor(
+    private noteService: NoteService,
     private promptService: PromptService,
     private dialog: MatDialog,
     private editorListService: EditorListService,
@@ -54,7 +54,7 @@ export class EditorListComponent implements OnInit {
     let editor = this.editors.find(x => x.id === id);
     if (editor) {
       this.editors = this.editors.filter(x => x.id !== id);
-      this.entityService.removeOpenEditor(editor);
+      this.noteService.removeOpenEditor(editor);
       if (this.editors.length > 0) {
         this.refreshEditors();
       }
@@ -78,7 +78,7 @@ export class EditorListComponent implements OnInit {
   editorMinimized(editor: Editor, minimized: boolean) {
     this.refreshEditors();
     editor.minimized = minimized;
-    this.entityService.updateOpenedEditor(editor);
+    this.noteService.updateOpenedEditor(editor);
   }
 
   refreshEditors() {
@@ -92,7 +92,7 @@ export class EditorListComponent implements OnInit {
   private openEditorForExistingEntity(entityId: string, minimized: boolean) {
     const newEditor = new Editor(uuidv4(), entityId, minimized);
     this.editors.push(newEditor);
-    this.entityService.addOpenedEditor(newEditor);
+    this.noteService.addOpenedEditor(newEditor);
     this.refreshEditors();
     return newEditor;
   }
@@ -103,16 +103,16 @@ export class EditorListComponent implements OnInit {
       return null;
     }
 
-    const itemPath = `${parentPath}${name}`;
+    const notePath = `${parentPath}${name}`;
 
-    const existingEntity = this.entityService.get(itemPath);
+    const existingEntity = this.noteService.get(notePath);
     if (existingEntity) {
-      alert(`Item '${itemPath}' already exists.'`);
+      alert(`Item '${notePath}' already exists.'`);
       return null;
     }
 
-    this.entityService.create(new Item(itemPath, ''));
-    return itemPath;
+    this.noteService.create(new Note(notePath, ''));
+    return notePath;
   }
   //#endregion
 }

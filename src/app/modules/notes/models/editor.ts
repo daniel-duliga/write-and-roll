@@ -1,7 +1,7 @@
 export class Editor {
     constructor(
         public id: string,
-        public entityId: string,
+        public notePath: string,
         public minimized: boolean
     ) { }
 }

@@ -1,50 +1,57 @@
 import { Editor } from "../models/editor";
-import { Item } from "../models/item";
+import { Note } from "../models/note";
 import { ExpansionModelItem } from "../models/expansion-model-item";
+import { BlockService } from "../../blocks/block.service";
+import { Injectable } from "@angular/core";
 
-export class EntityService {
-  collectionName = 'tables';
+@Injectable({
+  providedIn: 'root'
+})
+export class NoteService {
+  collectionName = 'notes';
 
-  constructor(collectionName: string) {
-    this.collectionName = collectionName;
-  }
+  constructor(
+    private blockService: BlockService
+  ) { }
 
   //#region crud
-  create(item: Item) {
-    localStorage.setItem(`${this.collectionName}/data/${item.path}`, item.content);
+  create(note: Note) {
+    localStorage.setItem(`${this.collectionName}/data/${note.path}`, note.content);
   }
 
-  getAllNonEmpty(): Item[] {
-    const result: Item[] = [];
+  getAllNonEmpty(): Note[] {
+    const result: Note[] = [];
     const paths = this.getAllNonEmptyPaths();
     for (const path of paths) {
-      let item = this.get(path);
-      if(item) {
-        result.push(item);
+      let note = this.get(path);
+      if(note) {
+        result.push(note);
       }
     }
     return result;
   }
 
-  get(path: string): Item | null {
-    let result: Item | null = null;
+  get(path: string): Note | null {
+    let result: Note | null = null;
 
     const rawContent = localStorage.getItem(`${this.collectionName}/data/${path}`);
     if (rawContent !== null) {
-      result = new Item(path, rawContent);
+      result = new Note(path, rawContent);
     }
 
     return result;
   }
 
   delete(path: string) {
-    return localStorage.removeItem(`${this.collectionName}/data/${path}`);
+    localStorage.removeItem(`${this.collectionName}/data/${path}`);
+    this.blockService.removeBlocksByNote(path);
   }
 
-  update(item: Item) {
-    let existingItem = this.get(item.path);
-    if(existingItem) {
-      localStorage.setItem(`${this.collectionName}/data/${item.path}`, item.content)
+  update(note: Note) {
+    let existingNote = this.get(note.path);
+    if(existingNote) {
+      localStorage.setItem(`${this.collectionName}/data/${note.path}`, note.content);
+      this.blockService.addBlocksFromNote(note);
     }
   }
   //#endregion
@@ -80,8 +87,8 @@ export class EntityService {
   }
 
   //#region children
-  getDescendantsRecursive(parentPath: string): Item[] {
-    const result: Item[] = [];
+  getDescendantsRecursive(parentPath: string): Note[] {
+    const result: Note[] = [];
 
     const childPaths = Object
       .keys(localStorage)
@@ -124,7 +131,7 @@ export class EntityService {
   //#region opened entities
   addOpenedEditor(editor: Editor) {
     const openedEditors = this.getOpenedEditors();
-    if (!openedEditors.find(x => x.entityId === editor.entityId)) {
+    if (!openedEditors.find(x => x.notePath === editor.notePath)) {
       openedEditors.push(editor);
       localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
     }
@@ -137,7 +144,7 @@ export class EntityService {
 
   removeOpenEditor(editor: Editor) {
     let openedEditors = this.getOpenedEditors();
-    openedEditors = openedEditors.filter(x => x.entityId !== editor.entityId);
+    openedEditors = openedEditors.filter(x => x.notePath !== editor.notePath);
     localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
   }
 

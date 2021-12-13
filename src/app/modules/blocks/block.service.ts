@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { RandomTable } from './random-table';
 import { Action } from './action';
-import { Item } from '../..//modules/entities/models/item';
+import { Note } from '../../modules/notes/models/note';
 import { Block } from './block';
 import { BlockList } from './blockList';
 
@@ -21,16 +21,16 @@ export class BlockService {
   }
 
   //#region public methods
-  initialize(chronicles: Item[]) {
-    for (const chronicle of chronicles) {
-      this.removeBlocksByChronicle(chronicle.path);
-      this.addBlocksFromChronicle(chronicle);
+  initialize(notes: Note[]) {
+    for (const note of notes) {
+      this.removeBlocksByNote(note.path);
+      this.addBlocksFromNote(note);
     }
     console.log(this);
   }
 
-  addBlocksFromChronicle(chronicle: Item) {
-    const blockMatches = chronicle.content.matchAll(/^```[\s]*(action|table) [\s\S]*?```$/gm);
+  addBlocksFromNote(note: Note) {
+    const blockMatches = note.content.matchAll(/^```[\s]*(action|table) [\s\S]*?```$/gm);
     for (const blockMatch of blockMatches) {
       if (blockMatch) {
         let content = blockMatch[0];
@@ -51,11 +51,11 @@ export class BlockService {
 
         switch (type) {
           case "action": {
-            this.actions.addBlock(new Block(chronicle.path, new Action(name, content)));
+            this.actions.addBlock(new Block(note.path, new Action(name, content)));
             break;
           }
           case "table": {
-            this.randomTables.addBlock(new Block(chronicle.path, new RandomTable(name, this.papa.parse(content).data)));
+            this.randomTables.addBlock(new Block(note.path, new RandomTable(name, this.papa.parse(content).data)));
             break;
           }
           default: {
@@ -66,9 +66,9 @@ export class BlockService {
     }
   }
 
-  removeBlocksByChronicle(chronicleName: string) {
-    this.actions.removeBlocksByChronicle(chronicleName);
-    this.randomTables.removeBlocksByChronicle(chronicleName);;
+  removeBlocksByNote(chronicleName: string) {
+    this.actions.removeBlocksByNote(chronicleName);
+    this.randomTables.removeBlocksByNote(chronicleName);;
   }
   //#endregion
 

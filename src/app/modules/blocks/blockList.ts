@@ -21,7 +21,7 @@ export class BlockList {
         return this.blocks.filter(x => x.friendlyName === friendlyName)[0];
     }
 
-    public removeBlocksByChronicle(chronicleName: string) {
+    public removeBlocksByNote(chronicleName: string) {
         this.blocks = this.blocks.filter(x => x.chronicleName !== chronicleName);
     }
 }

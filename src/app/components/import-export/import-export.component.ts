@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { Item } from 'src/app/modules/entities/models/item';
+import { Note } from 'src/app/modules/notes/models/note';
 
 @Component({
   selector: 'app-import-export',
@@ -19,14 +19,14 @@ export class ImportExportComponent implements OnInit {
     const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
     FileSaver.saveAs(blob, "data.json");
 
-    function loadStorageData(): Item[] {
-      const result: Item[] = [];
+    function loadStorageData(): Note[] {
+      const result: Note[] = [];
       for (let index = 0; index < localStorage.length; index++) {
         const key = localStorage.key(index);
         if (key) {
           const element = localStorage.getItem(key);
           if (element) {
-            result.push(new Item(key, element));
+            result.push(new Note(key, element));
           }
         }
       }
@@ -43,7 +43,7 @@ export class ImportExportComponent implements OnInit {
 
       const processImportFile = (fileReader: FileReader) => {
         if (fileReader.result && typeof fileReader.result === "string") {
-          const importData: Item[] = JSON.parse(fileReader.result);
+          const importData: Note[] = JSON.parse(fileReader.result);
           for (const element of importData) {
             if(localStorage.getItem(element.path)) {
               this.importLogs.push(`${element.path} already exists and has not been imported.`);

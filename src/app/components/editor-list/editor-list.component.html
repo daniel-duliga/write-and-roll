@@ -6,10 +6,9 @@
         class="editor"
         #editorComponent
         *ngFor="let editor of editors; let i = index"
-        [name]="editor.entityId"
+        [name]="editor.notePath"
         [mode]="mode"
         [minimized]="editor.minimized"
-        [entityService]="entityService"
         [ngStyle]="{ 
             'z-index': i,
             'min-width': editorComponent.minimized ? 'unset'  : '33%',
