@@ -1,6 +1,7 @@
+import { CdkMonitorFocus } from '@angular/cdk/a11y';
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
-import { LineWidget } from 'codemirror';
+import { LineWidget, Pos } from 'codemirror';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
@@ -58,8 +59,10 @@ export class EditorComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.configureCodeMirror();
-    this.refresh();
+    setTimeout(() => {
+      this.configureCodeMirror();
+      this.refresh();
+    }, 250);
   }
   //#endregion
 
@@ -193,7 +196,7 @@ export class EditorComponent implements OnInit {
         this.renderer.setAttribute(image, 'src', imageUrl);
         this.renderer.setStyle(image, 'max-height', '480px');
         this.renderer.setStyle(image, 'max-width', '100%');
-        
+
         let imageContainer: HTMLElement = this.renderer.createElement('div');
         this.renderer.setStyle(imageContainer, 'text-align', 'center');
         imageContainer.appendChild(image);
@@ -210,18 +213,18 @@ export class EditorComponent implements OnInit {
     const links = line.matchAll(/\[[\w]+[^\)]+\]\(war:\/\/[\w\s/]+\)/g);
     for (const link of links) {
       var linkContent = link.toString();
-      
+
       let noteNameRegExMatch = linkContent.match(/\[.*\]/g);
       let noteIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
       if (noteIdRegExMatch && noteNameRegExMatch) {
         let noteName = noteNameRegExMatch.toString();
         noteName = noteName.slice(1, noteName.length - 1);
-        
+
         let notePath = noteIdRegExMatch.toString();
         notePath = notePath.slice(7, notePath.length - 1);
-      
+
         const linkIndexInLine = link.index ?? 0;
-      
+
         // Highlight link name part
         this.codeMirror.getDoc().markText(
           { line: lineIndex, ch: linkIndexInLine },
@@ -231,7 +234,8 @@ export class EditorComponent implements OnInit {
             attributes: {
               'notePath': noteName,
               'onClick': `openLink('${notePath}')`
-            }});
+            }
+          });
 
         // Hide link url part
         this.codeMirror.getDoc().markText(
@@ -256,11 +260,30 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  private foldIndex = {};
   private configureCodeMirror() {
     if (this.codeMirror) {
       this.codeMirror.setOption("extraKeys", {
         Enter: function (cm) {
           cm.execCommand("newlineAndIndentContinueMarkdownList");
+        },
+        Tab: function (cm) {
+          cm.foldCode(cm.getCursor());
+        },
+        "Shift-Tab": function (cm) {
+          const linesCount = cm.lineCount();
+          
+          let currentMode: "fold" | "unfold" = "fold";
+          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+            if(cm.isFolded(new Pos(lineIndex))) {
+              currentMode = "unfold";
+              break;
+            }
+          }
+          
+          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+            cm.foldCode(lineIndex, undefined, currentMode);
+          }
         }
       });
 
