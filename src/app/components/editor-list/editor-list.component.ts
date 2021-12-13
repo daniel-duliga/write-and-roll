@@ -14,7 +14,7 @@ import { Note } from 'src/app/modules/notes/models/note';
   styleUrls: ['./editor-list.component.css']
 })
 export class EditorListComponent implements OnInit {
-  @Input() entityName: string | null = null;
+  @Input() noteName: string | null = null;
   @Input() mode: EditorMode = 'default';
 
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
@@ -31,22 +31,22 @@ export class EditorListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.editorListService.onEditorOpened.subscribe(entityId => {
-      this.ngZone.run(() => this.openEditor(entityId, false));
+    this.editorListService.onEditorOpened.subscribe(notePath => {
+      this.ngZone.run(() => this.openEditor(notePath, false));
     })
   }
 
   //#region public methods
-  openEditor(entityId: string, minimized = false) {
-    this.openEditorForExistingEntity(entityId, minimized);
+  openEditor(notePath: string, minimized = false) {
+    this.openEditorForExistingNote(notePath, minimized);
   }
 
-  public async createTopLevelEntity(): Promise<Editor | null> {
-    const entityId = await this.createNewItem();
-    if (!entityId) {
+  public async createTopLevelNote(): Promise<Editor | null> {
+    const notePath = await this.createNewItem();
+    if (!notePath) {
       return null;
     } else {
-      return this.openEditorForExistingEntity(entityId, false);
+      return this.openEditorForExistingNote(notePath, false);
     }
   }
 
@@ -89,8 +89,8 @@ export class EditorListComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private openEditorForExistingEntity(entityId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), entityId, minimized);
+  private openEditorForExistingNote(noteId: string, minimized: boolean) {
+    const newEditor = new Editor(uuidv4(), noteId, minimized);
     this.editors.push(newEditor);
     this.noteService.addOpenedEditor(newEditor);
     this.refreshEditors();
@@ -105,8 +105,8 @@ export class EditorListComponent implements OnInit {
 
     const notePath = `${parentPath}${name}`;
 
-    const existingEntity = this.noteService.get(notePath);
-    if (existingEntity) {
+    const existingNote = this.noteService.get(notePath);
+    if (existingNote) {
       alert(`Item '${notePath}' already exists.'`);
       return null;
     }

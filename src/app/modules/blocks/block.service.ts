@@ -66,9 +66,9 @@ export class BlockService {
     }
   }
 
-  removeBlocksByNote(chronicleName: string) {
-    this.actions.removeBlocksByNote(chronicleName);
-    this.randomTables.removeBlocksByNote(chronicleName);;
+  removeBlocksByNote(noteName: string) {
+    this.actions.removeBlocksByNote(noteName);
+    this.randomTables.removeBlocksByNote(noteName);;
   }
   //#endregion
 

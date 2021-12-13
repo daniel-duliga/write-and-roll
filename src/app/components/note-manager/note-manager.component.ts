@@ -8,11 +8,11 @@ import { PromptService } from '../prompts/prompt.service';
 import { TreeComponent } from '../tree/tree.component';
 
 @Component({
-  selector: 'app-entity-manager',
-  templateUrl: './entity-manager.component.html',
-  styleUrls: ['./entity-manager.component.css']
+  selector: 'app-note-manager',
+  templateUrl: './note-manager.component.html',
+  styleUrls: ['./note-manager.component.css']
 })
-export class EntityManagerComponent implements OnInit {
+export class NoteManagerComponent implements OnInit {
   @ViewChild('treeComponent') treeComponent!: TreeComponent;
   @ViewChild('editorListComponent') editorListComponent!: EditorListComponent;
 
@@ -41,7 +41,7 @@ export class EntityManagerComponent implements OnInit {
 
   //#region public methods
   async createNewItem() {
-    await this.editorListComponent.createTopLevelEntity();
+    await this.editorListComponent.createTopLevelNote();
     this.refreshItems();
   }
 

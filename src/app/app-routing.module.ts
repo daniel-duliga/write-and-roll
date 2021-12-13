@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EntityManagerComponent } from './components/entity-manager/entity-manager.component';
+import { NoteManagerComponent } from './components/note-manager/note-manager.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'chronicles',
+    redirectTo: 'notes',
     pathMatch: 'full'
   },
   {
-    path: 'chronicles',
-    component: EntityManagerComponent,
+    path: 'notes',
+    component: NoteManagerComponent,
     data: { editorMode: 'markdown' }
   },
   {

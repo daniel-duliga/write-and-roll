@@ -11,12 +11,12 @@ export class AppComponent implements OnInit {
   title = 'write-and-roll';
 
   constructor(
-    private newEntityService: BlockService,
+    private blockService: BlockService,
     private noteService: NoteService,
   ) { }
 
   ngOnInit(): void {
-    const chronicles = this.noteService.getAllNonEmpty();
-    this.newEntityService.initialize(chronicles);
+    const notes = this.noteService.getAllNonEmpty();
+    this.blockService.initialize(notes);
   }
 }

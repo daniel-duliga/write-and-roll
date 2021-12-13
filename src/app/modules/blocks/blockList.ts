@@ -9,7 +9,7 @@ export class BlockList {
 
     public addBlock(block: Block) {
         const existingBlockIndex = this.blocks.findIndex(
-            x => x.chronicleName == block.chronicleName && x.content.name == block.content.name);
+            x => x.noteName == block.noteName && x.content.name == block.content.name);
         if (existingBlockIndex !== -1) {
             this.blocks[existingBlockIndex] = block;
         } else {
@@ -21,7 +21,7 @@ export class BlockList {
         return this.blocks.filter(x => x.friendlyName === friendlyName)[0];
     }
 
-    public removeBlocksByNote(chronicleName: string) {
-        this.blocks = this.blocks.filter(x => x.chronicleName !== chronicleName);
+    public removeBlocksByNote(noteName: string) {
+        this.blocks = this.blocks.filter(x => x.noteName !== noteName);
     }
 }

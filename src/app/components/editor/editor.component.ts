@@ -15,7 +15,7 @@ export type EditorMode = "markdown" | "javascript" | "default";
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() name: string = ''; // only used for loading the initial entity
+  @Input() name: string = ''; // only used for loading the initial note
   @Input() mode: EditorMode = "default";
   @Input() minimized = false;
 
@@ -49,12 +49,12 @@ export class EditorComponent implements OnInit {
     private uiService: EditorListService,
     private noteService: NoteService,
   ) {
-    (window as any).openLink = (entityId: string) => this.linkClicked(entityId);
+    (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
   }
 
   //#region lifecycle events
   ngOnInit(): void {
-    this.getAndSetEntity(this.name);
+    this.getAndSetNote(this.name);
   }
 
   ngAfterViewInit() {
@@ -114,9 +114,8 @@ export class EditorComponent implements OnInit {
     this.initialContent = this.note.content;
   }
 
-  linkClicked(entityId: string) {
-    // this.onLinkClicked.emit(entityId);
-    this.uiService.onEditorOpened.next(entityId);
+  linkClicked(noteId: string) {
+    this.uiService.onEditorOpened.next(noteId);
   }
   //#endregion
 
@@ -212,32 +211,32 @@ export class EditorComponent implements OnInit {
     for (const link of links) {
       var linkContent = link.toString();
       
-      let entityNameRegExMatch = linkContent.match(/\[.*\]/g);
-      let entityIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
-      if (entityIdRegExMatch && entityNameRegExMatch) {
-        let entityName = entityNameRegExMatch.toString();
-        entityName = entityName.slice(1, entityName.length - 1);
+      let noteNameRegExMatch = linkContent.match(/\[.*\]/g);
+      let noteIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
+      if (noteIdRegExMatch && noteNameRegExMatch) {
+        let noteName = noteNameRegExMatch.toString();
+        noteName = noteName.slice(1, noteName.length - 1);
         
-        let entityId = entityIdRegExMatch.toString();
-        entityId = entityId.slice(7, entityId.length - 1);
+        let notePath = noteIdRegExMatch.toString();
+        notePath = notePath.slice(7, notePath.length - 1);
       
         const linkIndexInLine = link.index ?? 0;
       
         // Highlight link name part
         this.codeMirror.getDoc().markText(
           { line: lineIndex, ch: linkIndexInLine },
-          { line: lineIndex, ch: linkIndexInLine + entityName.length + 2 },
+          { line: lineIndex, ch: linkIndexInLine + noteName.length + 2 },
           {
             className: 'markdown-link',
             attributes: {
-              'entityId': entityName,
-              'onClick': `openLink('${entityId}')`
+              'notePath': noteName,
+              'onClick': `openLink('${notePath}')`
             }});
 
         // Hide link url part
         this.codeMirror.getDoc().markText(
-          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length },
-          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length + entityIdRegExMatch.toString().length },
+          { line: lineIndex, ch: linkIndexInLine + noteNameRegExMatch.toString().length },
+          { line: lineIndex, ch: linkIndexInLine + noteNameRegExMatch.toString().length + noteIdRegExMatch.toString().length },
           {
             collapsed: true,
           }
@@ -248,10 +247,10 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private getAndSetEntity(name: string) {
-    const newEntity = this.noteService.get(name);
-    if (newEntity) {
-      this.note = newEntity;
+  private getAndSetNote(name: string) {
+    const newNote = this.noteService.get(name);
+    if (newNote) {
+      this.note = newNote;
       this.initialContent = this.note.content;
       this.note.path = name;
     }
