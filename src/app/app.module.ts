@@ -34,7 +34,6 @@ import { EditorComponent } from './components/editor/editor.component';
 import { EditorListComponent } from './components/editor-list/editor-list.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TreeComponent } from './components/tree/tree.component';
 
 @NgModule({
@@ -42,7 +41,6 @@ import { TreeComponent } from './components/tree/tree.component';
     AppComponent,
     AutoCompletePromptComponent,
     InputComponent,
-    SidebarComponent,
     TreeComponent,
     AutoCompleteFieldComponent,
     EntityManagerComponent,

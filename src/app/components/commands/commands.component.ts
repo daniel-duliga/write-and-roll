@@ -1,8 +1,6 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
-import { ActionEntityService } from 'src/app/modules/entities/services/action-entity.service';
-import { RandomTableEntityService } from 'src/app/modules/entities/services/random-table-entity.service';
 import { ActionsService } from 'src/app/services/actions.service';
 import { DiceUtil } from 'src/app/modules/trpg/dice/dice.util';
 import { TablesUtil } from 'src/app/modules/trpg/tables.util';
@@ -31,9 +29,7 @@ export class CommandsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private actionEntityService: ActionEntityService,
     private actionService: ActionsService,
-    private randomTableEntityService: RandomTableEntityService,
     private blockService: BlockService
   ) { }
 
