@@ -260,7 +260,6 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  private foldIndex = {};
   private configureCodeMirror() {
     if (this.codeMirror) {
       this.codeMirror.setOption("extraKeys", {
