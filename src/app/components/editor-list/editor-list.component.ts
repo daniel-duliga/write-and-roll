@@ -3,10 +3,10 @@ import { EditorComponent, EditorMode, MoveDirection } from 'src/app/components/e
 import { v4 as uuidv4 } from 'uuid';
 import { PromptService } from 'src/app/components/prompts/prompt.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Editor } from 'src/app/entities/models/editor';
-import { EntityService } from 'src/app/entities/services/entity.service';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
-import { Item } from 'src/app/entities/models/item';
+import { NoteService } from 'src/app/modules/notes/services/note.service';
+import { Editor } from 'src/app/modules/notes/models/editor';
+import { Note } from 'src/app/modules/notes/models/note';
 
 @Component({
   selector: 'app-editor-list',
@@ -14,9 +14,8 @@ import { Item } from 'src/app/entities/models/item';
   styleUrls: ['./editor-list.component.css']
 })
 export class EditorListComponent implements OnInit {
-  @Input() entityName: string | null = null;
+  @Input() noteName: string | null = null;
   @Input() mode: EditorMode = 'default';
-  @Input() entityService!: EntityService;
 
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
 
@@ -24,6 +23,7 @@ export class EditorListComponent implements OnInit {
   newOption = '+ Add New';
 
   constructor(
+    private noteService: NoteService,
     private promptService: PromptService,
     private dialog: MatDialog,
     private editorListService: EditorListService,
@@ -31,22 +31,22 @@ export class EditorListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.editorListService.onEditorOpened.subscribe(entityId => {
-      this.ngZone.run(() => this.openEditor(entityId, false));
+    this.editorListService.onEditorOpened.subscribe(notePath => {
+      this.ngZone.run(() => this.openEditor(notePath, false));
     })
   }
 
   //#region public methods
-  openEditor(entityId: string, minimized = false) {
-    this.openEditorForExistingEntity(entityId, minimized);
+  openEditor(notePath: string, minimized = false) {
+    this.openEditorForExistingNote(notePath, minimized);
   }
 
-  public async createTopLevelEntity(): Promise<Editor | null> {
-    const entityId = await this.createNewItem();
-    if (!entityId) {
+  public async createTopLevelNote(): Promise<Editor | null> {
+    const notePath = await this.createNewItem();
+    if (!notePath) {
       return null;
     } else {
-      return this.openEditorForExistingEntity(entityId, false);
+      return this.openEditorForExistingNote(notePath, false);
     }
   }
 
@@ -54,7 +54,7 @@ export class EditorListComponent implements OnInit {
     let editor = this.editors.find(x => x.id === id);
     if (editor) {
       this.editors = this.editors.filter(x => x.id !== id);
-      this.entityService.removeOpenEditor(editor);
+      this.noteService.removeOpenEditor(editor);
       if (this.editors.length > 0) {
         this.refreshEditors();
       }
@@ -78,7 +78,7 @@ export class EditorListComponent implements OnInit {
   editorMinimized(editor: Editor, minimized: boolean) {
     this.refreshEditors();
     editor.minimized = minimized;
-    this.entityService.updateOpenedEditor(editor);
+    this.noteService.updateOpenedEditor(editor);
   }
 
   refreshEditors() {
@@ -89,10 +89,10 @@ export class EditorListComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private openEditorForExistingEntity(entityId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), entityId, minimized);
+  private openEditorForExistingNote(noteId: string, minimized: boolean) {
+    const newEditor = new Editor(uuidv4(), noteId, minimized);
     this.editors.push(newEditor);
-    this.entityService.addOpenedEditor(newEditor);
+    this.noteService.addOpenedEditor(newEditor);
     this.refreshEditors();
     return newEditor;
   }
@@ -103,16 +103,16 @@ export class EditorListComponent implements OnInit {
       return null;
     }
 
-    const itemPath = `${parentPath}${name}`;
+    const notePath = `${parentPath}${name}`;
 
-    const existingEntity = this.entityService.get(itemPath);
-    if (existingEntity) {
-      alert(`Item '${itemPath}' already exists.'`);
+    const existingNote = this.noteService.get(notePath);
+    if (existingNote) {
+      alert(`Item '${notePath}' already exists.'`);
       return null;
     }
 
-    this.entityService.create(new Item(itemPath, ''));
-    return itemPath;
+    this.noteService.create(new Note(notePath, ''));
+    return notePath;
   }
   //#endregion
 }

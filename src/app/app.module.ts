@@ -28,13 +28,12 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AutoCompleteFieldComponent } from './components/auto-complete-field/auto-complete-field.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
-import { EntityManagerComponent } from './components/entity-manager/entity-manager.component';
+import { NoteManagerComponent } from './components/note-manager/note-manager.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { EditorListComponent } from './components/editor-list/editor-list.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TreeComponent } from './components/tree/tree.component';
 
 @NgModule({
@@ -42,10 +41,9 @@ import { TreeComponent } from './components/tree/tree.component';
     AppComponent,
     AutoCompletePromptComponent,
     InputComponent,
-    SidebarComponent,
     TreeComponent,
     AutoCompleteFieldComponent,
-    EntityManagerComponent,
+    NoteManagerComponent,
     EditorListComponent,
     ImportExportComponent,
     EditorComponent,

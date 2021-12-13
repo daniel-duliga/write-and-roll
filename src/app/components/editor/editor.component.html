@@ -42,12 +42,15 @@
         <ngx-codemirror
             class="code-mirror"
             #ngxCodeMirror
-            [(ngModel)]="this.entity.content"
+            [(ngModel)]="this.note.content"
             [options]="{
                 theme: 'default',
                 mode: this.mode,
                 lineWrapping: true,
-                inputStyle: 'textarea'
+                inputStyle: 'textarea',
+                lineNumbers: true,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
             }"
         ></ngx-codemirror>
     </div>

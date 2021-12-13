@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { BlockService } from './modules/blocks/block.service';
+import { NoteService } from './modules/notes/services/note.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +10,13 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'write-and-roll';
 
-  constructor() { }
-  
-  ngOnInit(): void { }
+  constructor(
+    private blockService: BlockService,
+    private noteService: NoteService,
+  ) { }
+
+  ngOnInit(): void {
+    const notes = this.noteService.getAllNonEmpty();
+    this.blockService.initialize(notes);
+  }
 }

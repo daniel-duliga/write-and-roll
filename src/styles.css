@@ -26,13 +26,33 @@ img {
 }
 
 /* CodeMirror */
-@import "~codemirror/lib/codemirror";
 @import "~codemirror/theme/material";
+@import "~codemirror/lib/codemirror";
 .CodeMirror {
   height: 100%;
 }
-.CodeMirror-lines { 
+/* .CodeMirror-lines { 
   padding: 10px 10px 25% 10px;
+} */
+.CodeMirror-foldmarker {
+  color: blue;
+  font-family: arial;
+  line-height: .3;
+  cursor: pointer;
+  padding-left: 0.5em;
+}
+.CodeMirror-foldgutter {
+  width: .7em;
+}
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+  cursor: pointer;
+}
+.CodeMirror-foldgutter-open:after {
+  content: "\25BE";
+}
+.CodeMirror-foldgutter-folded:after {
+  content: "\25B8";
 }
 
 /* Angular Material */

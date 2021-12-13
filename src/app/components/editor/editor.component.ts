@@ -1,9 +1,9 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
-import { LineWidget } from 'codemirror';
-import { Item } from 'src/app/entities/models/item';
-import { EntityService } from 'src/app/entities/services/entity.service';
+import { LineWidget, Pos } from 'codemirror';
 import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
+import { Note } from 'src/app/modules/notes/models/note';
+import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { CommandsComponent } from '../commands/commands.component';
 
 export type MoveDirection = "left" | "right";
@@ -15,10 +15,9 @@ export type EditorMode = "markdown" | "javascript" | "default";
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() name: string = ''; // only used for loading the initial entity
+  @Input() name: string = ''; // only used for loading the initial note
   @Input() mode: EditorMode = "default";
   @Input() minimized = false;
-  @Input() entityService!: EntityService;
 
   @Output() onClosed: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
@@ -28,7 +27,7 @@ export class EditorComponent implements OnInit {
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  entity: Item = new Item();
+  note: Note = new Note();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
 
@@ -37,29 +36,32 @@ export class EditorComponent implements OnInit {
     return this.ngxCodeMirror.codeMirror;
   }
   public get isDirty(): boolean {
-    return this.entity.content !== this.initialContent;
+    return this.note.content !== this.initialContent;
   }
   public get formattedName(): string {
-    const nameSegments = this.entity.path.split('/');
+    const nameSegments = this.note.path.split('/');
     return nameSegments[nameSegments.length - 1];
   }
   //#endregion
 
   constructor(
     private renderer: Renderer2,
-    private uiService: EditorListService
+    private uiService: EditorListService,
+    private noteService: NoteService,
   ) {
-    (window as any).openLink = (entityId: string) => this.linkClicked(entityId);
+    (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
   }
 
   //#region lifecycle events
   ngOnInit(): void {
-    this.getAndSetEntity(this.name);
+    this.getAndSetNote(this.name);
   }
 
   ngAfterViewInit() {
-    this.configureCodeMirror();
-    this.refresh();
+    setTimeout(() => {
+      this.configureCodeMirror();
+      this.refresh();
+    }, 250);
   }
   //#endregion
 
@@ -103,20 +105,19 @@ export class EditorComponent implements OnInit {
     }
 
     // Save
-    const existingItem = this.entityService.get(this.entity.content);
+    const existingItem = this.noteService.get(this.formattedName);
     if (!existingItem) {
-      this.entityService.create(this.entity);
+      this.noteService.create(this.note);
     } else {
-      this.entityService.update(this.entity);
+      this.noteService.update(this.note);
     }
 
     // Reflect saved data
-    this.initialContent = this.entity.content;
+    this.initialContent = this.note.content;
   }
 
-  linkClicked(entityId: string) {
-    // this.onLinkClicked.emit(entityId);
-    this.uiService.onEditorOpened.next(entityId);
+  linkClicked(noteId: string) {
+    this.uiService.onEditorOpened.next(noteId);
   }
   //#endregion
 
@@ -137,7 +138,7 @@ export class EditorComponent implements OnInit {
   }
 
   setName(name: string) {
-    this.entity.path = name;
+    this.note.path = name;
   }
   //#endregion
 
@@ -164,17 +165,30 @@ export class EditorComponent implements OnInit {
   private clearTextMarkers() {
     if (!this.codeMirror) { return; }
 
+    // save fold state
+    let foldedLinesIndexes: number[] = [];
+    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
+      if(this.codeMirror.isFolded(new Pos(lineIndex))) {
+        foldedLinesIndexes.push(lineIndex);
+      }
+    }
+
+    // clear markers
     var textMarkers = this.codeMirror.getAllMarks();
     for (const textMarker of textMarkers) {
       textMarker.clear();
+    }
+
+    // set fold state
+    for (const lineIndex of foldedLinesIndexes) {
+      this.codeMirror.foldCode(lineIndex, undefined, 'fold');
     }
   }
 
   private processCodemirrorLines() {
     if (!this.codeMirror) { return; }
 
-    const linesCount = this.codeMirror.lineCount();
-    for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
       const line = this.codeMirror.getLine(lineIndex);
       this.renderImages(line, lineIndex);
       this.renderInternalLinks(line, lineIndex);
@@ -194,7 +208,7 @@ export class EditorComponent implements OnInit {
         this.renderer.setAttribute(image, 'src', imageUrl);
         this.renderer.setStyle(image, 'max-height', '480px');
         this.renderer.setStyle(image, 'max-width', '100%');
-        
+
         let imageContainer: HTMLElement = this.renderer.createElement('div');
         this.renderer.setStyle(imageContainer, 'text-align', 'center');
         imageContainer.appendChild(image);
@@ -211,33 +225,34 @@ export class EditorComponent implements OnInit {
     const links = line.matchAll(/\[[\w]+[^\)]+\]\(war:\/\/[\w\s/]+\)/g);
     for (const link of links) {
       var linkContent = link.toString();
-      
-      let entityNameRegExMatch = linkContent.match(/\[.*\]/g);
-      let entityIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
-      if (entityIdRegExMatch && entityNameRegExMatch) {
-        let entityName = entityNameRegExMatch.toString();
-        entityName = entityName.slice(1, entityName.length - 1);
-        
-        let entityId = entityIdRegExMatch.toString();
-        entityId = entityId.slice(7, entityId.length - 1);
-      
+
+      let noteNameRegExMatch = linkContent.match(/\[.*\]/g);
+      let noteIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
+      if (noteIdRegExMatch && noteNameRegExMatch) {
+        let noteName = noteNameRegExMatch.toString();
+        noteName = noteName.slice(1, noteName.length - 1);
+
+        let notePath = noteIdRegExMatch.toString();
+        notePath = notePath.slice(7, notePath.length - 1);
+
         const linkIndexInLine = link.index ?? 0;
-      
+
         // Highlight link name part
         this.codeMirror.getDoc().markText(
           { line: lineIndex, ch: linkIndexInLine },
-          { line: lineIndex, ch: linkIndexInLine + entityName.length + 2 },
+          { line: lineIndex, ch: linkIndexInLine + noteName.length + 2 },
           {
             className: 'markdown-link',
             attributes: {
-              'entityId': entityName,
-              'onClick': `openLink('${entityId}')`
-            }});
+              'notePath': noteName,
+              'onClick': `openLink('${notePath}')`
+            }
+          });
 
         // Hide link url part
         this.codeMirror.getDoc().markText(
-          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length },
-          { line: lineIndex, ch: linkIndexInLine + entityNameRegExMatch.toString().length + entityIdRegExMatch.toString().length },
+          { line: lineIndex, ch: linkIndexInLine + noteNameRegExMatch.toString().length },
+          { line: lineIndex, ch: linkIndexInLine + noteNameRegExMatch.toString().length + noteIdRegExMatch.toString().length },
           {
             collapsed: true,
           }
@@ -248,12 +263,12 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region private methods
-  private getAndSetEntity(name: string) {
-    const newEntity = this.entityService.get(name);
-    if (newEntity) {
-      this.entity = newEntity;
-      this.initialContent = this.entity.content;
-      this.entity.path = name;
+  private getAndSetNote(name: string) {
+    const newNote = this.noteService.get(name);
+    if (newNote) {
+      this.note = newNote;
+      this.initialContent = this.note.content;
+      this.note.path = name;
     }
   }
 
@@ -262,6 +277,24 @@ export class EditorComponent implements OnInit {
       this.codeMirror.setOption("extraKeys", {
         Enter: function (cm) {
           cm.execCommand("newlineAndIndentContinueMarkdownList");
+        },
+        Tab: function (cm) {
+          cm.foldCode(cm.getCursor());
+        },
+        "Shift-Tab": function (cm) {
+          const linesCount = cm.lineCount();
+          
+          let currentMode: "fold" | "unfold" = "fold";
+          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+            if(cm.isFolded(new Pos(lineIndex))) {
+              currentMode = "unfold";
+              break;
+            }
+          }
+          
+          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+            cm.foldCode(lineIndex, undefined, currentMode);
+          }
         }
       });
 

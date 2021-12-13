@@ -3,8 +3,8 @@
         class="tree shadow-right"
         #treeComponent
         [paths]="treeEntities"
-        [expansionModel]="entityService.getExpansionModel()"
-        (onExpanded)="entityService.setExpansionModel($event)"
+        [expansionModel]="noteService.getExpansionModel()"
+        (onExpanded)="noteService.setExpansionModel($event)"
         (onNewItem)="createNewItem()"
         (onEdit)="edit($event)"
         (onRename)="rename($event)"
@@ -14,7 +14,6 @@
         <app-editor-list
             #editorListComponent
             [mode]="editorMode"
-            [entityService]="entityService"
         ></app-editor-list>
     </div>
 </div>

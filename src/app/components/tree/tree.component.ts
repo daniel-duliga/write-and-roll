@@ -2,8 +2,7 @@ import { ArrayDataSource } from '@angular/cdk/collections';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TreeNodeWrapper } from 'src/app/components/tree/tree-node.wrapper';
-import { ExpansionModelItem } from 'src/app/entities/models/expansion-model-item';
-import { EntityService } from 'src/app/entities/services/entity.service';
+import { ExpansionModelItem } from 'src/app/modules/notes/models/expansion-model-item';
 
 @Component({
   selector: 'app-tree',
