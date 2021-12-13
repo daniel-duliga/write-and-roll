@@ -9,6 +9,7 @@ import { TablesUtil } from 'src/app/modules/trpg/tables.util';
 import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete-field.component';
 import { BlockService } from 'src/app/modules/blocks/block.service';
 import { Action } from 'src/app/modules/blocks/action';
+import { RandomTable } from 'src/app/modules/blocks/random-table';
 
 @Component({
   selector: 'app-commands',
@@ -93,11 +94,10 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollTableCommand(): Promise<string | null> {
-    const tables = this.randomTableEntityService.getAllNonEmptyPaths();
-    const tableName = await this.prompt(tables);
-    const table = this.randomTableEntityService.get(tableName);
+    const tableName = await this.prompt(this.blockService.randomTables.friendlyNames);
+    const table = this.blockService.randomTables.getByFriendlyName(tableName)?.content as RandomTable | null;
     if (table) {
-      return TablesUtil.rollOnTable(table.parsedContent);
+      return TablesUtil.rollOnTable(table.content);
     } else {
       console.log(`Random table '${tableName}' not found.`);
       return null;
