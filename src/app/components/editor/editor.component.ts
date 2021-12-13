@@ -1,4 +1,3 @@
-import { CdkMonitorFocus } from '@angular/cdk/a11y';
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget, Pos } from 'codemirror';
@@ -166,17 +165,30 @@ export class EditorComponent implements OnInit {
   private clearTextMarkers() {
     if (!this.codeMirror) { return; }
 
+    // save fold state
+    let foldedLinesIndexes: number[] = [];
+    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
+      if(this.codeMirror.isFolded(new Pos(lineIndex))) {
+        foldedLinesIndexes.push(lineIndex);
+      }
+    }
+
+    // clear markers
     var textMarkers = this.codeMirror.getAllMarks();
     for (const textMarker of textMarkers) {
       textMarker.clear();
+    }
+
+    // set fold state
+    for (const lineIndex of foldedLinesIndexes) {
+      this.codeMirror.foldCode(lineIndex, undefined, 'fold');
     }
   }
 
   private processCodemirrorLines() {
     if (!this.codeMirror) { return; }
 
-    const linesCount = this.codeMirror.lineCount();
-    for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
       const line = this.codeMirror.getLine(lineIndex);
       this.renderImages(line, lineIndex);
       this.renderInternalLinks(line, lineIndex);
