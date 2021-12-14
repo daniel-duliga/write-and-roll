@@ -5,7 +5,6 @@ import { EditorListComponent } from 'src/app/components/editor-list/editor-list.
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { EditorMode } from '../editor/editor.component';
 import { PromptService } from '../prompts/prompt.service';
-import { TreeComponent } from '../tree/tree.component';
 
 @Component({
   selector: 'app-note-manager',
@@ -13,10 +12,7 @@ import { TreeComponent } from '../tree/tree.component';
   styleUrls: ['./note-manager.component.css']
 })
 export class NoteManagerComponent implements OnInit {
-  @ViewChild('treeComponent') treeComponent!: TreeComponent;
   @ViewChild('editorListComponent') editorListComponent!: EditorListComponent;
-
-  treeEntities: string[] = [];
   editorMode: EditorMode = 'default';
 
   constructor(
@@ -28,9 +24,7 @@ export class NoteManagerComponent implements OnInit {
     this.editorMode = route.snapshot.data["editorMode"] ?? 'default';
   }
 
-  ngOnInit(): void {
-    this.getAndSetTreeEntities();
-  }
+  ngOnInit(): void { }
 
   ngAfterViewInit() {
     const openedEditors = this.noteService.getOpenedEditors();
@@ -42,7 +36,6 @@ export class NoteManagerComponent implements OnInit {
   //#region public methods
   async createNewItem() {
     await this.editorListComponent.createTopLevelNote();
-    this.refreshItems();
   }
 
   edit(path: string) {
@@ -75,8 +68,6 @@ export class NoteManagerComponent implements OnInit {
         const newChildPath = child.path.replace(oldPath, newPath);
         this.rename(child.path, newChildPath)
       }
-
-      this.refreshItems();
     }
   }
 
@@ -91,7 +82,6 @@ export class NoteManagerComponent implements OnInit {
     }
 
     this.noteService.delete(path);
-    this.refreshItems();
 
     if (deleteDescendants) {
       const descendants = this.noteService.getDescendantsRecursive(path);
@@ -99,17 +89,6 @@ export class NoteManagerComponent implements OnInit {
         this.delete(descendant.path, false, false);
       }
     }
-  }
-  //#endregion
-
-  //#region private methods
-  private refreshItems() {
-    this.getAndSetTreeEntities();
-    this.treeComponent.refreshItems(this.treeEntities);
-  }
-
-  private getAndSetTreeEntities() {
-    this.treeEntities = this.noteService.getAllPaths();
   }
   //#endregion
 }

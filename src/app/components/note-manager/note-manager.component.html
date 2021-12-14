@@ -1,15 +1,4 @@
 <div class="container">
-    <app-tree
-        class="tree shadow-right"
-        #treeComponent
-        [paths]="treeEntities"
-        [expansionModel]="noteService.getExpansionModel()"
-        (onExpanded)="noteService.setExpansionModel($event)"
-        (onNewItem)="createNewItem()"
-        (onEdit)="edit($event)"
-        (onRename)="rename($event)"
-        (onDelete)="delete($event)"
-    ></app-tree>
     <div class="editors-container">
         <app-editor-list
             #editorListComponent

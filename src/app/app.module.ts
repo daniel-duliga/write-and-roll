@@ -34,14 +34,12 @@ import { EditorComponent } from './components/editor/editor.component';
 import { EditorListComponent } from './components/editor-list/editor-list.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
-import { TreeComponent } from './components/tree/tree.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AutoCompletePromptComponent,
     InputComponent,
-    TreeComponent,
     AutoCompleteFieldComponent,
     NoteManagerComponent,
     EditorListComponent,

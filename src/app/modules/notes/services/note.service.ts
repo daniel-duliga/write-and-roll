@@ -74,8 +74,7 @@ export class NoteService {
       ).map(x => x.replace(`${this.collectionName}/data/`, ''))
       .sort((a, b) => a.localeCompare(b));
   }
-  //#endregion
-
+  
   move(oldPath: string, newPath: string) {
     let item = this.get(oldPath);
     if (item) {
@@ -85,6 +84,7 @@ export class NoteService {
       this.create(item);
     }
   }
+  //#endregion
 
   //#region children
   getDescendantsRecursive(parentPath: string): Note[] {
@@ -103,28 +103,6 @@ export class NoteService {
     }
 
     return result;
-  }
-  //#endregion
-
-  //#region expansion model
-  getExpansionModel(): ExpansionModelItem[] {
-    let result: ExpansionModelItem[] = [];
-    const rawExpansionModel = localStorage.getItem(`${this.collectionName}/expansionModel`);
-    if (rawExpansionModel) {
-      result = JSON.parse(rawExpansionModel);
-    }
-    return result;
-  }
-
-  setExpansionModel(item: ExpansionModelItem) {
-    const expansionModel = this.getExpansionModel();
-    const existingItem = expansionModel.find(x => x.identifier == item.identifier);
-    if (existingItem) {
-      existingItem.isExpanded = item.isExpanded;
-    } else {
-      expansionModel.push(new ExpansionModelItem(item.identifier, item.isExpanded));
-    }
-    localStorage.setItem(`${this.collectionName}/expansionModel`, JSON.stringify(expansionModel));
   }
   //#endregion
 
