@@ -31,7 +31,6 @@ import { AutoCompletePromptComponent } from './components/prompts/auto-complete-
 import { NoteManagerComponent } from './components/note-manager/note-manager.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { EditorComponent } from './components/editor/editor.component';
-import { EditorListComponent } from './components/editor-list/editor-list.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
 
@@ -42,7 +41,6 @@ import { InputComponent } from './components/prompts/input/input.component';
     InputComponent,
     AutoCompleteFieldComponent,
     NoteManagerComponent,
-    EditorListComponent,
     ImportExportComponent,
     EditorComponent,
     CommandsComponent,

@@ -51,6 +51,10 @@ export class AutoCompleteFieldComponent implements OnInit {
   onTextChanged(newValue: string) {
     this.onTextChange.emit(newValue);
   }
+
+  onOptionHighlighted(option: string) {
+    this.selectedOption = option;
+  }
   //#endregion
 
   public setOptions(options: string[], openPanel: boolean = false) {
@@ -74,7 +78,11 @@ export class AutoCompleteFieldComponent implements OnInit {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().includes(filterValue));
+    const result = this.options.filter(option => option.toLowerCase().includes(filterValue));
+    if(result.length === 0) {
+      this.selectedOption = '';
+    }
+    return result;
   }
   //#endregion
 }

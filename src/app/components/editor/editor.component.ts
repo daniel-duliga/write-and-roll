@@ -1,7 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget, Pos } from 'codemirror';
-import { EditorListService } from 'src/app/components/editor-list/editor-list.service';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { CommandsComponent } from '../commands/commands.component';
@@ -46,7 +45,6 @@ export class EditorComponent implements OnInit {
 
   constructor(
     private renderer: Renderer2,
-    private uiService: EditorListService,
     private noteService: NoteService,
   ) {
     (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
@@ -117,7 +115,7 @@ export class EditorComponent implements OnInit {
   }
 
   linkClicked(noteId: string) {
-    this.uiService.onEditorOpened.next(noteId);
+    // this.uiService.onEditorOpened.next(noteId);
   }
   //#endregion
 

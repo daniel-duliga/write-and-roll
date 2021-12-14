@@ -1,8 +1,21 @@
 <div class="container">
-    <div class="editors-container">
-        <app-editor-list
-            #editorListComponent
-            [mode]="editorMode"
-        ></app-editor-list>
+    <div class="no-content-message" *ngIf="editors.length === 0">
+        <button mat-stroked-button matTooltip="CTRL + O" (click)="onOpenEditor()">Open Note</button>
     </div>
+    <app-editor
+        class="editor"
+        #editorComponent
+        *ngFor="let editor of editors; let i = index"
+        [name]="editor.notePath"
+        [mode]="editor.mode"
+        [minimized]="editor.minimized"
+        [ngStyle]="{ 
+            'z-index': i,
+            'min-width': editorComponent.minimized ? 'unset'  : '33%',
+            'max-width': editorComponent.minimized ? '33px'  : 'unset'
+        }"
+        (onClosed)="onCloseEditor(editor.id)"
+        (onMove)="onMoveEditor(editor.id, $event)"
+        (onMinimized)="onEditorMinimized(editor, $event)"
+    ></app-editor>
 </div>

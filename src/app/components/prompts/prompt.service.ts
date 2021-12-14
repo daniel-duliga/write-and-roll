@@ -22,15 +22,16 @@ export class PromptService {
     return openedDialog.afterClosed().toPromise().then(((result: string) => result));
   }
 
-  openAutoCompletePrompt(dialog: MatDialog, message: string, options: string[]): Promise<string> {
+  openAutoCompletePrompt(dialog: MatDialog, title: string, message: string, options: string[]): Promise<string> {
     const openedDialog = dialog.open(
       AutoCompletePromptComponent,
       {
-        width: '100%',
+        width: '480px',
         position: this.promptPosition,
         data: {
+          title: title,
           message: message,
-          options: options
+          options: options,
         },
       }
     );

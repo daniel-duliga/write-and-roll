@@ -13,6 +13,7 @@
         #autoComplete="matAutocomplete"
         (opened)="onPanelOpened()"
         (optionSelected)="onOptionChanged($event.option.value)"
+        (optionActivated)="onOptionHighlighted($event.option?.value)"
     >
         <mat-option *ngFor="let option of filteredOptions | async" [value]="option" matTooltip="{{option}}">
             {{option}}

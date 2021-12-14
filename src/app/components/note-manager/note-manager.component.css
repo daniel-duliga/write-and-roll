@@ -3,12 +3,20 @@
     height: 100%;
 }
 
-.tree {
-    max-width: 350px;
-    z-index: 1;
-}
-
 .editors-container {
     width: 100%;
     overflow: auto;
+}
+
+.no-content-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.editor {
+    flex: 1;
+    border-left: 1px solid lightgray;
 }
