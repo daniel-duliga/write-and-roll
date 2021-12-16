@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class NoteManagerComponent implements OnInit {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
-  
+
   editorMode: EditorMode = 'default';
   mode: EditorMode = 'default';
   editors: Editor[] = [];
@@ -44,25 +44,36 @@ export class NoteManagerComponent implements OnInit {
 
   //#region host listener methods
   @HostListener('window:keydown.control.o', ['$event'])
-  onOpenEditorShortcut(e: Event) {
+  onOpenNoteShortcut(e: Event) {
     e.preventDefault();
-    this.onOpenEditor();
+    this.openNote();
   }
   //#endregion
 
   //#region events
-  async onOpenEditor() {
+  async openNote() {
     const noteNames = this.noteService.getAllPaths();
     const noteName = await this.promptService.openAutoCompletePrompt(this.dialog, "Open Note", "Note", noteNames);
-    if(noteName) {
-      if(!noteNames.includes(noteName)) {
+    if (noteName) {
+      if (!noteNames.includes(noteName)) {
         this.noteService.create(new Note(noteName, ''));
       }
       this.openEditor(noteName, false);
     }
   }
 
-  onMoveEditor(id: string, direction: MoveDirection) {
+  closeEditor(id: string) {
+    let editor = this.editors.find(x => x.id === id);
+    if (editor) {
+      this.editors = this.editors.filter(x => x.id !== id);
+      this.noteService.removeOpenEditor(editor);
+      if (this.editors.length > 0) {
+        this.refreshEditors();
+      }
+    }
+  }
+
+  moveEditor(id: string, direction: MoveDirection) {
     const editorIndex = this.editors.findIndex(x => x.id === id);
     if (editorIndex !== -1) {
       const editor = this.editors[editorIndex];
@@ -76,21 +87,35 @@ export class NoteManagerComponent implements OnInit {
     }
   }
 
-  onEditorMinimized(editor: Editor, minimized: boolean) {
+  async renameNote(editor: Editor) {
+    const oldName = editor.notePath;
+    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', oldName);
+    if (newName) {
+      this.noteService.rename(oldName, newName);
+      const editorComponent = this.editorComponents.find(x => x.note.path === oldName);
+      if (editorComponent) {
+        editorComponent.setName(newName);
+
+        this.noteService.removeOpenEditor(editor);
+        editor.notePath = newName;
+        this.noteService.addOpenedEditor(editor);
+      }
+    }
+  }
+
+  deleteNote(editor: Editor) {
+    if (!confirm(`Are you sure you want to delete ${editor.notePath}?`)) {
+      return;
+    }
+
+    this.noteService.delete(editor.notePath);
+    this.closeEditor(editor.id);
+  }
+
+  toggleEditorMinimized(editor: Editor, minimized: boolean) {
     this.refreshEditors();
     editor.minimized = minimized;
     this.noteService.updateOpenedEditor(editor);
-  }
-
-  onCloseEditor(id: string) {
-    let editor = this.editors.find(x => x.id === id);
-    if (editor) {
-      this.editors = this.editors.filter(x => x.id !== id);
-      this.noteService.removeOpenEditor(editor);
-      if (this.editors.length > 0) {
-        this.refreshEditors();
-      }
-    }
   }
   //#endregion
 
@@ -103,63 +128,12 @@ export class NoteManagerComponent implements OnInit {
   }
 
   private refreshEditors() {
-    if(!this.editorComponents) {
+    if (!this.editorComponents) {
       return;
     }
-    
+
     for (const editor of this.editorComponents) {
       editor.refresh();
-    }
-  }
-  //#endregion
-
-  //#region unsorted
-  async rename(oldPath: string, newPath: string = '') {
-    const openedEditor = this.editorComponents.find(x => x.note.path === oldPath);
-
-    if (!newPath) {
-      const itemPathSegments = oldPath.split('/');
-      const oldItemName = itemPathSegments[itemPathSegments.length - 1];
-      const newItemName = await this.promptService.openInputPrompt(this.dialog, 'New Name', oldItemName);
-      if (newItemName) {
-        itemPathSegments[itemPathSegments.length - 1] = newItemName;
-        newPath = itemPathSegments.join('/');
-      } else {
-        return;
-      }
-    }
-
-    if (newPath) {
-      if (openedEditor) {
-        openedEditor.setName(newPath);
-      }
-      this.noteService.move(oldPath, newPath);
-
-      const children = this.noteService.getDescendantsRecursive(oldPath);
-      for (const child of children) {
-        const newChildPath = child.path.replace(oldPath, newPath);
-        this.rename(child.path, newChildPath)
-      }
-    }
-  }
-
-  delete(path: string, confirmDeletion: boolean = true, deleteDescendants: boolean = true) {
-    if (confirmDeletion && !confirm(`Are you sure you want to delete ${path} and all its descendants?`)) {
-      return;
-    }
-
-    const openedEditor = this.editorComponents.find(x => x.note.path === path);
-    if (openedEditor) {
-      openedEditor.closeEditor();
-    }
-
-    this.noteService.delete(path);
-
-    if (deleteDescendants) {
-      const descendants = this.noteService.getDescendantsRecursive(path);
-      for (const descendant of descendants) {
-        this.delete(descendant.path, false, false);
-      }
     }
   }
   //#endregion

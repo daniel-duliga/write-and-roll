@@ -1,9 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import { LineWidget, Pos } from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { CommandsComponent } from '../commands/commands.component';
+import { ImportExportComponent } from '../import-export/import-export.component';
 
 export type MoveDirection = "left" | "right";
 export type EditorMode = "markdown" | "javascript" | "default";
@@ -18,9 +20,12 @@ export class EditorComponent implements OnInit {
   @Input() mode: EditorMode = "default";
   @Input() minimized = false;
 
-  @Output() onClosed: EventEmitter<void> = new EventEmitter();
+  @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
-  @Output() onMinimized: EventEmitter<boolean> = new EventEmitter();
+  @Output() onMinimize: EventEmitter<boolean> = new EventEmitter();
+  @Output() onRename: EventEmitter<void> = new EventEmitter();
+  @Output() onDelete: EventEmitter<void> = new EventEmitter();
+  @Output() onOpenNote: EventEmitter<void> = new EventEmitter();
   @Output() onLinkClicked: EventEmitter<string> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
@@ -46,6 +51,7 @@ export class EditorComponent implements OnInit {
   constructor(
     private renderer: Renderer2,
     private noteService: NoteService,
+    public dialog: MatDialog,
   ) {
     (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
   }
@@ -81,15 +87,10 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region event handlers
-  closeEditor() {
+  close() {
     if (this.validateUnsavedChanges()) {
-      this.onClosed.emit();
+      this.onClose.emit();
     }
-  }
-
-  toggleMinimize(minimized: boolean) {
-    this.minimized = minimized;
-    this.onMinimized.emit(minimized);
   }
 
   move(direction: MoveDirection) {
@@ -112,6 +113,11 @@ export class EditorComponent implements OnInit {
 
     // Reflect saved data
     this.initialContent = this.note.content;
+  }
+
+  toggleMinimize(minimized: boolean) {
+    this.minimized = minimized;
+    this.onMinimize.emit(minimized);
   }
 
   linkClicked(noteId: string) {

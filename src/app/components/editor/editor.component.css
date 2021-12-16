@@ -36,7 +36,7 @@
   padding: 0;
 
   border-radius: 0;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,7 +57,7 @@
 
   display: flex;
   align-items: center;
-  
+
   font-weight: 500;
   font-size: 11pt;
 
@@ -99,4 +99,12 @@
 
 .commands-input {
   width: 100%;
+}
+
+.menu-separator {
+  width: 80%;
+  height: 1px;
+  margin-left: 10%;
+  margin-right: 10%;
+  background-color: lightgrey;
 }

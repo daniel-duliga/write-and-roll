@@ -1,6 +1,6 @@
 <div class="container">
     <div class="no-content-message" *ngIf="editors.length === 0">
-        <button mat-stroked-button matTooltip="CTRL + O" (click)="onOpenEditor()">Open Note</button>
+        <button mat-stroked-button matTooltip="CTRL + O" (click)="openNote()">Open Note</button>
     </div>
     <app-editor
         class="editor"
@@ -14,8 +14,11 @@
             'min-width': editorComponent.minimized ? 'unset'  : '33%',
             'max-width': editorComponent.minimized ? '33px'  : 'unset'
         }"
-        (onClosed)="onCloseEditor(editor.id)"
-        (onMove)="onMoveEditor(editor.id, $event)"
-        (onMinimized)="onEditorMinimized(editor, $event)"
+        (onClose)="closeEditor(editor.id)"
+        (onMove)="moveEditor(editor.id, $event)"
+        (onRename)="renameNote(editor)"
+        (onDelete)="deleteNote(editor)"
+        (onOpenNote)="openNote()"
+        (onMinimize)="toggleEditorMinimized(editor, $event)"
     ></app-editor>
 </div>
