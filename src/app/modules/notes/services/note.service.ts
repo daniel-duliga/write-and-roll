@@ -75,7 +75,7 @@ export class NoteService {
       .sort((a, b) => a.localeCompare(b));
   }
   
-  move(oldPath: string, newPath: string) {
+  rename(oldPath: string, newPath: string) {
     let item = this.get(oldPath);
     if (item) {
       const oldPath = item.path;

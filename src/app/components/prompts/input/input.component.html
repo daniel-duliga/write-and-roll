@@ -1,13 +1,18 @@
 <form [formGroup]="form" (ngSubmit)="onFormSubmit()">
-    <mat-form-field class="example-full-width" appearance="outline" style="width: 100%;">
-        <input 
-            type="text"
-            aria-label="Input"
-            placeholder="{{ this.message }}"
-            [(ngModel)]="initialValue"
-            formControlName="input"
-            matInput
-            #input
-        >
-    </mat-form-field>
+    <div class="container">
+        <mat-form-field class="example-full-width" appearance="outline" style="width: 100%;">
+            <input 
+                type="text"
+                aria-label="Input"
+                placeholder="{{ this.message }}"
+                [(ngModel)]="initialValue"
+                formControlName="input"
+                matInput
+                #input
+            >
+        </mat-form-field>
+        <button mat-icon-button>
+            <mat-icon>done</mat-icon>
+        </button>
+    </div>
 </form>
