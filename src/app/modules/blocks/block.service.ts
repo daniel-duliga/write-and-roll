@@ -30,36 +30,46 @@ export class BlockService {
   }
 
   addBlocksFromNote(note: Note) {
-    const blockMatches = note.content.matchAll(/^```[\s]*(action|table) [\s\S]*?```$/gm);
-    for (const blockMatch of blockMatches) {
-      if (blockMatch) {
-        let content = blockMatch[0];
+    const lines = note.content.split('\n');
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index];
+      if(line.startsWith('```')) {
+        console.log(line);
         
-        const type = this.getBlockType(content);
-        if (!type) {
-          console.log("Cannot find block type.");
-          return;
-        }
+        const lineSegments = line.split(' ').filter(x => x !== '');
+        console.log(`Line segments: ${lineSegments}. Length: ${lineSegments.length}`);
+        lineSegments.shift();
         
-        const name = this.getBlockName(content, type);
-        if(!name) {
-          console.log("Cannot find block name.");
-          return;
-        }
-        
-        content = content.slice(content.indexOf('\n') + 1, content.lastIndexOf('\n'));
+        const type = lineSegments.shift();
+        if(type) {
+          let name = '';
+          for (const lineSegment of lineSegments) {
+            name = name.concat(lineSegment).concat(' ');
+          }
+          name = name.trim();
 
-        switch (type) {
-          case "action": {
-            this.actions.addBlock(new Block(note.path, new Action(name, content)));
-            break;
+          let content = '';
+          for (let nextLineIndex = index + 1; nextLineIndex < lines.length; nextLineIndex++) {
+            const nextLine = lines[nextLineIndex];
+            if(nextLine.trimEnd() === '```') {
+              break;
+            } else {
+              content = content.concat(nextLine).concat('\n');
+            }
           }
-          case "table": {
-            this.randomTables.addBlock(new Block(note.path, new RandomTable(name, this.papa.parse(content).data)));
-            break;
-          }
-          default: {
-            console.log(`Found unknown type ${type}.`);
+          
+          switch (type) {
+            case "action": {
+              this.actions.addBlock(new Block(note.path, new Action(name, content)));
+              break;
+            }
+            case "table": {
+              this.randomTables.addBlock(new Block(note.path, new RandomTable(name, this.papa.parse(content).data)));
+              break;
+            }
+            default: {
+              console.log(`Found unknown type ${type}.`);
+            }
           }
         }
       }
@@ -70,27 +80,5 @@ export class BlockService {
     this.actions.removeBlocksByNote(noteName);
     this.randomTables.removeBlocksByNote(noteName);;
   }
-  //#endregion
-
-  //#region private methods
-  private getBlockType(content: string): string | null {
-    const typeMatches = content.match(/[^```][\w]+\s+/);
-    if (!typeMatches) {
-      console.log("Block type not found.");
-      return null;
-    }
-    return typeMatches[0].trim();
-  }
-
-  private getBlockName(content: string, type: string): string | null {
-    const nameMatches = content.match(new RegExp(`[^(\`\`\`\\s*${type})].+`));
-    if (!nameMatches) {
-      console.log("Block name not found.");
-      return null;
-    }
-    return nameMatches[0].trim();
-  }
-
-  
   //#endregion
 }
