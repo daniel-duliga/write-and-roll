@@ -6,6 +6,7 @@ import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { CommandsComponent } from '../commands/commands.component';
 import { ImportExportComponent } from '../import-export/import-export.component';
+import { NoteManagerService } from '../note-manager/note-manager.service';
 
 export type MoveDirection = "left" | "right";
 export type EditorMode = "markdown" | "javascript" | "default";
@@ -26,7 +27,6 @@ export class EditorComponent implements OnInit {
   @Output() onRename: EventEmitter<void> = new EventEmitter();
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
   @Output() onOpenNote: EventEmitter<void> = new EventEmitter();
-  @Output() onLinkClicked: EventEmitter<string> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
@@ -52,6 +52,7 @@ export class EditorComponent implements OnInit {
     private renderer: Renderer2,
     private noteService: NoteService,
     public dialog: MatDialog,
+    private noteManagerService: NoteManagerService
   ) {
     (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
   }
@@ -120,8 +121,8 @@ export class EditorComponent implements OnInit {
     this.onMinimize.emit(minimized);
   }
 
-  linkClicked(noteId: string) {
-    // this.uiService.onEditorOpened.next(noteId);
+  linkClicked(address: string) {
+    this.noteManagerService.openNotes.next(address);
   }
   //#endregion
 
@@ -226,42 +227,23 @@ export class EditorComponent implements OnInit {
   private renderInternalLinks(line: string, lineIndex: number) {
     if (!this.codeMirror) { return; }
 
-    const links = line.matchAll(/\[[\w]+[^\)]+\]\(war:\/\/[\w\s/]+\)/g);
-    for (const link of links) {
-      var linkContent = link.toString();
+    const linkMatches = line.matchAll(/\[\[(\w*\s*\d*)+\]\]/g);
+    for (const linkMatch of linkMatches) {
+      const linkIndexInLine = linkMatch.index ?? 0;
+      const link = linkMatch[0];
+      const address = linkMatch[1];
 
-      let noteNameRegExMatch = linkContent.match(/\[.*\]/g);
-      let noteIdRegExMatch = linkContent.match(/\(war:\/\/.*\)/g);
-      if (noteIdRegExMatch && noteNameRegExMatch) {
-        let noteName = noteNameRegExMatch.toString();
-        noteName = noteName.slice(1, noteName.length - 1);
-
-        let notePath = noteIdRegExMatch.toString();
-        notePath = notePath.slice(7, notePath.length - 1);
-
-        const linkIndexInLine = link.index ?? 0;
-
-        // Highlight link name part
-        this.codeMirror.getDoc().markText(
-          { line: lineIndex, ch: linkIndexInLine },
-          { line: lineIndex, ch: linkIndexInLine + noteName.length + 2 },
-          {
-            className: 'markdown-link',
-            attributes: {
-              'notePath': noteName,
-              'onClick': `openLink('${notePath}')`
-            }
-          });
-
-        // Hide link url part
-        this.codeMirror.getDoc().markText(
-          { line: lineIndex, ch: linkIndexInLine + noteNameRegExMatch.toString().length },
-          { line: lineIndex, ch: linkIndexInLine + noteNameRegExMatch.toString().length + noteIdRegExMatch.toString().length },
-          {
-            collapsed: true,
+      this.codeMirror.getDoc().markText(
+        { line: lineIndex, ch: linkIndexInLine },
+        { line: lineIndex, ch: linkIndexInLine + link.length },
+        {
+          className: 'markdown-link',
+          attributes: {
+            'notePath': link,
+            'onClick': `openLink('${address}')`
           }
-        )
-      }
+        }
+      );
     }
   }
   //#endregion

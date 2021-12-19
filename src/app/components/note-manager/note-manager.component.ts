@@ -1,4 +1,4 @@
-import { Component, HostListener, NgZone, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Editor } from 'src/app/modules/notes/models/editor';
@@ -7,28 +7,34 @@ import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { EditorComponent, EditorMode, MoveDirection } from '../editor/editor.component';
 import { PromptService } from '../prompts/prompt.service';
 import { v4 as uuidv4 } from 'uuid';
+import { NoteManagerService } from './note-manager.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-note-manager',
   templateUrl: './note-manager.component.html',
   styleUrls: ['./note-manager.component.css']
 })
-export class NoteManagerComponent implements OnInit {
+export class NoteManagerComponent implements OnInit, OnDestroy {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
 
   editorMode: EditorMode = 'default';
   mode: EditorMode = 'default';
   editors: Editor[] = [];
   newOption = '+ Add New';
+  subscriptions: Subscription[] = [];
 
   constructor(
     route: ActivatedRoute,
     public noteService: NoteService,
+    private zone: NgZone,
     private dialog: MatDialog,
     private promptService: PromptService,
-    private zone: NgZone
+    private noteManagerService: NoteManagerService
   ) {
     this.editorMode = route.snapshot.data["editorMode"] ?? 'default';
+    this.subscriptions.push(
+      this.noteManagerService.openNotes.subscribe(noteName => this.openLink(noteName)));
   }
 
   //#region lifecycle events
@@ -40,6 +46,12 @@ export class NoteManagerComponent implements OnInit {
   }
 
   ngAfterViewInit(): void { }
+
+  ngOnDestroy() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
+  }
   //#endregion
 
   //#region host listener methods
@@ -117,16 +129,13 @@ export class NoteManagerComponent implements OnInit {
     editor.minimized = minimized;
     this.noteService.updateOpenedEditor(editor);
   }
+
+  openLink(address: string) {
+    this.zone.run(() => this.openEditor(address, false));
+  }
   //#endregion
 
   //#region private methods
-  private openEditor(noteId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), noteId, "markdown", minimized);
-    this.editors.push(newEditor);
-    this.noteService.addOpenedEditor(newEditor);
-    this.refreshEditors();
-  }
-
   private refreshEditors() {
     if (!this.editorComponents) {
       return;
@@ -135,6 +144,13 @@ export class NoteManagerComponent implements OnInit {
     for (const editor of this.editorComponents) {
       editor.refresh();
     }
+  }
+
+  private openEditor(noteId: string, minimized: boolean) {
+    const newEditor = new Editor(uuidv4(), noteId, "markdown", minimized);
+    this.editors.push(newEditor);
+    this.noteService.addOpenedEditor(newEditor);
+    this.refreshEditors();
   }
   //#endregion
 }
