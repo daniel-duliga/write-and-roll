@@ -26,51 +26,51 @@ export class BlockService {
       this.removeBlocksByNote(note.path);
       this.addBlocksFromNote(note);
     }
-    console.log(this);
   }
 
   addBlocksFromNote(note: Note) {
     const lines = note.content.split('\n');
     for (let index = 0; index < lines.length; index++) {
       const line = lines[index];
-      if(line.startsWith('```')) {
-        console.log(line);
-        
-        const lineSegments = line.split(' ').filter(x => x !== '');
-        console.log(`Line segments: ${lineSegments}. Length: ${lineSegments.length}`);
-        lineSegments.shift();
-        
-        const type = lineSegments.shift();
-        if(type) {
-          let name = '';
-          for (const lineSegment of lineSegments) {
-            name = name.concat(lineSegment).concat(' ');
-          }
-          name = name.trim();
+      if(!line.startsWith('```')) {
+        continue;
+      }
+      
+      const lineSegments = line.split(' ').filter(x => x !== '');
+      lineSegments.shift();
+      
+      const type = lineSegments.shift();
+      if(!type) {
+        continue;
+      }
+      
+      let name = '';
+      for (const lineSegment of lineSegments) {
+        name = name.concat(lineSegment).concat(' ');
+      }
+      name = name.trim();
 
-          let content = '';
-          for (let nextLineIndex = index + 1; nextLineIndex < lines.length; nextLineIndex++) {
-            const nextLine = lines[nextLineIndex];
-            if(nextLine.trimEnd() === '```') {
-              break;
-            } else {
-              content = content.concat(nextLine).concat('\n');
-            }
-          }
-          
-          switch (type) {
-            case "action": {
-              this.actions.addBlock(new Block(note.path, new Action(name, content)));
-              break;
-            }
-            case "table": {
-              this.randomTables.addBlock(new Block(note.path, new RandomTable(name, this.papa.parse(content).data)));
-              break;
-            }
-            default: {
-              console.log(`Found unknown type ${type}.`);
-            }
-          }
+      let content = '';
+      for (let nextLineIndex = index + 1; nextLineIndex < lines.length; nextLineIndex++) {
+        const nextLine = lines[nextLineIndex];
+        if(nextLine.trimEnd() === '```') {
+          break;
+        } else {
+          content = content.concat(nextLine).concat('\n');
+        }
+      }
+      
+      switch (type) {
+        case "action": {
+          this.actions.addBlock(new Block(note.path, new Action(name, content)));
+          break;
+        }
+        case "table": {
+          this.randomTables.addBlock(new Block(note.path, new RandomTable(name, this.papa.parse(content).data)));
+          break;
+        }
+        default: {
+          console.log(`Found unknown type ${type}.`);
         }
       }
     }
