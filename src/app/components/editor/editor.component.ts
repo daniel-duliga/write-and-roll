@@ -65,6 +65,7 @@ export class EditorComponent implements OnInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.configureCodeMirror();
+      this.postProcessCodeMirror();
       this.refresh();
     }, 250);
   }
