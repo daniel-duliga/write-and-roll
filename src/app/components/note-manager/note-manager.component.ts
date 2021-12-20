@@ -64,7 +64,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   //#region events
   async openNote() {
-    const noteNames = this.noteService.getAllPaths();
+    const noteNames = this.noteService.getAll().map(x => x.path);
     const noteName = await this.promptService.openAutoCompletePrompt(this.dialog, "Open Note", "Note", noteNames);
     if (noteName) {
       if (!noteNames.includes(noteName)) {
