@@ -174,7 +174,7 @@ export class EditorComponent implements OnInit {
     // save fold state
     let foldedLinesIndexes: number[] = [];
     for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
-      if(this.codeMirror.isFolded(new Pos(lineIndex))) {
+      if (this.codeMirror.isFolded(new Pos(lineIndex))) {
         foldedLinesIndexes.push(lineIndex);
       }
     }
@@ -231,8 +231,8 @@ export class EditorComponent implements OnInit {
     const linkMatches = line.matchAll(/\[\[(\w*\s*\d*)+\]\]/g);
     for (const linkMatch of linkMatches) {
       const linkIndexInLine = linkMatch.index ?? 0;
-      const link = linkMatch[0];
-      const address = linkMatch[1];
+      const link = linkMatch[0].toString();
+      const address = link.slice(2, link.length - 2);
 
       this.codeMirror.getDoc().markText(
         { line: lineIndex, ch: linkIndexInLine },
@@ -251,12 +251,15 @@ export class EditorComponent implements OnInit {
 
   //#region private methods
   private getAndSetNote(name: string) {
-    const newNote = this.noteService.get(name);
-    if (newNote) {
-      this.note = newNote;
-      this.initialContent = this.note.content;
-      this.note.path = name;
+    let note = this.noteService.get(name);
+    if (!note) {
+      note = new Note(name, '');
+      this.noteService.create(note);
     }
+
+    this.note = note;
+    this.initialContent = note.content;
+    this.note.path = name;
   }
 
   private configureCodeMirror() {
@@ -270,15 +273,15 @@ export class EditorComponent implements OnInit {
         },
         "Shift-Tab": function (cm) {
           const linesCount = cm.lineCount();
-          
+
           let currentMode: "fold" | "unfold" = "fold";
           for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-            if(cm.isFolded(new Pos(lineIndex))) {
+            if (cm.isFolded(new Pos(lineIndex))) {
               currentMode = "unfold";
               break;
             }
           }
-          
+
           for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
             cm.foldCode(lineIndex, undefined, currentMode);
           }
