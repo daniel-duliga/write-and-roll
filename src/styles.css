@@ -5,9 +5,9 @@
 } */
 
 /* You can add global styles to this file, and also import other style files */
-/* * {
-  font-family: JetBrainsMono
-} */
+* {
+  font-family: 'Consolas'
+}
 html {
   top: 0 !important;
 }
@@ -18,7 +18,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Helvetica Neue", sans-serif;
   background-color: #F7F6F2;
 }
 img {
