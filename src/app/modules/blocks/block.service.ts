@@ -59,6 +59,7 @@ export class BlockService {
           content = content.concat(nextLine).concat('\n');
         }
       }
+      content = content.trim();
       
       switch (type) {
         case "action": {
