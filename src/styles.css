@@ -1,3 +1,8 @@
+@import "~codemirror/theme/material";
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/addon/hint/show-hint.css";
+@import "~codemirror/addon/fold/foldgutter.css";
+
 /* Fonts */
 /* @font-face {
   font-family: JetBrainsMono;
@@ -26,15 +31,10 @@ img {
 }
 
 /* CodeMirror */
-@import "~codemirror/theme/material";
-@import "~codemirror/lib/codemirror";
 .CodeMirror {
   height: 100%;
 }
-/* .CodeMirror-lines { 
-  padding: 10px 10px 25% 10px;
-} */
-.CodeMirror-foldmarker {
+/* .CodeMirror-foldmarker {
   color: blue;
   font-family: arial;
   line-height: .3;
@@ -53,7 +53,7 @@ img {
 }
 .CodeMirror-foldgutter-folded:after {
   content: "\25B8";
-}
+} */
 
 /* Angular Material */
 .mat-form-field-appearance-outline .mat-form-field-outline {
