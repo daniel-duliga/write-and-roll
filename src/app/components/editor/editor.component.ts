@@ -286,7 +286,7 @@ export class EditorComponent implements OnInit {
             cm.foldCode(lineIndex, undefined, currentMode);
           }
         },
-        "Ctrl-E": "autocomplete"
+        "Ctrl-E": this.getNotesAutocomplete.bind(this)
       });
 
       this.codeMirror.on('changes', () => this.postProcessCodeMirror());
@@ -299,18 +299,23 @@ export class EditorComponent implements OnInit {
     return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
   }
 
-  showCompletions(cm: CodeMirror.EditorFromTextArea | undefined) {
-    if (!cm) {
-      return;
-    }
+  private getNotesAutocomplete(cm: CodeMirror.Editor) {
+    if (!cm) { return; }
     
-    var cursor = cm.getCursor(), line = cm.getLine(cursor.line)
-    var start = cursor.ch, end = cursor.ch
-    return {
-      list: ['foo', 'bar', 'lorem', 'ipsum'],
-      from: CodeMirror.Pos(cursor.line, start),
-      to: CodeMirror.Pos(cursor.line, end)
-    };
+    const cursor = cm.getCursor();
+    const start = cursor.ch
+    const end = cursor.ch;
+    const options = this.noteService.getAll().map(x => x.path);
+    
+    cm.showHint({
+      hint: () => {
+        return {
+          list: options,
+          from: CodeMirror.Pos(cursor.line, start),
+          to: CodeMirror.Pos(cursor.line, end)
+        };
+      }
+    });
   }
   //#endregion
 }
