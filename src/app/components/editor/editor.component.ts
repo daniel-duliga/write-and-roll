@@ -1,11 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
+import * as CodeMirror from 'codemirror';
 import { LineWidget, Pos } from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { CommandsComponent } from '../commands/commands.component';
-import { ImportExportComponent } from '../import-export/import-export.component';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 
 export type MoveDirection = "left" | "right";
@@ -148,7 +148,7 @@ export class EditorComponent implements OnInit {
   }
   //#endregion
 
-  //#region codemirror postprocessing
+  //#region postprocessing
   private postProcessCodeMirror() {
     if (this.mode !== 'markdown') { return; }
 
@@ -285,7 +285,8 @@ export class EditorComponent implements OnInit {
           for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
             cm.foldCode(lineIndex, undefined, currentMode);
           }
-        }
+        },
+        "Ctrl-E": "autocomplete"
       });
 
       this.codeMirror.on('changes', () => this.postProcessCodeMirror());
@@ -296,6 +297,20 @@ export class EditorComponent implements OnInit {
 
   private validateUnsavedChanges() {
     return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
+  }
+
+  showCompletions(cm: CodeMirror.EditorFromTextArea | undefined) {
+    if (!cm) {
+      return;
+    }
+    
+    var cursor = cm.getCursor(), line = cm.getLine(cursor.line)
+    var start = cursor.ch, end = cursor.ch
+    return {
+      list: ['foo', 'bar', 'lorem', 'ipsum'],
+      from: CodeMirror.Pos(cursor.line, start),
+      to: CodeMirror.Pos(cursor.line, end)
+    };
   }
   //#endregion
 }
