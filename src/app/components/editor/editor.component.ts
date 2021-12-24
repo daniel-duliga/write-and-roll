@@ -123,7 +123,7 @@ export class EditorComponent implements OnInit {
       processLinkAutocomplete(this.codeMirror, changes);
     }
     this.clearLineWidgets();
-    this.clearTextMarkers();
+    // this.clearTextMarkers();
     this.renderWidgets();
 
     this.codeMirror.scrollTo(null, currentScrollY);

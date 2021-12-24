@@ -1,18 +1,13 @@
+/* Imports */
 @import "~codemirror/theme/material";
 @import "~codemirror/lib/codemirror";
 @import "~codemirror/addon/hint/show-hint.css";
 @import "~codemirror/addon/fold/foldgutter.css";
 
-/* Fonts */
-/* @font-face {
-  font-family: JetBrainsMono;
-  src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
-} */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 
 /* You can add global styles to this file, and also import other style files */
-* {
-  font-family: 'Consolas'
-}
 html {
   top: 0 !important;
 }
@@ -20,6 +15,7 @@ html,
 body {
   height: 100%;
   overflow-y: hidden;
+  font-family: 'Roboto'
 }
 body {
   margin: 0;
@@ -33,27 +29,9 @@ img {
 /* CodeMirror */
 .CodeMirror {
   height: 100%;
+  font-family: 'Roboto Slab';
+  font-size: 11pt;
 }
-/* .CodeMirror-foldmarker {
-  color: blue;
-  font-family: arial;
-  line-height: .3;
-  cursor: pointer;
-  padding-left: 0.5em;
-}
-.CodeMirror-foldgutter {
-  width: .7em;
-}
-.CodeMirror-foldgutter-open,
-.CodeMirror-foldgutter-folded {
-  cursor: pointer;
-}
-.CodeMirror-foldgutter-open:after {
-  content: "\25BE";
-}
-.CodeMirror-foldgutter-folded:after {
-  content: "\25B8";
-} */
 
 /* Angular Material */
 .mat-form-field-appearance-outline .mat-form-field-outline {
