@@ -35,6 +35,16 @@
             <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="this.toggleFavorite()">
+                <span *ngIf="!this.note.favorite">
+                    <mat-icon>star</mat-icon>
+                    <span>Favorite</span>
+                </span>
+                <span *ngIf="this.note.favorite">
+                    <mat-icon>star_border</mat-icon>
+                    <span>Unfavorite</span>
+                </span>
+            </button>
             <button mat-menu-item (click)="this.onRename.emit()">
                 <mat-icon>drive_file_rename_outline</mat-icon>
                 <span>Rename</span>

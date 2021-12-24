@@ -32,7 +32,7 @@ export class ApiService {
 
   prompt(message: string): Promise<string> | null {
     if (this.dialog) {
-      return this.promptService.openInputPrompt(this.dialog, message);
+      return this.promptService.input(this.dialog, message);
     } else {
       return null;
     }

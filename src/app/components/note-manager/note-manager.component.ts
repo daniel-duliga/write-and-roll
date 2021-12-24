@@ -1,4 +1,4 @@
-import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Editor } from 'src/app/modules/notes/models/editor';
@@ -39,13 +39,11 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   //#region lifecycle events
   ngOnInit(): void {
-    const openedEditors = this.noteService.getOpenedEditors();
+    const openedEditors = this.noteManagerService.getOpenedEditors();
     for (const editor of openedEditors) {
       this.openEditor(editor.notePath, editor.minimized);
     }
   }
-
-  ngAfterViewInit(): void { }
 
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
@@ -64,10 +62,14 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   //#region events
   async openNote() {
-    const noteNames = this.noteService.getAll().map(x => x.path);
-    const noteName = await this.promptService.openAutoCompletePrompt(this.dialog, "Open Note", "Note", noteNames);
+    const notes = this.noteService.getAll().sort((a,b) => a.compareTo(b));
+    const noteNames = notes.map(x => x.favorite ? `${x.path} *` : x.path);
+    let noteName = await this.promptService.autocomplete(this.dialog, "Open Note", "Note", noteNames);
     if (noteName) {
-      if (!noteNames.includes(noteName)) {
+      if(noteName.endsWith(' *')) {
+        noteName = noteName.slice(0, noteName.length - 2);
+      }
+      if (!notes.find(x => x.path === noteName)) {
         this.noteService.create(new Note(noteName, ''));
       }
       this.openEditor(noteName, false);
@@ -78,7 +80,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     let editor = this.editors.find(x => x.id === id);
     if (editor) {
       this.editors = this.editors.filter(x => x.id !== id);
-      this.noteService.removeOpenEditor(editor);
+      this.noteManagerService.removeOpenEditor(editor);
       if (this.editors.length > 0) {
         this.refreshEditors();
       }
@@ -101,16 +103,16 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   async renameNote(editor: Editor) {
     const oldName = editor.notePath;
-    const newName = await this.promptService.openInputPrompt(this.dialog, 'New Name', oldName);
+    const newName = await this.promptService.input(this.dialog, 'New Name', oldName);
     if (newName) {
       this.noteService.rename(oldName, newName);
       const editorComponent = this.editorComponents.find(x => x.note.path === oldName);
       if (editorComponent) {
         editorComponent.setName(newName);
 
-        this.noteService.removeOpenEditor(editor);
+        this.noteManagerService.removeOpenEditor(editor);
         editor.notePath = newName;
-        this.noteService.addOpenedEditor(editor);
+        this.noteManagerService.addOpenedEditor(editor);
       }
     }
   }
@@ -127,7 +129,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   toggleEditorMinimized(editor: Editor, minimized: boolean) {
     this.refreshEditors();
     editor.minimized = minimized;
-    this.noteService.updateOpenedEditor(editor);
+    this.noteManagerService.updateOpenedEditor(editor);
   }
 
   openLink(address: string) {
@@ -149,7 +151,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   private openEditor(noteId: string, minimized: boolean) {
     const newEditor = new Editor(uuidv4(), noteId, "markdown", minimized);
     this.editors.push(newEditor);
-    this.noteService.addOpenedEditor(newEditor);
+    this.noteManagerService.addOpenedEditor(newEditor);
     this.refreshEditors();
   }
   //#endregion

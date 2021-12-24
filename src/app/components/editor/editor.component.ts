@@ -57,10 +57,65 @@ export class EditorComponent implements OnInit {
     (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
   }
 
+  //#region lifecycle events
   ngOnInit(): void {
     this.getAndSetNote(this.name);
   }
+  
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.configureCodeMirror();
+      this.postProcessCodeMirror(null);
+      this.refresh();
+    }, 250);
+  }
+  //#endregion
 
+  //#region host listener events
+  @HostListener('keydown.control.space', ['$event'])
+  async onShowCommands(e: Event) {
+    this.commands.focus();
+  }
+
+  @HostListener('keydown.control.s', ['$event'])
+  onSave(e: Event) {
+    this.save(e);
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(e: Event): boolean | undefined {
+    return !this.isDirty;
+  }
+  //#endregion
+
+  //#region toolbar actions
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+
+    // Save
+    const existingItem = this.noteService.get(this.formattedName);
+    if (!existingItem) {
+      this.noteService.create(this.note);
+    } else {
+      this.noteService.update(this.note);
+    }
+
+    // Reflect saved data
+    this.initialContent = this.note.content;
+  }
+  //#endregion
+
+  //#region options menu actions
+  toggleFavorite() {
+    this.note.favorite = !this.note.favorite;
+    this.save();
+  }
+  //#endregion
+
+  //#region unsorted
   private getAndSetNote(name: string) {
     let note = this.noteService.get(name);
     if (!note) {
@@ -71,14 +126,6 @@ export class EditorComponent implements OnInit {
     this.note = note;
     this.initialContent = note.content;
     this.note.path = name;
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.configureCodeMirror();
-      this.postProcessCodeMirror(null);
-      this.refresh();
-    }, 250);
   }
 
   private configureCodeMirror() {
@@ -251,21 +298,6 @@ export class EditorComponent implements OnInit {
     }, 250);
   }
 
-  @HostListener('keydown.control.space', ['$event'])
-  async onShowCommands(e: Event) {
-    this.commands.focus();
-  }
-
-  @HostListener('keydown.control.s', ['$event'])
-  onSave(e: Event) {
-    this.save(e);
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  onBeforeUnload(e: Event): boolean | undefined {
-    return !this.isDirty;
-  }
-
   close() {
     if (this.validateUnsavedChanges()) {
       this.onClose.emit();
@@ -274,24 +306,6 @@ export class EditorComponent implements OnInit {
 
   move(direction: MoveDirection) {
     this.onMove.emit(direction);
-  }
-
-  save($event: Event | null = null) {
-    // If triggered by key combination, prevent default browser save action
-    if ($event) {
-      $event.preventDefault();
-    }
-
-    // Save
-    const existingItem = this.noteService.get(this.formattedName);
-    if (!existingItem) {
-      this.noteService.create(this.note);
-    } else {
-      this.noteService.update(this.note);
-    }
-
-    // Reflect saved data
-    this.initialContent = this.note.content;
   }
 
   toggleMinimize(minimized: boolean) {
@@ -324,4 +338,5 @@ export class EditorComponent implements OnInit {
   private validateUnsavedChanges() {
     return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
   }
+  //#endregion
 }

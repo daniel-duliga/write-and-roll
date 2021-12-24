@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.noteService.ensureDefaultNotesCreated();
+    this.noteService.seedNotes();
     const notes = this.noteService.getAll();
     this.blockService.initialize(notes);
   }
