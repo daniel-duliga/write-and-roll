@@ -5,7 +5,7 @@
 @import "~codemirror/addon/fold/foldgutter.css";
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 /* You can add global styles to this file, and also import other style files */
 html {
@@ -29,8 +29,13 @@ img {
 /* CodeMirror */
 .CodeMirror {
   height: 100%;
-  font-family: 'Roboto Slab';
+  font-family: 'Lato';
   font-size: 11pt;
+}
+
+.CodeMirror-foldmarker {
+  text-shadow: none;
+  margin-left: 0.5em;
 }
 
 /* Angular Material */
@@ -76,5 +81,4 @@ img {
 }
 .markdown-link {
   cursor: pointer;
-  font-weight: bold;
 }
