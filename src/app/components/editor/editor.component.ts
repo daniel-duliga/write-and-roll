@@ -123,7 +123,6 @@ export class EditorComponent implements OnInit {
       processLinkAutocomplete(this.codeMirror, changes);
     }
     this.clearLineWidgets();
-    // this.clearTextMarkers();
     this.renderWidgets();
 
     this.codeMirror.scrollTo(null, currentScrollY);
@@ -320,29 +319,6 @@ export class EditorComponent implements OnInit {
       lineWidget.clear();
     }
     this.lineWidgets = [];
-  }
-
-  private clearTextMarkers() {
-    if (!this.codeMirror) { return; }
-
-    // save fold state
-    let foldedLinesIndexes: number[] = [];
-    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
-      if (this.codeMirror.isFolded(new Pos(lineIndex))) {
-        foldedLinesIndexes.push(lineIndex);
-      }
-    }
-
-    // clear markers
-    var textMarkers = this.codeMirror.getAllMarks();
-    for (const textMarker of textMarkers) {
-      textMarker.clear();
-    }
-
-    // set fold state
-    for (const lineIndex of foldedLinesIndexes) {
-      this.codeMirror.foldCode(lineIndex, undefined, 'fold');
-    }
   }
 
   private validateUnsavedChanges() {
