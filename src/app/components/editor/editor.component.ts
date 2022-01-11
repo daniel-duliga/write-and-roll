@@ -258,7 +258,7 @@ export class EditorComponent implements OnInit {
         this.renderer.setStyle(image, 'max-width', '100%');
 
         let imageContainer: HTMLElement = this.renderer.createElement('div');
-        this.renderer.setStyle(imageContainer, 'text-align', 'center');
+        this.renderer.setStyle(imageContainer, 'text-align', 'left');
         imageContainer.appendChild(image);
 
         const imageWidget = this.codeMirror.addLineWidget(lineIndex, imageContainer);

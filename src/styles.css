@@ -6,6 +6,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
 
 /* You can add global styles to this file, and also import other style files */
 html {
@@ -29,13 +30,20 @@ img {
 /* CodeMirror */
 .CodeMirror {
   height: 100%;
-  font-family: 'Lato';
+  font-family: 'JetBrains Mono';
   font-size: 11pt;
 }
-
 .CodeMirror-foldmarker {
   text-shadow: none;
   margin-left: 0.5em;
+}
+.CodeMirror-lines {
+  padding-bottom: 40vh;
+}
+.CodeMirror-code {
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Angular Material */
