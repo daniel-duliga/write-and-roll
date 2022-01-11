@@ -33,6 +33,7 @@ import { CommandsComponent } from './components/commands/commands.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { InputComponent } from './components/prompts/input/input.component';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: true,
       // Register the ServiceWorker as soon as the app is stable

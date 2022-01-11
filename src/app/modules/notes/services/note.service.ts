@@ -1,6 +1,7 @@
 import { Note } from "../models/note";
 import { BlockService } from "../../blocks/block.service";
 import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ export class NoteService {
   collectionName = 'notes';
 
   constructor(
-    private blockService: BlockService
+    private blockService: BlockService,
+    private httpClient: HttpClient
   ) { }
 
   create(note: Note) {
@@ -74,7 +76,8 @@ export class NoteService {
     const flagKey = 'config/defaultNotesCreated';
     let flag = localStorage.getItem(flagKey);
     if(!flag) {
-      this.create(new Note('Home', ''));
+      this.httpClient.get("assets/data/Ironsworn.md", { responseType: "text" }).subscribe(data => this.create(new Note('Ironsworn', data)));
+      this.httpClient.get("assets/data/Journey.md", { responseType: "text" }).subscribe(data => this.create(new Note('Journey', data)));
       localStorage.setItem(flagKey, 'true');
     }
   }
