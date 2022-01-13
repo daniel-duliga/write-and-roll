@@ -1,4 +1,12 @@
 <div class="container">
+    <div class="aside-buttons">
+        <button mat-menu-item class="aside-button" (click)="openNote()" matTooltip="Open Note">
+            <mat-icon>description</mat-icon>
+        </button>
+        <button mat-menu-item class="aside-button" [routerLink]="'/import-export'" matTooltip="Import/Export">
+            <mat-icon>sync</mat-icon>
+        </button>
+    </div>
     <div class="no-content-message" *ngIf="editors.length === 0">
         <button mat-stroked-button matTooltip="CTRL + O" (click)="openNote()">Open Note</button>
     </div>
