@@ -17,7 +17,8 @@
         [name]="editor.notePath"
         [mode]="editor.mode"
         [minimized]="editor.minimized"
-        [ngStyle]="{ 
+        [ngStyle]="{
+            'display': i === editors.length - 1 ? 'initial' : 'none',
             'z-index': i,
             'min-width': editorComponent.minimized ? 'unset'  : '33%',
             'max-width': editorComponent.minimized ? '33px'  : 'unset'
