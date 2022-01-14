@@ -19,14 +19,10 @@ export type EditorMode = "markdown" | "javascript" | "default";
 export class EditorComponent implements OnInit {
   @Input() name: string = ''; // only used for loading the initial note
   @Input() mode: EditorMode = "default";
-  @Input() minimized = false;
 
   @Output() onClose: EventEmitter<void> = new EventEmitter();
-  @Output() onMove: EventEmitter<MoveDirection> = new EventEmitter();
-  @Output() onMinimize: EventEmitter<boolean> = new EventEmitter();
   @Output() onRename: EventEmitter<void> = new EventEmitter();
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
-  @Output() onOpenNote: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
   @ViewChild('commands') commands!: CommandsComponent;
@@ -302,15 +298,6 @@ export class EditorComponent implements OnInit {
     if (this.validateUnsavedChanges()) {
       this.onClose.emit();
     }
-  }
-
-  move(direction: MoveDirection) {
-    this.onMove.emit(direction);
-  }
-
-  toggleMinimize(minimized: boolean) {
-    this.minimized = minimized;
-    this.onMinimize.emit(minimized);
   }
 
   linkClicked(address: string) {

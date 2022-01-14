@@ -16,18 +16,9 @@
         *ngFor="let editor of editors; let i = index"
         [name]="editor.notePath"
         [mode]="editor.mode"
-        [minimized]="editor.minimized"
-        [ngStyle]="{
-            'display': i === editors.length - 1 ? 'initial' : 'none',
-            'z-index': i,
-            'min-width': editorComponent.minimized ? 'unset'  : '33%',
-            'max-width': editorComponent.minimized ? '33px'  : 'unset'
-        }"
+        [ngStyle]="{ 'display': i === editors.length - 1 ? 'initial' : 'none' }"
         (onClose)="closeEditor(editor.id)"
-        (onMove)="moveEditor(editor.id, $event)"
         (onRename)="renameNote(editor)"
         (onDelete)="deleteNote(editor)"
-        (onOpenNote)="openNote()"
-        (onMinimize)="toggleEditorMinimized(editor, $event)"
     ></app-editor>
 </div>
