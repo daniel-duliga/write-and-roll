@@ -69,10 +69,17 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
       if(noteName.endsWith(' *')) {
         noteName = noteName.slice(0, noteName.length - 2);
       }
-      if (!notes.find(x => x.path === noteName)) {
-        this.noteService.create(new Note(noteName, ''));
+
+      let openEditorIndex = this.editors.findIndex(x => x.notePath === noteName);
+      if (openEditorIndex !== -1) {
+        const editor = this.editors.splice(openEditorIndex, 1)[0];
+        this.editors.push(editor);
+      } else {
+        if (!notes.find(x => x.path === noteName)) {
+          this.noteService.create(new Note(noteName, ''));
+        }
+        this.openEditor(noteName, false);
       }
-      this.openEditor(noteName, false);
     }
   }
 

@@ -7,9 +7,6 @@
             <mat-icon>sync</mat-icon>
         </button>
     </div>
-    <div class="no-content-message" *ngIf="editors.length === 0">
-        <button mat-stroked-button matTooltip="CTRL + O" (click)="openNote()">Open Note</button>
-    </div>
     <app-editor
         class="editor"
         #editorComponent
@@ -21,4 +18,7 @@
         (onRename)="renameNote(editor)"
         (onDelete)="deleteNote(editor)"
     ></app-editor>
+    <div class="no-content-message" *ngIf="editors.length === 0">
+        <button mat-stroked-button matTooltip="CTRL + O" (click)="openNote()">Open Note</button>
+    </div>
 </div>
