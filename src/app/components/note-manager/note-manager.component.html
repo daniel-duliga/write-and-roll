@@ -1,9 +1,9 @@
 <div class="container">
-    <div class="aside-buttons">
-        <button mat-menu-item class="aside-button" (click)="openNote()" matTooltip="Open Note">
+    <div class="aside-buttons shadow-right">
+        <button mat-icon-button class="aside-button" (click)="openNote()" matTooltip="Open Note (CTRL + O)" matTooltipPosition="right">
             <mat-icon>description</mat-icon>
         </button>
-        <button mat-menu-item class="aside-button" [routerLink]="'/import-export'" matTooltip="Import/Export">
+        <button mat-icon-button class="aside-button" [routerLink]="'/import-export'" matTooltip="Import/Export" matTooltipPosition="right">
             <mat-icon>sync</mat-icon>
         </button>
     </div>
@@ -19,6 +19,6 @@
         (onDelete)="deleteNote(editor)"
     ></app-editor>
     <div class="no-content-message" *ngIf="editors.length === 0">
-        <button mat-stroked-button matTooltip="CTRL + O" (click)="openNote()">Open Note</button>
+        <h3 style="color: gray;">No note opened</h3>
     </div>
 </div>

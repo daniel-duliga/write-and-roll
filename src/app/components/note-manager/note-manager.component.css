@@ -6,6 +6,8 @@
 .aside-buttons {
     display: flex;
     flex-direction: column;
+    z-index: 2;
+    color: gray;
 }
 
 .editors-container {
