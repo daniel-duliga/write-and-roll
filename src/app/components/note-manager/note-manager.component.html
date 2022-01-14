@@ -1,11 +1,24 @@
 <div class="container">
-    <div class="aside-buttons shadow-right">
-        <button mat-icon-button class="aside-button" (click)="openNote()" matTooltip="Open Note (CTRL + O)" matTooltipPosition="right">
-            <mat-icon>description</mat-icon>
-        </button>
-        <button mat-icon-button class="aside-button" [routerLink]="'/import-export'" matTooltip="Import/Export" matTooltipPosition="right">
-            <mat-icon>sync</mat-icon>
-        </button>
+    <div style="display: flex;" *ngIf="editors.length > 0">
+        <div class="aside-buttons shadow-right">
+            <button 
+                mat-icon-button
+                class="aside-button"
+                (click)="editors[editors.length - 1].showAttributes = !editors[editors.length - 1].showAttributes"
+                matTooltip="Attributes"
+                matTooltipPosition="right"
+            >
+                <mat-icon>description</mat-icon>
+            </button>
+        </div>
+        <div *ngIf="editors[editors.length - 1].showAttributes" class="shadow-right" style="z-index: 2;"> 
+            <div style="font-family: JetBrains Mono; min-width: 240px;">
+                <ul>
+                    <li><b>Strength:</b> 12</li>
+                    <li><b>Dexterity:</b> 10</li>
+                </ul>
+            </div>
+        </div>
     </div>
     <app-editor
         class="editor"
@@ -19,6 +32,6 @@
         (onDelete)="deleteNote(editor)"
     ></app-editor>
     <div class="no-content-message" *ngIf="editors.length === 0">
-        <h3 style="color: gray;">No note opened</h3>
+        <h3 style="color: gray;">Press CTRL + O to open a note.</h3>
     </div>
 </div>

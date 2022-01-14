@@ -5,6 +5,7 @@ export class Editor {
         public id: string,
         public notePath: string,
         public mode: EditorMode,
-        public minimized: boolean
+        public minimized: boolean,
+        public showAttributes: boolean,
     ) { }
 }

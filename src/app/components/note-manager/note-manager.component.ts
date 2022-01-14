@@ -23,6 +23,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   editors: Editor[] = [];
   newOption = '+ Add New';
   subscriptions: Subscription[] = [];
+  showAttributes = false;
 
   constructor(
     route: ActivatedRoute,
@@ -74,6 +75,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
       if (openEditorIndex !== -1) {
         const editor = this.editors.splice(openEditorIndex, 1)[0];
         this.editors.push(editor);
+        this.refreshEditors();
       } else {
         if (!notes.find(x => x.path === noteName)) {
           this.noteService.create(new Note(noteName, ''));
@@ -156,7 +158,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   }
 
   private openEditor(noteId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), noteId, "markdown", minimized);
+    const newEditor = new Editor(uuidv4(), noteId, "markdown", minimized, false);
     this.editors.push(newEditor);
     this.noteManagerService.addOpenedEditor(newEditor);
     this.refreshEditors();
