@@ -8,7 +8,7 @@ import { InputComponent } from './input/input.component';
 })
 export class PromptService {
   private promptPosition = {
-    top: '100px'
+    top: '0'
   };
 
   constructor() { }
@@ -22,14 +22,13 @@ export class PromptService {
     return openedDialog.afterClosed().toPromise().then(((result: string) => result));
   }
 
-  autocomplete(dialog: MatDialog, title: string, message: string, options: string[]): Promise<string> {
+  autocomplete(dialog: MatDialog, message: string, options: string[]): Promise<string> {
     const openedDialog = dialog.open(
       AutoCompletePromptComponent,
       {
         width: '480px',
         position: this.promptPosition,
         data: {
-          title: title,
           message: message,
           options: options,
         },

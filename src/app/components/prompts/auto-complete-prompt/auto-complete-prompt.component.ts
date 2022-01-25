@@ -10,15 +10,13 @@ import { AutoCompleteFieldComponent } from '../../auto-complete-field/auto-compl
 export class AutoCompletePromptComponent implements OnInit {
   @ViewChild('autoComplete') autoCompleteField!: AutoCompleteFieldComponent;
   
-  title: string = '';
   message: string = 'Option';
   options: string[] = [];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { title: string, message: string, options: string[] },
+    @Inject(MAT_DIALOG_DATA) public data: { message: string, options: string[] },
     public dialogRef: MatDialogRef<AutoCompletePromptComponent>
   ) {
-    this.title = data.title;
     this.message = data.message;
     this.options = data.options;
   }

@@ -8,6 +8,9 @@ import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete
 import { BlockService } from 'src/app/modules/blocks/block.service';
 import { Action } from 'src/app/modules/blocks/action';
 import { RandomTable } from 'src/app/modules/blocks/random-table';
+import { PromptService } from '../prompts/prompt.service';
+import { NoteService } from 'src/app/modules/notes/services/note.service';
+import { NoteManagerService } from '../note-manager/note-manager.service';
 
 @Component({
   selector: 'app-commands',
@@ -15,106 +18,107 @@ import { RandomTable } from 'src/app/modules/blocks/random-table';
   styleUrls: ['./commands.component.css']
 })
 export class CommandsComponent implements OnInit {
-  @Output() onCommandExecuted: EventEmitter<string> = new EventEmitter();
+  @Output() onCommandResult: EventEmitter<string> = new EventEmitter();
 
   @ViewChild('autoComplete') autoComplete!: AutoCompleteFieldComponent;
 
-  commands = [
-    '🎱 Roll Table',
-    '🔥 Roll Action',
-    '🎲 Roll Dice',
-  ];
-  commandSelected: Subject<string> = new Subject();
-  mode: "commands" | "prompt" = "commands";
+  commands = {
+    openNote: 'Open Note',
+    rollTable: 'Roll Table',
+    rollAction: 'Roll Action',
+    rollDice: 'Roll Dice',
+  };
 
   constructor(
     public dialog: MatDialog,
     private actionService: ActionsService,
-    private blockService: BlockService
+    private blockService: BlockService,
+    private promptService: PromptService,
+    private noteService: NoteService,
+    private noteManagerService: NoteManagerService,
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { }
+  
+  public async showCommands(): Promise<void> {
+    const command = await this.promptService.autocomplete(this.dialog, "Command", [
+      this.commands.openNote, this.commands.rollDice, this.commands.rollTable, this.commands.rollAction]);
+    await this.executeCommand(this.dialog, command);
   }
 
-  //#region public methods
-  public async commandsOptionChanged(command: string) {
-    if (command) {
-      if (this.mode === "commands") {
-        const result = await this.handleCommandSelected(this.dialog, command);
-        this.onCommandExecuted.emit(result);
-        this.onCommandHandled();
-      } else if (this.mode === "prompt") {
-        this.commandSelected.next(command);
-      }
-    }
-  }
-
-  public focus() {
-    this.autoComplete.autocompleteInput.nativeElement.focus();
-  }
-  //#endregion
-
-  //#region private methods
-  private async handleCommandSelected(dialog: MatDialog, option: string): Promise<string> {
-    let result = option;
+  //#region commands execution
+  private async executeCommand(dialog: MatDialog, option: string): Promise<void> {
     switch (option) {
-      case '🔥 Roll Action': {
-        return await this.executeRollActionCommand(dialog) ?? '';
+      case this.commands.openNote: {
+        await this.executeOpenNoteCommand();
+        break;
       }
-      case '🎲 Roll Dice': {
-        return await this.executeRollDiceCommand();
+      case this.commands.rollAction: {
+        await this.executeRollActionCommand(dialog);
+        break;
       }
-      case '🎱 Roll Table': {
-        return await this.executeRollTableCommand() ?? '';
+      case this.commands.rollDice: {
+        await this.executeRollDiceCommand();
+        break;
+      }
+      case this.commands.rollTable: {
+        await this.executeRollTableCommand();
+        break;
       }
       default: {
-        return result;
+        break;
       }
     }
   }
 
-  private async executeRollActionCommand(dialog: MatDialog): Promise<string | null> {
+  private async executeOpenNoteCommand(): Promise<void> {
+    const allNotes = this.noteService.getAll().sort((a,b) => a.compareTo(b));
+    const allNoteNames = allNotes.map(x => x.favorite ? `${x.path} *` : x.path);
+    let noteName = await this.promptService.autocomplete(this.dialog, "Note", allNoteNames);
+    if (noteName) {
+      if(noteName.endsWith(' *')) {
+        noteName = noteName.slice(0, noteName.length - 2);
+      }
+      this.noteManagerService.openNoteRequests.next(noteName);
+    }
+  }
+
+  private async executeRollActionCommand(dialog: MatDialog): Promise<void> {
     const actionFriendlyName = await this.prompt(this.blockService.actions.friendlyNames);
     const action = this.blockService.actions.getByFriendlyName(actionFriendlyName)?.content as Action | null;
     if (action) {
-      return this.actionService.run(action.content, dialog);
+      const result = await this.actionService.run(action.content, dialog);
+      this.onCommandResult.emit(result);
     } else {
       console.log(`Action '${actionFriendlyName}' not found.`);
-      return null;
     }
   }
 
-  private async executeRollDiceCommand(): Promise<string> {
+  private async executeRollDiceCommand(): Promise<void> {
     const formula = await this.promptInput();
-    return DiceUtil.rollDiceFormula(formula).toString();
+    const result = DiceUtil.rollDiceFormula(formula).toString();
+    this.onCommandResult.emit(result);
   }
 
-  private async executeRollTableCommand(): Promise<string | null> {
+  private async executeRollTableCommand(): Promise<void> {
     const tableName = await this.prompt(this.blockService.randomTables.friendlyNames);
     const table = this.blockService.randomTables.getByFriendlyName(tableName)?.content as RandomTable | null;
     if (table) {
-      return TablesUtil.rollOnTable(table.content);
+      const result = TablesUtil.rollOnTable(table.content);
+      this.onCommandResult.emit(result);
     } else {
       console.log(`Random table '${tableName}' not found.`);
-      return null;
     }
   }
+  //#endregion
 
-  private onCommandHandled() {
-    this.autoComplete.inputControl.setValue('');
-    this.autoComplete.setOptions(this.commands);
-    this.autoComplete.autocompleteTrigger.closePanel();
-    this.mode = "commands";
+  //#region prompts
+  private async promptInput(): Promise<string> {
+    return await this.promptService.input(this.dialog, "", "");
   }
 
-  private promptInput(): Promise<string> {
-    return this.prompt([]);
-  }
-
-  private prompt(options: string[]): Promise<string> {
-    this.mode = "prompt";
-    this.autoComplete.setOptions(options, true);
-    return new Promise(resolve => this.commandSelected.subscribe(result => resolve(result)));
+  private async prompt(options: string[]): Promise<string> {
+    return await this.promptService.autocomplete(this.dialog, "", options);
   }
   //#endregion
 }

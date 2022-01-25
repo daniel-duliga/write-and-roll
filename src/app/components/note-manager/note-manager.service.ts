@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { HostListener, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Editor } from 'src/app/modules/notes/models/editor';
 
@@ -8,7 +8,8 @@ import { Editor } from 'src/app/modules/notes/models/editor';
 export class NoteManagerService {
   collectionName = 'editors';
 
-  public openNotes: Subject<string> = new Subject<string>();
+  public openNoteRequests: Subject<string> = new Subject<string>();
+  public openNoteLinkRequests: Subject<string> = new Subject<string>();
 
   constructor() { }
 

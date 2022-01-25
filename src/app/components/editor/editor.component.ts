@@ -23,9 +23,9 @@ export class EditorComponent implements OnInit {
   @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onRename: EventEmitter<void> = new EventEmitter();
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
+  @Output() onFocused: EventEmitter<void> = new EventEmitter();
 
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
-  @ViewChild('commands') commands!: CommandsComponent;
 
   note: Note = new Note();
   initialContent: string = '';
@@ -53,6 +53,13 @@ export class EditorComponent implements OnInit {
     (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
   }
 
+  public replaceSelection(option: string) {
+    if (this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
+    }
+  }
+
   //#region lifecycle events
   ngOnInit(): void {
     this.getAndSetNote(this.name);
@@ -68,11 +75,6 @@ export class EditorComponent implements OnInit {
   //#endregion
 
   //#region host listener events
-  @HostListener('keydown.control.space', ['$event'])
-  async onShowCommands(e: Event) {
-    this.commands.focus();
-  }
-
   @HostListener('keydown.control.s', ['$event'])
   onSave(e: Event) {
     this.save(e);
@@ -81,6 +83,14 @@ export class EditorComponent implements OnInit {
   @HostListener('window:beforeunload', ['$event'])
   onBeforeUnload(e: Event): boolean | undefined {
     return !this.isDirty;
+  }
+  //#endregion
+
+  //#region events
+  onFocus($event: any) {
+    if($event) {
+      this.onFocused.emit();
+    }
   }
   //#endregion
 
@@ -301,14 +311,7 @@ export class EditorComponent implements OnInit {
   }
 
   linkClicked(address: string) {
-    this.noteManagerService.openNotes.next(address);
-  }
-
-  handleCommand(option: string) {
-    if (option && this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
-    }
+    this.noteManagerService.openNoteLinkRequests.next(address);
   }
 
   setName(name: string) {

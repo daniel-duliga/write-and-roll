@@ -1,6 +1,6 @@
 <div class="container">
     <!-- Header -->
-    <div class="header shadow-down">
+    <div class="header">
         <!-- Title -->
         <div class="header-separator"></div>
         <div class="title">
@@ -44,10 +44,9 @@
                 <mat-icon>delete</mat-icon>
                 <span>Delete</span>
             </button>
-          </mat-menu>
+        </mat-menu>
         
         <!-- Close button -->
-        <div class="header-separator"></div>
         <button mat-button class="header-button" matTooltip="Close" (click)="this.close()">
             <mat-icon class="close-button-icon">close</mat-icon>
         </button>
@@ -70,11 +69,8 @@
                 autoCloseBrackets: true,
                 spellcheck: true
             }"
+            (focusChange)="onFocus($event)"
         ></ngx-codemirror>
     </div>
     
-    <!-- Commands -->
-    <div class="commands shadow-up">
-        <app-commands #commands (onCommandExecuted)="this.handleCommand($event)"></app-commands>
-    </div>
 </div>

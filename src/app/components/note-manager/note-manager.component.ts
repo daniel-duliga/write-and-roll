@@ -1,4 +1,4 @@
-import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Editor } from 'src/app/modules/notes/models/editor';
@@ -9,6 +9,7 @@ import { PromptService } from '../prompts/prompt.service';
 import { v4 as uuidv4 } from 'uuid';
 import { NoteManagerService } from './note-manager.service';
 import { Subscription } from 'rxjs';
+import { CommandsComponent } from '../commands/commands.component';
 
 @Component({
   selector: 'app-note-manager',
@@ -17,12 +18,14 @@ import { Subscription } from 'rxjs';
 })
 export class NoteManagerComponent implements OnInit, OnDestroy {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
+  @ViewChild('commands') commands!: CommandsComponent;
 
   editorMode: EditorMode = 'default';
   mode: EditorMode = 'default';
   editors: Editor[] = [];
   newOption = '+ Add New';
   subscriptions: Subscription[] = [];
+  focusedEditor: EditorComponent | null = null;
 
   constructor(
     route: ActivatedRoute,
@@ -33,8 +36,8 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     private noteManagerService: NoteManagerService
   ) {
     this.editorMode = route.snapshot.data["editorMode"] ?? 'default';
-    this.subscriptions.push(
-      this.noteManagerService.openNotes.subscribe(noteName => this.openLink(noteName)));
+    this.subscriptions.push(this.noteManagerService.openNoteRequests.subscribe(noteName => this.openNote(noteName)));
+    this.subscriptions.push(this.noteManagerService.openNoteLinkRequests.subscribe(noteName => this.openLink(noteName)));
   }
 
   //#region lifecycle events
@@ -53,33 +56,24 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   //#endregion
 
   //#region host listener methods
-  @HostListener('window:keydown.control.o', ['$event'])
-  onOpenNoteShortcut(e: Event) {
-    e.preventDefault();
-    this.openNote();
+  @HostListener('window:keydown.control.space', ['$event'])
+  showCommands() {
+    this.commands.showCommands();
   }
   //#endregion
 
   //#region events
-  async openNote() {
-    const notes = this.noteService.getAll().sort((a,b) => a.compareTo(b));
-    const noteNames = notes.map(x => x.favorite ? `${x.path} *` : x.path);
-    let noteName = await this.promptService.autocomplete(this.dialog, "Open Note", "Note", noteNames);
-    if (noteName) {
-      if(noteName.endsWith(' *')) {
-        noteName = noteName.slice(0, noteName.length - 2);
+  async openNote(noteName: string) {
+    let openEditorIndex = this.editors.findIndex(x => x.notePath === noteName);
+    if (openEditorIndex !== -1) {
+      const editor = this.editors.splice(openEditorIndex, 1)[0];
+      this.editors.push(editor);
+    } else {
+      const allNotes = this.noteService.getAll().sort((a,b) => a.compareTo(b));
+      if (!allNotes.find(x => x.path === noteName)) {
+        this.noteService.create(new Note(noteName, ''));
       }
-
-      let openEditorIndex = this.editors.findIndex(x => x.notePath === noteName);
-      if (openEditorIndex !== -1) {
-        const editor = this.editors.splice(openEditorIndex, 1)[0];
-        this.editors.push(editor);
-      } else {
-        if (!notes.find(x => x.path === noteName)) {
-          this.noteService.create(new Note(noteName, ''));
-        }
-        this.openEditor(noteName, false);
-      }
+      this.openEditor(noteName, false);
     }
   }
 
@@ -141,6 +135,16 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   openLink(address: string) {
     this.zone.run(() => this.openEditor(address, false));
+  }
+
+  handleCommandResult(result: string) {
+    if(this.focusedEditor) {
+      this.focusedEditor.replaceSelection(result);
+    }
+  }
+
+  setFocusedEditor(editor: EditorComponent) {
+    this.focusedEditor = editor;
   }
   //#endregion
 
