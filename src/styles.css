@@ -33,7 +33,7 @@ img {
   
   z-index: 1;
   
-  font-family: 'JetBrains Mono';
+  font-family: 'Lato';
   font-size: 11pt;
 }
 .CodeMirror-foldmarker {
@@ -114,4 +114,8 @@ img {
 }
 .markdown-heading-6 {
   font-size: 12pt !important;
+}
+.markdown-code {
+  font-family: 'JetBrains Mono' !important;
+  background-color: linen !important;
 }

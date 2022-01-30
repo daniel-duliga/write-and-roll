@@ -121,6 +121,7 @@ export class EditorComponent implements OnInit {
         }
       }
     }
+    this.renderCodeBlocks(cm);
   }
   private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[], line: string) {
     let changeCharIndex = -1;
@@ -232,6 +233,30 @@ export class EditorComponent implements OnInit {
           }
         }
       );
+    }
+  }
+  private renderCodeBlocks(cm: CodeMirror.Editor) {
+    const allLines = this.note.content.split('\n');
+    const mdTokens = marked.lexer(this.note.content);
+    for (const mdToken of mdTokens) {
+      if (mdToken.type === 'code') {
+        const codeBlockLines = mdToken.raw.trim().split('\n');
+        const firstLineIndex = allLines.indexOf(codeBlockLines[0]);
+        const lastLineIndex = firstLineIndex + codeBlockLines.length - 1;
+        for (let lineIndex = firstLineIndex; lineIndex <= lastLineIndex; lineIndex++) {
+          cm.addLineClass(lineIndex, 'text', 'markdown-code');
+        }
+        // Disabled because it is very taxing, performance-wise
+        // cm.markText(
+        //   { line: firstLineIndex, ch: 0 },
+        //   { line: lastLineIndex, ch: allLines[lastLineIndex].length },
+        //   {
+        //     attributes: {
+        //       'spellcheck': 'false'
+        //     }
+        //   }
+        // )
+      }
     }
   }
 
