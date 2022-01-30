@@ -7,7 +7,6 @@ import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { marked } from 'marked';
-
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -63,62 +62,67 @@ export class EditorComponent implements OnInit {
   }
   ngAfterViewInit() {
     setTimeout(() => {
-      this.configureCodeMirror();
-      this.processCodeMirrorContent(null);
-      this.refresh();
+      if (this.codeMirror) {
+        this.configureCodeMirror(this.codeMirror);
+        this.processCodeMirrorContent(this.codeMirror, null);
+        this.refresh();
+      }
     }, 250);
   }
-  private configureCodeMirror() {
-    if (!this.codeMirror) { return; }
+  private configureCodeMirror(cm: CodeMirror.Editor) {
+    setExtraKeys();
+    cm.on('changes', (cm, changes) => { this.processCodeMirrorContent(cm, changes); });
+    cm.focus();
 
-    this.codeMirror.setOption("extraKeys", {
-      Enter: function (cm) {
-        cm.execCommand("newlineAndIndentContinueMarkdownList");
-      },
-      Tab: function (cm) {
-        cm.foldCode(cm.getCursor());
-      },
-      "Shift-Tab": function (cm) {
-        const linesCount = cm.lineCount();
+    function setExtraKeys() {
+      cm.setOption("extraKeys", {
+        Enter: function (cm) {
+          cm.execCommand("newlineAndIndentContinueMarkdownList");
+        },
+        Tab: function (cm) {
+          cm.foldCode(cm.getCursor());
+        },
+        "Shift-Tab": function (cm) {
+          const linesCount = cm.lineCount();
 
-        let currentMode: "fold" | "unfold" = "fold";
-        for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-          if (cm.isFolded(new Pos(lineIndex))) {
-            currentMode = "unfold";
-            break;
+          let currentMode: "fold" | "unfold" = "fold";
+          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+            if (cm.isFolded(new Pos(lineIndex))) {
+              currentMode = "unfold";
+              break;
+            }
+          }
+
+          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+            cm.foldCode(lineIndex, undefined, currentMode);
           }
         }
-
-        for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-          cm.foldCode(lineIndex, undefined, currentMode);
+      });
+    }
+  }
+  private processCodeMirrorContent(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
+    if (changes) { // Process only the line that changed
+      const currentScrollY = cm.getScrollInfo().top;
+      const lineIndex = changes[0].to.line
+      const line = cm.getLine(lineIndex);
+      if (line) {
+        this.clearLineWidgets(lineIndex);
+        this.showLinkAutoComplete(cm, changes, line);
+        this.processLinkAutocomplete(cm, changes);
+        this.renderLineWidgets(cm, line, lineIndex);
+      }
+      cm.scrollTo(null, currentScrollY);
+    } else { // Process the entire content
+      for (let lineIndex = 0; lineIndex < cm.lineCount(); lineIndex++) {
+        const line = cm.getLine(lineIndex)
+        if (line) {
+          this.clearLineWidgets(lineIndex);
+          this.renderLineWidgets(cm, cm.getLine(lineIndex), lineIndex);
         }
       }
-    });
-
-    this.codeMirror.on('changes', (cm, changes) => this.processCodeMirrorContent(changes));
-
-    this.codeMirror.focus();
-  }
-  private processCodeMirrorContent(changes: CodeMirror.EditorChange[] | null) {
-    if (!this.codeMirror) { return; }
-
-    if (changes) {
-      this.showLinkAutoComplete(this.codeMirror, changes);
-      this.processLinkAutocomplete(this.codeMirror, changes);
     }
-
-    const currentScrollY = this.codeMirror.getScrollInfo().top;
-
-    this.clearWidgets();
-    this.renderWidgets(this.codeMirror);
-
-    this.codeMirror.scrollTo(null, currentScrollY);
   }
-  private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
-    const line = cm.getLine(changes[0].to.line);
-
-    if (!line) { return; }
-
+  private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[], line: string) {
     let changeCharIndex = -1;
     if (changes[0].origin === '+input') {
       changeCharIndex = changes[0].to.ch;
@@ -162,35 +166,32 @@ export class EditorComponent implements OnInit {
       cm.replaceRange('', bracketsPos, change.to);
     }
   }
-  private clearWidgets() {
-    for (const lineWidget of this.lineWidgets) {
-      lineWidget.clear();
-    }
-    this.lineWidgets = [];
-  }
-  private renderWidgets(cm: CodeMirror.Editor) {
-    for (let lineIndex = 0; lineIndex < cm.lineCount(); lineIndex++) {
-      const line = cm.getLine(lineIndex);
-      this.renderMarkdownStyles(cm, line, lineIndex);
-      this.renderImages(cm, line, lineIndex);
-      this.renderLinks(cm, line, lineIndex);
+  private clearLineWidgets(lineIndex: number) {
+    const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
+    if(lineWidgets.length === 1) {
+      lineWidgets[0].clear();
     }
   }
-  private renderMarkdownStyles(cm: CodeMirror.Editor, line: string, lineIndex: number) {
-    cm.removeLineClass(lineIndex, 'text');
+  private renderLineWidgets(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const markdownTokens = marked.lexer(line);
-    if (markdownTokens.length > 0) {
-      let className = '';
-      switch (markdownTokens[0].type) {
-        case 'heading': {
-          className = `markdown-heading markdown-heading-${markdownTokens[0].depth}`;
-          break;
-        }
-        default:
-          break;
+    this.renderMarkdownStyles(cm, line, lineIndex, markdownTokens[0]);
+    this.renderImages(cm, line, lineIndex);
+    this.renderLinks(cm, line, lineIndex);
+  }
+  private renderMarkdownStyles(cm: CodeMirror.Editor, line: string, lineIndex: number, markdownToken: any | null) {
+    if (!markdownToken) { return; }
+
+    cm.removeLineClass(lineIndex, 'text');
+    let className = '';
+    switch (markdownToken.type) {
+      case 'heading': {
+        className = `markdown-heading markdown-heading-${markdownToken.depth}`;
+        break;
       }
-      cm.addLineClass(lineIndex, 'text', className);
+      default:
+        break;
     }
+    cm.addLineClass(lineIndex, 'text', className);
   }
   private renderImages(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
