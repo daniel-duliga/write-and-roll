@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Editor } from 'src/app/modules/notes/models/editor';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
-import { EditorComponent, MoveDirection } from '../editor/editor.component';
+import { EditorComponent } from '../editor/editor.component';
 import { PromptService } from '../prompts/prompt.service';
 import { v4 as uuidv4 } from 'uuid';
 import { NoteManagerService } from './note-manager.service';
@@ -85,7 +85,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
   }
 
-  moveEditor(id: string, direction: MoveDirection) {
+  moveEditor(id: string, direction: "left" | "right") {
     const editorIndex = this.editors.findIndex(x => x.id === id);
     if (editorIndex !== -1) {
       const editor = this.editors[editorIndex];

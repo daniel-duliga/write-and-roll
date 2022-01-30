@@ -6,8 +6,7 @@ import { LineWidget, Pos } from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
-
-export type MoveDirection = "left" | "right";
+import { marked } from 'marked';
 
 @Component({
   selector: 'app-editor',
@@ -16,13 +15,13 @@ export type MoveDirection = "left" | "right";
 })
 export class EditorComponent implements OnInit {
   // input, output, view children
-  @Input() name: string = ''; // only used for loading the initial note
+  @Input() notePath: string = ''; // only used for loading the initial note
   @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onRename: EventEmitter<void> = new EventEmitter();
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
   @Output() onFocus: EventEmitter<void> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
-  
+
   // properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
@@ -39,7 +38,7 @@ export class EditorComponent implements OnInit {
   note: Note = new Note();
   initialContent: string = '';
   lineWidgets: LineWidget[] = [];
-  
+
   // constructor
   constructor(
     private renderer: Renderer2,
@@ -52,20 +51,20 @@ export class EditorComponent implements OnInit {
 
   // lifecycle events
   ngOnInit(): void {
-    let note = this.noteService.get(this.name);
+    let note = this.noteService.get(this.notePath);
     if (!note) {
-      note = new Note(this.name, '');
+      note = new Note(this.notePath, '');
       this.noteService.create(note);
     }
 
     this.note = note;
     this.initialContent = note.content;
-    this.note.path = this.name;
+    this.note.path = this.notePath;
   }
   ngAfterViewInit() {
     setTimeout(() => {
       this.configureCodeMirror();
-      this.postProcessCodeMirror(null);
+      this.processCodeMirrorContent(null);
       this.refresh();
     }, 250);
   }
@@ -96,23 +95,23 @@ export class EditorComponent implements OnInit {
       }
     });
 
-    this.codeMirror.on('changes', (cm, changes) => this.postProcessCodeMirror(changes));
+    this.codeMirror.on('changes', (cm, changes) => this.processCodeMirrorContent(changes));
 
     this.codeMirror.focus();
   }
-  private postProcessCodeMirror(changes: CodeMirror.EditorChange[] | null) {
+  private processCodeMirrorContent(changes: CodeMirror.EditorChange[] | null) {
     if (!this.codeMirror) { return; }
 
     if (changes) {
       this.showLinkAutoComplete(this.codeMirror, changes);
       this.processLinkAutocomplete(this.codeMirror, changes);
     }
-    
+
     const currentScrollY = this.codeMirror.getScrollInfo().top;
-    
+
     this.clearWidgets();
-    this.renderWidgets();
-    
+    this.renderWidgets(this.codeMirror);
+
     this.codeMirror.scrollTo(null, currentScrollY);
   }
   private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
@@ -129,8 +128,8 @@ export class EditorComponent implements OnInit {
 
     if (changeCharIndex != -1) {
       let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
-      if (whitespaceCharIndex === -1) { 
-        whitespaceCharIndex = 0 
+      if (whitespaceCharIndex === -1) {
+        whitespaceCharIndex = 0
       };
 
       const linkBrackets = line.slice(whitespaceCharIndex + 1, whitespaceCharIndex + 3);
@@ -169,18 +168,31 @@ export class EditorComponent implements OnInit {
     }
     this.lineWidgets = [];
   }
-  private renderWidgets() {
-    if (!this.codeMirror) { return; }
-
-    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
-      const line = this.codeMirror.getLine(lineIndex);
-      this.renderImages(line, lineIndex);
-      this.renderLinks(line, lineIndex);
+  private renderWidgets(cm: CodeMirror.Editor) {
+    for (let lineIndex = 0; lineIndex < cm.lineCount(); lineIndex++) {
+      const line = cm.getLine(lineIndex);
+      this.renderMarkdownStyles(cm, line, lineIndex);
+      this.renderImages(cm, line, lineIndex);
+      this.renderLinks(cm, line, lineIndex);
     }
   }
-  private renderImages(line: string, lineIndex: number) {
-    if (!this.codeMirror) { return; }
-
+  private renderMarkdownStyles(cm: CodeMirror.Editor, line: string, lineIndex: number) {
+    cm.removeLineClass(lineIndex, 'text');
+    const markdownTokens = marked.lexer(line);
+    if (markdownTokens.length > 0) {
+      let className = '';
+      switch (markdownTokens[0].type) {
+        case 'heading': {
+          className = `markdown-heading markdown-heading-${markdownTokens[0].depth}`;
+          break;
+        }
+        default:
+          break;
+      }
+      cm.addLineClass(lineIndex, 'text', className);
+    }
+  }
+  private renderImages(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
     for (const image of images) {
       let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
@@ -196,25 +208,23 @@ export class EditorComponent implements OnInit {
         this.renderer.setStyle(imageContainer, 'text-align', 'left');
         imageContainer.appendChild(image);
 
-        const imageWidget = this.codeMirror.addLineWidget(lineIndex, imageContainer);
+        const imageWidget = cm.addLineWidget(lineIndex, imageContainer);
         this.lineWidgets.push(imageWidget);
       }
     }
   }
-  private renderLinks(line: string, lineIndex: number) {
-    if (!this.codeMirror) { return; }
-
+  private renderLinks(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const linkMatches = line.matchAll(/\[\[(\w*\s*\d*)+\]\]/g);
     for (const linkMatch of linkMatches) {
       const linkIndexInLine = linkMatch.index ?? 0;
       const link = linkMatch[0].toString();
       const address = link.slice(2, link.length - 2);
 
-      this.codeMirror.getDoc().markText(
+      cm.addLineClass(lineIndex, 'text', 'markdown-link');
+      cm.markText(
         { line: lineIndex, ch: linkIndexInLine },
         { line: lineIndex, ch: linkIndexInLine + link.length },
         {
-          className: 'markdown-link',
           attributes: {
             'notePath': link,
             'onClick': `openLink('${address}')`
@@ -236,7 +246,7 @@ export class EditorComponent implements OnInit {
 
   // events
   focusChanged($event: any) {
-    if($event) {
+    if ($event) {
       this.onFocus.emit();
     }
   }
@@ -269,7 +279,7 @@ export class EditorComponent implements OnInit {
   openLink(address: string) {
     this.noteManagerService.openNoteLinkRequests.next(address);
   }
-  
+
   // public methods
   public replaceSelection(option: string) {
     if (this.codeMirror) {
@@ -286,5 +296,5 @@ export class EditorComponent implements OnInit {
   }
   public setName(name: string) {
     this.note.path = name;
-  }  
+  }
 }
