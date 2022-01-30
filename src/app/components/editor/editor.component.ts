@@ -8,7 +8,6 @@ import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 
 export type MoveDirection = "left" | "right";
-export type EditorMode = "markdown" | "javascript" | "default";
 
 @Component({
   selector: 'app-editor',
@@ -18,7 +17,6 @@ export type EditorMode = "markdown" | "javascript" | "default";
 export class EditorComponent implements OnInit {
   // input, output, view children
   @Input() name: string = ''; // only used for loading the initial note
-  @Input() mode: EditorMode = "default";
   @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onRename: EventEmitter<void> = new EventEmitter();
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
