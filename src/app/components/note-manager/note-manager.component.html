@@ -5,7 +5,7 @@
         *ngFor="let editor of editors; let i = index"
         [name]="editor.notePath"
         [mode]="editor.mode"
-        (onFocused)="setFocusedEditor(editorComponent)"
+        (onFocus)="setFocusedEditor(editorComponent)"
         (onClose)="closeEditor(editor.id)"
         (onRename)="renameNote(editor)"
         (onDelete)="deleteNote(editor)"

@@ -5,7 +5,6 @@ import * as CodeMirror from 'codemirror';
 import { LineWidget, Pos } from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
-import { CommandsComponent } from '../commands/commands.component';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 
 export type MoveDirection = "left" | "right";
@@ -17,21 +16,16 @@ export type EditorMode = "markdown" | "javascript" | "default";
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
+  // input, output, view children
   @Input() name: string = ''; // only used for loading the initial note
   @Input() mode: EditorMode = "default";
-
   @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onRename: EventEmitter<void> = new EventEmitter();
   @Output() onDelete: EventEmitter<void> = new EventEmitter();
-  @Output() onFocused: EventEmitter<void> = new EventEmitter();
-
+  @Output() onFocus: EventEmitter<void> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
-
-  note: Note = new Note();
-  initialContent: string = '';
-  lineWidgets: LineWidget[] = [];
-
-  //#region properties
+  
+  // properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
@@ -42,29 +36,34 @@ export class EditorComponent implements OnInit {
     const nameSegments = this.note.path.split('/');
     return nameSegments[nameSegments.length - 1];
   }
-  //#endregion
 
+  // private variables
+  note: Note = new Note();
+  initialContent: string = '';
+  lineWidgets: LineWidget[] = [];
+  
+  // constructor
   constructor(
     private renderer: Renderer2,
     private noteService: NoteService,
     public dialog: MatDialog,
     private noteManagerService: NoteManagerService
   ) {
-    (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
+    (window as any).openLink = (notePath: string) => this.openLink(notePath);
   }
 
-  public replaceSelection(option: string) {
-    if (this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
-    }
-  }
-
-  //#region lifecycle events
+  // lifecycle events
   ngOnInit(): void {
-    this.getAndSetNote(this.name);
+    let note = this.noteService.get(this.name);
+    if (!note) {
+      note = new Note(this.name, '');
+      this.noteService.create(note);
+    }
+
+    this.note = note;
+    this.initialContent = note.content;
+    this.note.path = this.name;
   }
-  
   ngAfterViewInit() {
     setTimeout(() => {
       this.configureCodeMirror();
@@ -72,68 +71,6 @@ export class EditorComponent implements OnInit {
       this.refresh();
     }, 250);
   }
-  //#endregion
-
-  //#region host listener events
-  @HostListener('keydown.control.s', ['$event'])
-  onSave(e: Event) {
-    this.save(e);
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  onBeforeUnload(e: Event): boolean | undefined {
-    return !this.isDirty;
-  }
-  //#endregion
-
-  //#region events
-  onFocus($event: any) {
-    if($event) {
-      this.onFocused.emit();
-    }
-  }
-  //#endregion
-
-  //#region toolbar actions
-  save($event: Event | null = null) {
-    // If triggered by key combination, prevent default browser save action
-    if ($event) {
-      $event.preventDefault();
-    }
-
-    // Save
-    const existingItem = this.noteService.get(this.formattedName);
-    if (!existingItem) {
-      this.noteService.create(this.note);
-    } else {
-      this.noteService.update(this.note);
-    }
-
-    // Reflect saved data
-    this.initialContent = this.note.content;
-  }
-  //#endregion
-
-  //#region options menu actions
-  toggleFavorite() {
-    this.note.favorite = !this.note.favorite;
-    this.save();
-  }
-  //#endregion
-
-  //#region unsorted
-  private getAndSetNote(name: string) {
-    let note = this.noteService.get(name);
-    if (!note) {
-      note = new Note(name, '');
-      this.noteService.create(note);
-    }
-
-    this.note = note;
-    this.initialContent = note.content;
-    this.note.path = name;
-  }
-
   private configureCodeMirror() {
     if (!this.codeMirror) { return; }
 
@@ -165,80 +102,75 @@ export class EditorComponent implements OnInit {
 
     this.codeMirror.focus();
   }
-
   private postProcessCodeMirror(changes: CodeMirror.EditorChange[] | null) {
     if (!this.codeMirror) { return; }
 
-    const currentScrollY = this.codeMirror.getScrollInfo().top;
-
     if (changes) {
-      this.showLinkAutoComplete(changes);
-      processLinkAutocomplete(this.codeMirror, changes);
+      this.showLinkAutoComplete(this.codeMirror, changes);
+      this.processLinkAutocomplete(this.codeMirror, changes);
     }
-    this.clearLineWidgets();
+    
+    const currentScrollY = this.codeMirror.getScrollInfo().top;
+    
+    this.clearWidgets();
     this.renderWidgets();
-
+    
     this.codeMirror.scrollTo(null, currentScrollY);
-
-    function processLinkAutocomplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
-      const change = changes[0];
-      if (change.origin === 'complete') {
-        const line = cm.getLine(change.to.line);
-        const bracketsPos = new Pos(change.to.line, line.lastIndexOf('[[', change.to.ch + 1) + 2);
-        cm.replaceRange('', bracketsPos, change.to);
-      }
-    }
   }
-
-  private showLinkAutoComplete(changes: CodeMirror.EditorChange[]) {
-    if (!this.codeMirror) { return; }
-
-    const change = changes[0];
-    const line = this.codeMirror.getLine(change.to.line);
+  private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
+    const line = cm.getLine(changes[0].to.line);
 
     if (!line) { return; }
 
     let changeCharIndex = -1;
-    const changesOrigin = changes[0].origin;
-    if (changesOrigin === '+input') {
-      changeCharIndex = change.to.ch;
-    } else if (changesOrigin === '+delete') {
-      changeCharIndex = change.from.ch - 1;
+    if (changes[0].origin === '+input') {
+      changeCharIndex = changes[0].to.ch;
+    } else if (changes[0].origin === '+delete') {
+      changeCharIndex = changes[0].from.ch - 1;
     }
 
     if (changeCharIndex != -1) {
       let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
-      if (whitespaceCharIndex === -1) { whitespaceCharIndex = 0 };
+      if (whitespaceCharIndex === -1) { 
+        whitespaceCharIndex = 0 
+      };
 
       const linkBrackets = line.slice(whitespaceCharIndex + 1, whitespaceCharIndex + 3);
       if (linkBrackets === '[[') {
         const filter = line.slice(whitespaceCharIndex + 3, changeCharIndex + 1);
-        showNotesAutocomplete(this.codeMirror, this.noteService, filter);
+        const cursor = cm.getCursor();
+        const start = cursor.ch
+        const end = cursor.ch;
+        const options = this.noteService.getAll().map(x => x.path).filter(x => x.toLowerCase().startsWith(filter.toLowerCase()));
+
+        cm.showHint({
+          hint: () => {
+            return {
+              list: options,
+              from: CodeMirror.Pos(cursor.line, start),
+              to: CodeMirror.Pos(cursor.line, end)
+            };
+          },
+          completeSingle: false,
+          moveOnOverlap: true
+        });
       }
     }
-
-    function showNotesAutocomplete(cm: CodeMirror.Editor, noteService: NoteService, filter: string) {
-      if (!cm) { return; }
-
-      const cursor = cm.getCursor();
-      const start = cursor.ch
-      const end = cursor.ch;
-      const options = noteService.getAll().map(x => x.path).filter(x => x.toLowerCase().startsWith(filter.toLowerCase()));
-
-      cm.showHint({
-        hint: () => {
-          return {
-            list: options,
-            from: CodeMirror.Pos(cursor.line, start),
-            to: CodeMirror.Pos(cursor.line, end)
-          };
-        },
-        completeSingle: false,
-        moveOnOverlap: true
-      });
+  }
+  private processLinkAutocomplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
+    const change = changes[0];
+    if (change.origin === 'complete') {
+      const line = cm.getLine(change.to.line);
+      const bracketsPos = new Pos(change.to.line, line.lastIndexOf('[[', change.to.ch + 1) + 2);
+      cm.replaceRange('', bracketsPos, change.to);
     }
   }
-
+  private clearWidgets() {
+    for (const lineWidget of this.lineWidgets) {
+      lineWidget.clear();
+    }
+    this.lineWidgets = [];
+  }
   private renderWidgets() {
     if (!this.codeMirror) { return; }
 
@@ -248,7 +180,6 @@ export class EditorComponent implements OnInit {
       this.renderLinks(line, lineIndex);
     }
   }
-
   private renderImages(line: string, lineIndex: number) {
     if (!this.codeMirror) { return; }
 
@@ -272,7 +203,6 @@ export class EditorComponent implements OnInit {
       }
     }
   }
-
   private renderLinks(line: string, lineIndex: number) {
     if (!this.codeMirror) { return; }
 
@@ -296,6 +226,59 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  // host listener events
+  @HostListener('keydown.control.s', ['$event'])
+  keydown_ControlS(e: Event) {
+    this.save(e);
+  }
+  @HostListener('window:beforeunload', ['$event'])
+  window_BeforeUnload(e: Event): boolean | undefined {
+    return !this.isDirty;
+  }
+
+  // events
+  focusChanged($event: any) {
+    if($event) {
+      this.onFocus.emit();
+    }
+  }
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+
+    // Save
+    const existingItem = this.noteService.get(this.formattedName);
+    if (!existingItem) {
+      this.noteService.create(this.note);
+    } else {
+      this.noteService.update(this.note);
+    }
+
+    // Reflect saved data
+    this.initialContent = this.note.content;
+  }
+  toggleFavorite() {
+    this.note.favorite = !this.note.favorite;
+    this.save();
+  }
+  close() {
+    if (!this.isDirty || confirm("Are you sure? Changes you made will not be saved.")) {
+      this.onClose.emit();
+    }
+  }
+  openLink(address: string) {
+    this.noteManagerService.openNoteLinkRequests.next(address);
+  }
+  
+  // public methods
+  public replaceSelection(option: string) {
+    if (this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
+    }
+  }
   public refresh() {
     setTimeout(() => {
       if (this.codeMirror) {
@@ -303,30 +286,7 @@ export class EditorComponent implements OnInit {
       }
     }, 250);
   }
-
-  close() {
-    if (this.validateUnsavedChanges()) {
-      this.onClose.emit();
-    }
-  }
-
-  linkClicked(address: string) {
-    this.noteManagerService.openNoteLinkRequests.next(address);
-  }
-
-  setName(name: string) {
+  public setName(name: string) {
     this.note.path = name;
-  }
-
-  private clearLineWidgets() {
-    for (const lineWidget of this.lineWidgets) {
-      lineWidget.clear();
-    }
-    this.lineWidgets = [];
-  }
-
-  private validateUnsavedChanges() {
-    return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
-  }
-  //#endregion
+  }  
 }
