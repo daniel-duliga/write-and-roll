@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Editor } from 'src/app/modules/notes/models/editor';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
-import { EditorComponent, EditorMode, MoveDirection } from '../editor/editor.component';
+import { EditorComponent } from '../editor/editor.component';
 import { PromptService } from '../prompts/prompt.service';
 import { v4 as uuidv4 } from 'uuid';
 import { NoteManagerService } from './note-manager.service';
@@ -20,8 +20,6 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  editorMode: EditorMode = 'default';
-  mode: EditorMode = 'default';
   editors: Editor[] = [];
   newOption = '+ Add New';
   subscriptions: Subscription[] = [];
@@ -35,7 +33,6 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     private promptService: PromptService,
     private noteManagerService: NoteManagerService
   ) {
-    this.editorMode = route.snapshot.data["editorMode"] ?? 'default';
     this.subscriptions.push(this.noteManagerService.openNoteRequests.subscribe(noteName => this.openNote(noteName)));
     this.subscriptions.push(this.noteManagerService.openNoteLinkRequests.subscribe(noteName => this.openLink(noteName)));
   }
@@ -88,7 +85,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
   }
 
-  moveEditor(id: string, direction: MoveDirection) {
+  moveEditor(id: string, direction: "left" | "right") {
     const editorIndex = this.editors.findIndex(x => x.id === id);
     if (editorIndex !== -1) {
       const editor = this.editors[editorIndex];
@@ -160,7 +157,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   }
 
   private openEditor(noteId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), noteId, "markdown", minimized);
+    const newEditor = new Editor(uuidv4(), noteId, minimized);
     this.editors.push(newEditor);
     this.noteManagerService.addOpenedEditor(newEditor);
     this.refreshEditors();

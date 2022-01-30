@@ -60,7 +60,7 @@
             [(ngModel)]="this.note.content"
             [options]="{
                 theme: 'default',
-                mode: this.mode,
+                mode: 'markdown',
                 lineWrapping: true,
                 inputStyle: 'contenteditable',
                 lineNumbers: true,
@@ -69,7 +69,7 @@
                 autoCloseBrackets: true,
                 spellcheck: true
             }"
-            (focusChange)="onFocus($event)"
+            (focusChange)="focusChanged($event)"
         ></ngx-codemirror>
     </div>
     
