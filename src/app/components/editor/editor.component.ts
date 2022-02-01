@@ -101,18 +101,20 @@ export class EditorComponent implements OnInit {
     }
   }
   private processCodeMirrorContent(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
-    if (changes) { // Process only the line that changed
-      const currentScrollY = cm.getScrollInfo().top;
+    // Render widgets
+    if (changes) {
+      // Process only the line that changed
       const lineIndex = changes[0].to.line
       const line = cm.getLine(lineIndex);
       if (line) {
+        const currentScrollY = cm.getScrollInfo().top;
         this.clearLineWidgets(lineIndex);
         this.showLinkAutoComplete(cm, changes, line);
-        this.processLinkAutocomplete(cm, changes);
         this.renderLineWidgets(cm, line, lineIndex);
+        cm.scrollTo(null, currentScrollY);
       }
-      cm.scrollTo(null, currentScrollY);
-    } else { // Process the entire content
+    } else {
+      // Process the entire content
       for (let lineIndex = 0; lineIndex < cm.lineCount(); lineIndex++) {
         const line = cm.getLine(lineIndex)
         if (line) {
@@ -121,22 +123,15 @@ export class EditorComponent implements OnInit {
         }
       }
     }
-    this.renderCodeBlocks(cm);
+    // Render styles
+    setTimeout(() => {
+      this.renderMarkdownStyles(cm);
+    }, changes ? 250 : 0);
   }
   private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[], line: string) {
-    let changeCharIndex = -1;
-    if (changes[0].origin === '+input') {
-      changeCharIndex = changes[0].to.ch;
-    } else if (changes[0].origin === '+delete') {
-      changeCharIndex = changes[0].from.ch - 1;
-    }
-
+    let changeCharIndex = getChangeCharIndex();
     if (changeCharIndex != -1) {
-      let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
-      if (whitespaceCharIndex === -1) {
-        whitespaceCharIndex = 0
-      };
-
+      let whitespaceCharIndex = getWhitespaceCharIndex();
       const linkBrackets = line.slice(whitespaceCharIndex + 1, whitespaceCharIndex + 3);
       if (linkBrackets === '[[') {
         const filter = line.slice(whitespaceCharIndex + 3, changeCharIndex + 1);
@@ -158,41 +153,45 @@ export class EditorComponent implements OnInit {
         });
       }
     }
-  }
-  private processLinkAutocomplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
-    const change = changes[0];
-    if (change.origin === 'complete') {
-      const line = cm.getLine(change.to.line);
-      const bracketsPos = new Pos(change.to.line, line.lastIndexOf('[[', change.to.ch + 1) + 2);
-      cm.replaceRange('', bracketsPos, change.to);
+
+    processLinkAutocomplete();
+
+    function getWhitespaceCharIndex() {
+      let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
+      if (whitespaceCharIndex === -1) {
+        whitespaceCharIndex = 0;
+      };
+      return whitespaceCharIndex;
+    }
+
+    function getChangeCharIndex() {
+      let changeCharIndex = -1;
+      if (changes[0].origin === '+input') {
+        changeCharIndex = changes[0].to.ch;
+      } else if (changes[0].origin === '+delete') {
+        changeCharIndex = changes[0].from.ch - 1;
+      }
+      return changeCharIndex;
+    }
+
+    function processLinkAutocomplete() {
+      const change = changes[0];
+      if (change.origin === 'complete') {
+        const line = cm.getLine(change.to.line);
+        const bracketsPos = new Pos(change.to.line, line.lastIndexOf('[[', change.to.ch + 1) + 2);
+        cm.replaceRange('', bracketsPos, change.to);
+      }
     }
   }
   private clearLineWidgets(lineIndex: number) {
     const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
-    if(lineWidgets.length === 1) {
+    if (lineWidgets.length === 1) {
       lineWidgets[0].clear();
     }
   }
   private renderLineWidgets(cm: CodeMirror.Editor, line: string, lineIndex: number) {
-    const markdownTokens = marked.lexer(line);
-    this.renderMarkdownStyles(cm, line, lineIndex, markdownTokens[0]);
     this.renderImages(cm, line, lineIndex);
     this.renderLinks(cm, line, lineIndex);
-  }
-  private renderMarkdownStyles(cm: CodeMirror.Editor, line: string, lineIndex: number, markdownToken: any | null) {
-    if (!markdownToken) { return; }
-
-    cm.removeLineClass(lineIndex, 'text');
-    let className = '';
-    switch (markdownToken.type) {
-      case 'heading': {
-        className = `markdown-heading markdown-heading-${markdownToken.depth}`;
-        break;
-      }
-      default:
-        break;
-    }
-    cm.addLineClass(lineIndex, 'text', className);
   }
   private renderImages(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
@@ -222,41 +221,68 @@ export class EditorComponent implements OnInit {
       const link = linkMatch[0].toString();
       const address = link.slice(2, link.length - 2);
 
-      cm.addLineClass(lineIndex, 'text', 'markdown-link');
       cm.markText(
         { line: lineIndex, ch: linkIndexInLine },
         { line: lineIndex, ch: linkIndexInLine + link.length },
         {
+          className: 'markdown-link',
           attributes: {
             'notePath': link,
             'onClick': `openLink('${address}')`
-          }
+          },
         }
       );
     }
   }
-  private renderCodeBlocks(cm: CodeMirror.Editor) {
-    const allLines = this.note.content.split('\n');
+  private renderMarkdownStyles(cm: CodeMirror.Editor) {
+    // Parse as markdown
     const mdTokens = marked.lexer(this.note.content);
+
+    // Clean up old styles
+    for (let i = 0; i <= cm.lineCount(); i++) {
+      cm.removeLineClass(i, 'text', 'markdown-code');
+      cm.removeLineClass(i, 'text', 'markdown-heading');
+      cm.removeLineClass(i, 'text', 'markdown-heading-1');
+      cm.removeLineClass(i, 'text', 'markdown-heading-2');
+      cm.removeLineClass(i, 'text', 'markdown-heading-3');
+      cm.removeLineClass(i, 'text', 'markdown-heading-4');
+      cm.removeLineClass(i, 'text', 'markdown-heading-5');
+      cm.removeLineClass(i, 'text', 'markdown-heading-6');
+    }
+
+    // Apply new styles
+    let currentLineIndex = 0;
     for (const mdToken of mdTokens) {
-      if (mdToken.type === 'code') {
-        const codeBlockLines = mdToken.raw.trim().split('\n');
-        const firstLineIndex = allLines.indexOf(codeBlockLines[0]);
-        const lastLineIndex = firstLineIndex + codeBlockLines.length - 1;
-        for (let lineIndex = firstLineIndex; lineIndex <= lastLineIndex; lineIndex++) {
-          cm.addLineClass(lineIndex, 'text', 'markdown-code');
+      const blockLines = mdToken.raw.trim().split('\n')
+      const startLineIndex = currentLineIndex;
+      const endLineIndex = startLineIndex + blockLines.length - 1;
+
+      switch (mdToken.type) {
+        case 'code': {
+          // Style block background
+          for (let i = startLineIndex; i <= endLineIndex; i++) {
+            cm.addLineClass(i, 'text', 'markdown-code');
+          }
+          // Disable spell-check
+          cm.markText(
+            { line: startLineIndex, ch: 0 },
+            { line: endLineIndex, ch: blockLines[blockLines.length - 1].length },
+            { attributes: { 'spellcheck': 'false' } }
+          );
+          break;
         }
-        // Disabled because it is very taxing, performance-wise
-        // cm.markText(
-        //   { line: firstLineIndex, ch: 0 },
-        //   { line: lastLineIndex, ch: allLines[lastLineIndex].length },
-        //   {
-        //     attributes: {
-        //       'spellcheck': 'false'
-        //     }
-        //   }
-        // )
+        case 'heading': {
+          for (let i = startLineIndex; i <= endLineIndex; i++) {
+            cm.addLineClass(i, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
+          }
+          break;
+        }
+        default:
+          break;
       }
+
+      // Compute line index for next iteration
+      currentLineIndex += (mdToken.raw.match(/\n/g) || []).length;
     }
   }
 
