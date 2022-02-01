@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1643562532672,
+  "timestamp": 1643748647314,
   "index": "/write-and-roll/index.html",
   "assetGroups": [
     {
@@ -12,7 +12,7 @@
       },
       "urls": [
         "/write-and-roll/index.html",
-        "/write-and-roll/main.a9d7ffe8c37912b7.js",
+        "/write-and-roll/main.ac4cc785a5a32924.js",
         "/write-and-roll/manifest.webmanifest",
         "/write-and-roll/polyfills.4b90a8de18e672ac.js",
         "/write-and-roll/runtime.20280b076f4dbe20.js",
@@ -55,8 +55,8 @@
     "/write-and-roll/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/write-and-roll/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/write-and-roll/favicon.svg": "3e2f0b06e0a0d9e4359097cb2c44ef866b54dcc4",
-    "/write-and-roll/index.html": "e82801323a3d0c24eb8d845eb8b46580700bf183",
-    "/write-and-roll/main.a9d7ffe8c37912b7.js": "82b9cb19522cd8203e073e964f6b725966823630",
+    "/write-and-roll/index.html": "9c85ca496fe86fd5f5506bf769c0f8842098abb4",
+    "/write-and-roll/main.ac4cc785a5a32924.js": "fc59ed80418e3aa8846f0cc78caea82198dba6cc",
     "/write-and-roll/manifest.webmanifest": "5d2ef0bd56a6c58477fed3bc651fdfa281954540",
     "/write-and-roll/polyfills.4b90a8de18e672ac.js": "e197e58852a6612be26cfafe032b8a26196c02b4",
     "/write-and-roll/runtime.20280b076f4dbe20.js": "e6590c92ff6f50b47bae975e466e78e1b9881a60",
