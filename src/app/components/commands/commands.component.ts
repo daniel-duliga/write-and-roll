@@ -11,6 +11,7 @@ import { RandomTable } from 'src/app/modules/blocks/random-table';
 import { PromptService } from '../prompts/prompt.service';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
+import { CommandService } from './command.service';
 
 @Component({
   selector: 'app-commands',
@@ -23,14 +24,14 @@ export class CommandsComponent implements OnInit {
   @ViewChild('autoComplete') autoComplete!: AutoCompleteFieldComponent;
 
   commands = {
-    noteOpen: 'Note / Open',
-    noteClose: 'Note / Close',
-    noteRename: 'Note / Rename',
-    noteFavorite: 'Note / Favorite',
-    noteDelete: 'Note / Delete',
-    rollTable: 'Roll / Table',
-    rollAction: 'Roll / Action',
-    rollDice: 'Roll / Dice',
+    noteOpen: 'note/open',
+    noteClose: 'note/close',
+    noteRename: 'note/rename',
+    noteFavorite: 'note/favorite',
+    noteDelete: 'note/delete',
+    rollTable: 'roll/table',
+    rollAction: 'roll/action',
+    rollDice: 'roll/dice',
   };
 
   constructor(
@@ -40,11 +41,14 @@ export class CommandsComponent implements OnInit {
     private promptService: PromptService,
     private noteService: NoteService,
     private noteManagerService: NoteManagerService,
+    private commandService: CommandService,
   ) { }
 
   ngOnInit(): void { }
   
   public async showCommands(): Promise<void> {
+    this.commandService.executionInProgress = true;
+
     const command = await this.promptService.autocomplete(
       this.dialog,
       "Command", 
@@ -59,6 +63,8 @@ export class CommandsComponent implements OnInit {
         this.commands.rollAction
       ]);
     await this.executeCommand(this.dialog, command);
+    
+    this.commandService.executionInProgress = false;
   }
 
   //#region commands execution
@@ -118,7 +124,7 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollActionCommand(dialog: MatDialog): Promise<void> {
-    const actionFriendlyName = await this.prompt(this.blockService.actions.friendlyNames);
+    const actionFriendlyName = await this.promptAutoComplete(this.blockService.actions.friendlyNames);
     const action = this.blockService.actions.getByFriendlyName(actionFriendlyName)?.content as Action | null;
     if (action) {
       const result = await this.actionService.run(action.content, dialog);
@@ -135,7 +141,7 @@ export class CommandsComponent implements OnInit {
   }
 
   private async executeRollTableCommand(): Promise<void> {
-    const tableName = await this.prompt(this.blockService.randomTables.friendlyNames);
+    const tableName = await this.promptAutoComplete(this.blockService.randomTables.friendlyNames);
     const table = this.blockService.randomTables.getByFriendlyName(tableName)?.content as RandomTable | null;
     if (table) {
       const result = TablesUtil.rollOnTable(table.content);
@@ -151,7 +157,7 @@ export class CommandsComponent implements OnInit {
     return await this.promptService.input(this.dialog, "", "");
   }
 
-  private async prompt(options: string[]): Promise<string> {
+  private async promptAutoComplete(options: string[]): Promise<string> {
     return await this.promptService.autocomplete(this.dialog, "", options);
   }
   //#endregion

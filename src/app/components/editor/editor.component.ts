@@ -7,6 +7,7 @@ import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { marked } from 'marked';
+import { CommandService } from '../commands/command.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -15,7 +16,7 @@ import { marked } from 'marked';
 export class EditorComponent implements OnInit {
   // input, output, view children
   @Input() notePath: string = ''; // only used for loading the initial note
-  @Output() onFocus: EventEmitter<void> = new EventEmitter();
+  @Output() onFocus: EventEmitter<number> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
   // properties
@@ -30,17 +31,19 @@ export class EditorComponent implements OnInit {
     return nameSegments[nameSegments.length - 1];
   }
 
-  // private variables
-  note: Note = new Note();
-  initialContent: string = '';
-  lineWidgets: LineWidget[] = [];
+  // member variables
+  public note: Note = new Note();
+  private initialContent: string = '';
+  private lineWidgets: LineWidget[] = [];
+  private cursorPosition: CodeMirror.Position | null = null;
 
   // constructor
   constructor(
+    public dialog: MatDialog,
     private renderer: Renderer2,
     private noteService: NoteService,
-    public dialog: MatDialog,
-    private noteManagerService: NoteManagerService
+    private noteManagerService: NoteManagerService,
+    private commandService: CommandService,
   ) {
     (window as any).openLink = (notePath: string) => this.openLink(notePath);
   }
@@ -66,7 +69,7 @@ export class EditorComponent implements OnInit {
       }
     }, 250);
   }
-  
+
   // host listener events
   @HostListener('keydown.control.s', ['$event'])
   keydown_ControlS(e: Event) {
@@ -79,8 +82,8 @@ export class EditorComponent implements OnInit {
 
   // events
   focusChanged($event: any) {
-    if ($event) {
-      this.onFocus.emit();
+    if ($event && this.codeMirror) {
+      this.onFocus.emit(this.codeMirror.getScrollInfo().top);
     }
   }
   save($event: Event | null = null) {
@@ -106,9 +109,13 @@ export class EditorComponent implements OnInit {
 
   // public methods
   public replaceSelection(option: string) {
-    if (this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
+    if (this.codeMirror && this.cursorPosition) {
+      this.codeMirror.setCursor(this.cursorPosition.line, this.cursorPosition.ch);
+      this.codeMirror.replaceRange(
+        `\`${option}\``,
+        { line: this.cursorPosition.line, ch: this.cursorPosition.ch },
+        { line: this.cursorPosition.line, ch: this.cursorPosition.ch },
+      );
     }
   }
   public refresh() {
@@ -124,35 +131,35 @@ export class EditorComponent implements OnInit {
 
   // code mirror
   private configureCodeMirror(cm: CodeMirror.Editor) {
-    setExtraKeys();
     cm.on('changes', (cm, changes) => { this.processCodeMirrorContent(cm, changes); });
-    cm.focus();
+    cm.on('focus', (cm, focusEvent) => this.setCodeMirrorCursorPosition(cm));
+    cm.on('cursorActivity', (cm) => this.storeCursorPosition(cm));
 
-    function setExtraKeys() {
-      cm.setOption("extraKeys", {
-        Enter: function (cm) {
-          cm.execCommand("newlineAndIndentContinueMarkdownList");
-        },
-        Tab: function (cm) {
-          cm.foldCode(cm.getCursor());
-        },
-        "Shift-Tab": function (cm) {
-          const linesCount = cm.lineCount();
+    cm.setOption("extraKeys", {
+      Enter: function (cm) {
+        cm.execCommand("newlineAndIndentContinueMarkdownList");
+      },
+      Tab: function (cm) {
+        cm.foldCode(cm.getCursor());
+      },
+      "Shift-Tab": function (cm) {
+        const linesCount = cm.lineCount();
 
-          let currentMode: "fold" | "unfold" = "fold";
-          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-            if (cm.isFolded(new Pos(lineIndex))) {
-              currentMode = "unfold";
-              break;
-            }
-          }
-
-          for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
-            cm.foldCode(lineIndex, undefined, currentMode);
+        let currentMode: "fold" | "unfold" = "fold";
+        for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+          if (cm.isFolded(new Pos(lineIndex))) {
+            currentMode = "unfold";
+            break;
           }
         }
-      });
-    }
+
+        for (let lineIndex = 0; lineIndex < linesCount; lineIndex++) {
+          cm.foldCode(lineIndex, undefined, currentMode);
+        }
+      }
+    });
+
+    cm.focus();
   }
   private processCodeMirrorContent(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
     // Render widgets
@@ -337,6 +344,18 @@ export class EditorComponent implements OnInit {
 
       // Compute line index for next iteration
       currentLineIndex += (mdToken.raw.match(/\n/g) || []).length;
+    }
+  }
+  private setCodeMirrorCursorPosition(cm: CodeMirror.Editor) {
+    if (this.cursorPosition) {
+      cm.setCursor(this.cursorPosition);
+    }
+  }
+
+  // private methods
+  private storeCursorPosition(cm: CodeMirror.Editor) {
+    if (!this.commandService.executionInProgress) {
+      this.cursorPosition = cm.getCursor();
     }
   }
 }

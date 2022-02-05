@@ -28,10 +28,7 @@ export class PromptService {
       {
         width: '480px',
         position: this.promptPosition,
-        data: {
-          message: message,
-          options: options,
-        },
+        data: { message: message, options: options },
       }
     );
     return openedDialog.afterClosed().toPromise().then((result: string) => result);
