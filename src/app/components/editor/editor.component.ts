@@ -15,9 +15,6 @@ import { marked } from 'marked';
 export class EditorComponent implements OnInit {
   // input, output, view children
   @Input() notePath: string = ''; // only used for loading the initial note
-  @Output() onClose: EventEmitter<void> = new EventEmitter();
-  @Output() onRename: EventEmitter<void> = new EventEmitter();
-  @Output() onDelete: EventEmitter<void> = new EventEmitter();
   @Output() onFocus: EventEmitter<void> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
@@ -69,6 +66,63 @@ export class EditorComponent implements OnInit {
       }
     }, 250);
   }
+  
+  // host listener events
+  @HostListener('keydown.control.s', ['$event'])
+  keydown_ControlS(e: Event) {
+    this.save(e);
+  }
+  @HostListener('window:beforeunload', ['$event'])
+  window_BeforeUnload(e: Event): boolean | undefined {
+    return !this.isDirty;
+  }
+
+  // events
+  focusChanged($event: any) {
+    if ($event) {
+      this.onFocus.emit();
+    }
+  }
+  save($event: Event | null = null) {
+    // If triggered by key combination, prevent default browser save action
+    if ($event) {
+      $event.preventDefault();
+    }
+
+    // Save
+    const existingItem = this.noteService.get(this.formattedName);
+    if (!existingItem) {
+      this.noteService.create(this.note);
+    } else {
+      this.noteService.update(this.note);
+    }
+
+    // Reflect saved data
+    this.initialContent = this.note.content;
+  }
+  openLink(address: string) {
+    this.noteManagerService.requestOpenLink.next(address);
+  }
+
+  // public methods
+  public replaceSelection(option: string) {
+    if (this.codeMirror) {
+      this.codeMirror.replaceSelection(`\`${option}\``);
+      this.codeMirror.focus();
+    }
+  }
+  public refresh() {
+    setTimeout(() => {
+      if (this.codeMirror) {
+        this.codeMirror.refresh();
+      }
+    }, 250);
+  }
+  public setName(name: string) {
+    this.note.path = name;
+  }
+
+  // code mirror
   private configureCodeMirror(cm: CodeMirror.Editor) {
     setExtraKeys();
     cm.on('changes', (cm, changes) => { this.processCodeMirrorContent(cm, changes); });
@@ -239,16 +293,16 @@ export class EditorComponent implements OnInit {
     const mdTokens = marked.lexer(this.note.content);
 
     // Clean up old styles
-    for (let i = 0; i <= cm.lineCount(); i++) {
-      cm.removeLineClass(i, 'text', 'markdown-code');
-      cm.removeLineClass(i, 'text', 'markdown-heading');
-      cm.removeLineClass(i, 'text', 'markdown-heading-1');
-      cm.removeLineClass(i, 'text', 'markdown-heading-2');
-      cm.removeLineClass(i, 'text', 'markdown-heading-3');
-      cm.removeLineClass(i, 'text', 'markdown-heading-4');
-      cm.removeLineClass(i, 'text', 'markdown-heading-5');
-      cm.removeLineClass(i, 'text', 'markdown-heading-6');
-    }
+    // for (let i = 0; i <= cm.lineCount(); i++) {
+    //   cm.removeLineClass(i, 'text', 'markdown-code');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-1');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-2');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-3');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-4');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-5');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-6');
+    // }
 
     // Apply new styles
     let currentLineIndex = 0;
@@ -272,9 +326,9 @@ export class EditorComponent implements OnInit {
           break;
         }
         case 'heading': {
-          for (let i = startLineIndex; i <= endLineIndex; i++) {
-            cm.addLineClass(i, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
-          }
+          // for (let i = startLineIndex; i <= endLineIndex; i++) {
+          //   cm.addLineClass(i, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
+          // }
           break;
         }
         default:
@@ -284,69 +338,5 @@ export class EditorComponent implements OnInit {
       // Compute line index for next iteration
       currentLineIndex += (mdToken.raw.match(/\n/g) || []).length;
     }
-  }
-
-  // host listener events
-  @HostListener('keydown.control.s', ['$event'])
-  keydown_ControlS(e: Event) {
-    this.save(e);
-  }
-  @HostListener('window:beforeunload', ['$event'])
-  window_BeforeUnload(e: Event): boolean | undefined {
-    return !this.isDirty;
-  }
-
-  // events
-  focusChanged($event: any) {
-    if ($event) {
-      this.onFocus.emit();
-    }
-  }
-  save($event: Event | null = null) {
-    // If triggered by key combination, prevent default browser save action
-    if ($event) {
-      $event.preventDefault();
-    }
-
-    // Save
-    const existingItem = this.noteService.get(this.formattedName);
-    if (!existingItem) {
-      this.noteService.create(this.note);
-    } else {
-      this.noteService.update(this.note);
-    }
-
-    // Reflect saved data
-    this.initialContent = this.note.content;
-  }
-  toggleFavorite() {
-    this.note.favorite = !this.note.favorite;
-    this.save();
-  }
-  close() {
-    if (!this.isDirty || confirm("Are you sure? Changes you made will not be saved.")) {
-      this.onClose.emit();
-    }
-  }
-  openLink(address: string) {
-    this.noteManagerService.openNoteLinkRequests.next(address);
-  }
-
-  // public methods
-  public replaceSelection(option: string) {
-    if (this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
-    }
-  }
-  public refresh() {
-    setTimeout(() => {
-      if (this.codeMirror) {
-        this.codeMirror.refresh();
-      }
-    }, 250);
-  }
-  public setName(name: string) {
-    this.note.path = name;
   }
 }

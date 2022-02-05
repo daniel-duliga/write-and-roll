@@ -23,10 +23,14 @@ export class CommandsComponent implements OnInit {
   @ViewChild('autoComplete') autoComplete!: AutoCompleteFieldComponent;
 
   commands = {
-    openNote: 'Open Note',
-    rollTable: 'Roll Table',
-    rollAction: 'Roll Action',
-    rollDice: 'Roll Dice',
+    noteOpen: 'Note / Open',
+    noteClose: 'Note / Close',
+    noteRename: 'Note / Rename',
+    noteFavorite: 'Note / Favorite',
+    noteDelete: 'Note / Delete',
+    rollTable: 'Roll / Table',
+    rollAction: 'Roll / Action',
+    rollDice: 'Roll / Dice',
   };
 
   constructor(
@@ -41,18 +45,48 @@ export class CommandsComponent implements OnInit {
   ngOnInit(): void { }
   
   public async showCommands(): Promise<void> {
-    const command = await this.promptService.autocomplete(this.dialog, "Command", [
-      this.commands.openNote, this.commands.rollDice, this.commands.rollTable, this.commands.rollAction]);
+    const command = await this.promptService.autocomplete(
+      this.dialog,
+      "Command", 
+      [
+        this.commands.noteOpen,
+        this.commands.noteClose,
+        this.commands.noteRename,
+        this.commands.noteFavorite,
+        this.commands.noteDelete,
+        this.commands.rollDice,
+        this.commands.rollTable,
+        this.commands.rollAction
+      ]);
     await this.executeCommand(this.dialog, command);
   }
 
   //#region commands execution
   private async executeCommand(dialog: MatDialog, option: string): Promise<void> {
     switch (option) {
-      case this.commands.openNote: {
+      // Note
+      case this.commands.noteOpen: {
         await this.executeOpenNoteCommand();
         break;
       }
+      case this.commands.noteClose: {
+        this.noteManagerService.requestClose.next();
+        break;
+      }
+      case this.commands.noteRename: {
+        this.noteManagerService.requestRename.next();
+        break;
+      }
+      case this.commands.noteFavorite: {
+        this.noteManagerService.requestFavorite.next();
+        break;
+      }
+      case this.commands.noteDelete: {
+        this.noteManagerService.requestDelete.next();
+        break;
+      }
+      
+      // Roll
       case this.commands.rollAction: {
         await this.executeRollActionCommand(dialog);
         break;
@@ -79,7 +113,7 @@ export class CommandsComponent implements OnInit {
       if(noteName.endsWith(' *')) {
         noteName = noteName.slice(0, noteName.length - 2);
       }
-      this.noteManagerService.openNoteRequests.next(noteName);
+      this.noteManagerService.requestOpen.next(noteName);
     }
   }
 
