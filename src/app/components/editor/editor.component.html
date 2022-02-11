@@ -1,28 +1,53 @@
-<div class="container">
-    <!-- Editor -->
-    <div class="editor">
-        <ngx-codemirror
-            class="code-mirror"
-            #ngxCodeMirror
-            [(ngModel)]="this.note.content"
-            [options]="{
-                theme: 'default',
-                mode: 'markdown',
-                lineWrapping: true,
-                inputStyle: 'contenteditable',
-                autoCloseBrackets: true,
-                spellcheck: true
-            }"
-            (focusChange)="focusChanged($event)"
-        ></ngx-codemirror>
+<!-- Header -->
+<div class="band header">
+    <!-- Title -->
+    <div class="header-separator"></div>
+    <div class="title">
+        &nbsp;
+        {{ this.formattedName }}
     </div>
-    <!-- Footer -->
-    <div class="header">
-        <!-- Title -->
-        <div class="header-separator"></div>
-        <div class="title">
-            <span *ngIf="this.isDirty">* &nbsp;</span>
-            {{ this.formattedName }}
-        </div>
+</div>
+<div class="container">
+    <!-- Attributes -->
+    <div style="padding-right: 40px; background-color: white; white-space: nowrap;">
+        <ul style="font-family: JetBrains Mono;">
+            <li><b>Heart:</b> 5</li>
+            <li><b>Iron:</b> 3</li>
+            <li><b>Wits:</b> 3</li>
+            <li><b>Shadow:</b> 2</li>
+            <li><b>Edge:</b> 1</li>
+            <li>---</li>
+            <li><b>Momentum:</b> 5</li>
+            <li><b>Max Momentum:</b> 3</li>
+            <li>---</li>
+            <li><b>Supply:</b> 3</li>
+            <li><b>Spirit:</b> 2</li>
+            <li><b>Gold:</b> 1</li>
+        </ul>
+    </div>
+    <!-- Editor -->
+        <div class="editor">
+            <ngx-codemirror
+                class="code-mirror"
+                #ngxCodeMirror
+                [(ngModel)]="this.note.content"
+                [options]="{
+                    theme: 'default',
+                    mode: 'markdown',
+                    lineWrapping: true,
+                    inputStyle: 'contenteditable',
+                    autoCloseBrackets: true,
+                    spellcheck: true
+                }"
+                (focusChange)="focusChanged($event)"
+            ></ngx-codemirror>
+    </div>
+</div>
+<!-- Footer -->
+<div class="band footer">
+    <!-- Title -->
+    <div class="header-separator"></div>
+    <div class="title title-footer">
+        <span *ngIf="this.isDirty">* Unsaved changes</span>
     </div>
 </div>

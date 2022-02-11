@@ -1,25 +1,4 @@
 <div class="container">
-    <div style="display: flex;" *ngIf="editors.length > 0">
-        <div class="aside-buttons shadow-right">
-            <button 
-                mat-icon-button
-                class="aside-button"
-                (click)="editors[editors.length - 1].showAttributes = !editors[editors.length - 1].showAttributes"
-                matTooltip="Attributes"
-                matTooltipPosition="right"
-            >
-                <mat-icon>description</mat-icon>
-            </button>
-        </div>
-        <div *ngIf="editors[editors.length - 1].showAttributes" class="shadow-right" style="z-index: 2;"> 
-            <div style="font-family: JetBrains Mono; min-width: 240px;">
-                <ul>
-                    <li><b>Strength:</b> 12</li>
-                    <li><b>Dexterity:</b> 10</li>
-                </ul>
-            </div>
-        </div>
-    </div>
     <app-editor
         class="editor"
         #editorComponent
