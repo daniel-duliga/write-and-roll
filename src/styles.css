@@ -41,7 +41,10 @@ img {
   margin-left: 0.5em;
 }
 .CodeMirror-lines {
-  padding-bottom: 40vh;
+  padding-bottom: 90vh;
+  max-width: 1024px;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 /* Angular Material */

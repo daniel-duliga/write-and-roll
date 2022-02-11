@@ -263,11 +263,11 @@ export class EditorComponent implements OnInit {
 
         let image: HTMLElement = this.renderer.createElement('img');
         this.renderer.setAttribute(image, 'src', imageUrl);
-        this.renderer.setStyle(image, 'max-height', '480px');
+        this.renderer.setStyle(image, 'max-height', '1024px');
         this.renderer.setStyle(image, 'max-width', '100%');
 
         let imageContainer: HTMLElement = this.renderer.createElement('div');
-        this.renderer.setStyle(imageContainer, 'text-align', 'left');
+        this.renderer.setStyle(imageContainer, 'text-align', 'center');
         imageContainer.appendChild(image);
 
         const imageWidget = cm.addLineWidget(lineIndex, imageContainer);
