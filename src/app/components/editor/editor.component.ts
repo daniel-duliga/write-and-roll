@@ -5,33 +5,21 @@ import * as CodeMirror from 'codemirror';
 import { LineWidget, Pos } from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
-import { CommandsComponent } from '../commands/commands.component';
 import { NoteManagerService } from '../note-manager/note-manager.service';
-
-export type MoveDirection = "left" | "right";
-export type EditorMode = "markdown" | "javascript" | "default";
-
+import { marked } from 'marked';
+import { CommandService } from '../commands/command.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  @Input() name: string = ''; // only used for loading the initial note
-  @Input() mode: EditorMode = "default";
-
-  @Output() onClose: EventEmitter<void> = new EventEmitter();
-  @Output() onRename: EventEmitter<void> = new EventEmitter();
-  @Output() onDelete: EventEmitter<void> = new EventEmitter();
-
+  // input, output, view children
+  @Input() notePath: string = ''; // only used for loading the initial note
+  @Output() onFocus: EventEmitter<number> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
-  @ViewChild('commands') commands!: CommandsComponent;
 
-  note: Note = new Note();
-  initialContent: string = '';
-  lineWidgets: LineWidget[] = [];
-
-  //#region properties
+  // properties
   public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
     return this.ngxCodeMirror.codeMirror;
   }
@@ -42,49 +30,62 @@ export class EditorComponent implements OnInit {
     const nameSegments = this.note.path.split('/');
     return nameSegments[nameSegments.length - 1];
   }
-  //#endregion
 
+  // member variables
+  public note: Note = new Note();
+  private initialContent: string = '';
+  private lineWidgets: LineWidget[] = [];
+  private cursorPosition: CodeMirror.Position | null = null;
+
+  // constructor
   constructor(
+    public dialog: MatDialog,
     private renderer: Renderer2,
     private noteService: NoteService,
-    public dialog: MatDialog,
-    private noteManagerService: NoteManagerService
+    private noteManagerService: NoteManagerService,
+    private commandService: CommandService,
   ) {
-    (window as any).openLink = (notePath: string) => this.linkClicked(notePath);
+    (window as any).openLink = (notePath: string) => this.openLink(notePath);
   }
 
-  //#region lifecycle events
+  // lifecycle events
   ngOnInit(): void {
-    this.getAndSetNote(this.name);
+    let note = this.noteService.get(this.notePath);
+    if (!note) {
+      note = new Note(this.notePath, '');
+      this.noteService.create(note);
+    }
+
+    this.note = note;
+    this.initialContent = note.content;
+    this.note.path = this.notePath;
   }
-  
   ngAfterViewInit() {
     setTimeout(() => {
-      this.configureCodeMirror();
-      this.postProcessCodeMirror(null);
-      this.refresh();
+      if (this.codeMirror) {
+        this.configureCodeMirror(this.codeMirror);
+        this.processCodeMirrorContent(this.codeMirror, null);
+        this.refresh();
+      }
     }, 250);
   }
-  //#endregion
 
-  //#region host listener events
-  @HostListener('keydown.control.space', ['$event'])
-  async onShowCommands(e: Event) {
-    this.commands.focus();
-  }
-
+  // host listener events
   @HostListener('keydown.control.s', ['$event'])
-  onSave(e: Event) {
+  keydown_ControlS(e: Event) {
     this.save(e);
   }
-
   @HostListener('window:beforeunload', ['$event'])
-  onBeforeUnload(e: Event): boolean | undefined {
+  window_BeforeUnload(e: Event): boolean | undefined {
     return !this.isDirty;
   }
-  //#endregion
 
-  //#region toolbar actions
+  // events
+  focusChanged($event: any) {
+    if ($event && this.codeMirror) {
+      this.onFocus.emit(this.codeMirror.getScrollInfo().top);
+    }
+  }
   save($event: Event | null = null) {
     // If triggered by key combination, prevent default browser save action
     if ($event) {
@@ -102,32 +103,39 @@ export class EditorComponent implements OnInit {
     // Reflect saved data
     this.initialContent = this.note.content;
   }
-  //#endregion
-
-  //#region options menu actions
-  toggleFavorite() {
-    this.note.favorite = !this.note.favorite;
-    this.save();
+  openLink(address: string) {
+    this.noteManagerService.requestOpenLink.next(address);
   }
-  //#endregion
 
-  //#region unsorted
-  private getAndSetNote(name: string) {
-    let note = this.noteService.get(name);
-    if (!note) {
-      note = new Note(name, '');
-      this.noteService.create(note);
+  // public methods
+  public replaceSelection(option: string) {
+    if (this.codeMirror && this.cursorPosition) {
+      this.codeMirror.setCursor(this.cursorPosition.line, this.cursorPosition.ch);
+      this.codeMirror.replaceRange(
+        `\`${option}\``,
+        { line: this.cursorPosition.line, ch: this.cursorPosition.ch },
+        { line: this.cursorPosition.line, ch: this.cursorPosition.ch },
+      );
     }
-
-    this.note = note;
-    this.initialContent = note.content;
+  }
+  public refresh() {
+    setTimeout(() => {
+      if (this.codeMirror) {
+        this.codeMirror.refresh();
+      }
+    }, 250);
+  }
+  public setName(name: string) {
     this.note.path = name;
   }
 
-  private configureCodeMirror() {
-    if (!this.codeMirror) { return; }
+  // code mirror
+  private configureCodeMirror(cm: CodeMirror.Editor) {
+    cm.on('changes', (cm, changes) => { this.processCodeMirrorContent(cm, changes); });
+    cm.on('focus', (cm, focusEvent) => this.setCodeMirrorCursorPosition(cm));
+    cm.on('cursorActivity', (cm) => this.storeCursorPosition(cm));
 
-    this.codeMirror.setOption("extraKeys", {
+    cm.setOption("extraKeys", {
       Enter: function (cm) {
         cm.execCommand("newlineAndIndentContinueMarkdownList");
       },
@@ -151,26 +159,83 @@ export class EditorComponent implements OnInit {
       }
     });
 
-    this.codeMirror.on('changes', (cm, changes) => this.postProcessCodeMirror(changes));
-
-    this.codeMirror.focus();
+    cm.focus();
   }
-
-  private postProcessCodeMirror(changes: CodeMirror.EditorChange[] | null) {
-    if (!this.codeMirror) { return; }
-
-    const currentScrollY = this.codeMirror.getScrollInfo().top;
-
+  private processCodeMirrorContent(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
+    // Render widgets
     if (changes) {
-      this.showLinkAutoComplete(changes);
-      processLinkAutocomplete(this.codeMirror, changes);
+      // Process only the line that changed
+      const lineIndex = changes[0].to.line
+      const line = cm.getLine(lineIndex);
+      if (line) {
+        const currentScrollY = cm.getScrollInfo().top;
+        this.clearLineWidgets(lineIndex);
+        this.showLinkAutoComplete(cm, changes, line);
+        this.renderLineWidgets(cm, line, lineIndex);
+        cm.scrollTo(null, currentScrollY);
+      }
+    } else {
+      // Process the entire content
+      for (let lineIndex = 0; lineIndex < cm.lineCount(); lineIndex++) {
+        const line = cm.getLine(lineIndex)
+        if (line) {
+          this.clearLineWidgets(lineIndex);
+          this.renderLineWidgets(cm, cm.getLine(lineIndex), lineIndex);
+        }
+      }
     }
-    this.clearLineWidgets();
-    this.renderWidgets();
+    // Render styles
+    setTimeout(() => {
+      this.renderMarkdownStyles(cm);
+    }, changes ? 250 : 0);
+  }
+  private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[], line: string) {
+    let changeCharIndex = getChangeCharIndex();
+    if (changeCharIndex != -1) {
+      let whitespaceCharIndex = getWhitespaceCharIndex();
+      const linkBrackets = line.slice(whitespaceCharIndex + 1, whitespaceCharIndex + 3);
+      if (linkBrackets === '[[') {
+        const filter = line.slice(whitespaceCharIndex + 3, changeCharIndex + 1);
+        const cursor = cm.getCursor();
+        const start = cursor.ch
+        const end = cursor.ch;
+        const options = this.noteService.getAll().map(x => x.path).filter(x => x.toLowerCase().startsWith(filter.toLowerCase()));
 
-    this.codeMirror.scrollTo(null, currentScrollY);
+        cm.showHint({
+          hint: () => {
+            return {
+              list: options,
+              from: CodeMirror.Pos(cursor.line, start),
+              to: CodeMirror.Pos(cursor.line, end)
+            };
+          },
+          completeSingle: false,
+          moveOnOverlap: true
+        });
+      }
+    }
 
-    function processLinkAutocomplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[]) {
+    processLinkAutocomplete();
+
+    function getWhitespaceCharIndex() {
+      let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
+      if (whitespaceCharIndex === -1) {
+        whitespaceCharIndex = 0;
+      };
+      return whitespaceCharIndex;
+    }
+
+    function getChangeCharIndex() {
+      let changeCharIndex = -1;
+      if (changes[0].origin === '+input') {
+        changeCharIndex = changes[0].to.ch;
+      } else if (changes[0].origin === '+delete') {
+        changeCharIndex = changes[0].from.ch - 1;
+      }
+      return changeCharIndex;
+    }
+
+    function processLinkAutocomplete() {
       const change = changes[0];
       if (change.origin === 'complete') {
         const line = cm.getLine(change.to.line);
@@ -179,69 +244,17 @@ export class EditorComponent implements OnInit {
       }
     }
   }
-
-  private showLinkAutoComplete(changes: CodeMirror.EditorChange[]) {
-    if (!this.codeMirror) { return; }
-
-    const change = changes[0];
-    const line = this.codeMirror.getLine(change.to.line);
-
-    if (!line) { return; }
-
-    let changeCharIndex = -1;
-    const changesOrigin = changes[0].origin;
-    if (changesOrigin === '+input') {
-      changeCharIndex = change.to.ch;
-    } else if (changesOrigin === '+delete') {
-      changeCharIndex = change.from.ch - 1;
-    }
-
-    if (changeCharIndex != -1) {
-      let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
-      if (whitespaceCharIndex === -1) { whitespaceCharIndex = 0 };
-
-      const linkBrackets = line.slice(whitespaceCharIndex + 1, whitespaceCharIndex + 3);
-      if (linkBrackets === '[[') {
-        const filter = line.slice(whitespaceCharIndex + 3, changeCharIndex + 1);
-        showNotesAutocomplete(this.codeMirror, this.noteService, filter);
-      }
-    }
-
-    function showNotesAutocomplete(cm: CodeMirror.Editor, noteService: NoteService, filter: string) {
-      if (!cm) { return; }
-
-      const cursor = cm.getCursor();
-      const start = cursor.ch
-      const end = cursor.ch;
-      const options = noteService.getAll().map(x => x.path).filter(x => x.toLowerCase().startsWith(filter.toLowerCase()));
-
-      cm.showHint({
-        hint: () => {
-          return {
-            list: options,
-            from: CodeMirror.Pos(cursor.line, start),
-            to: CodeMirror.Pos(cursor.line, end)
-          };
-        },
-        completeSingle: false,
-        moveOnOverlap: true
-      });
+  private clearLineWidgets(lineIndex: number) {
+    const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
+    if (lineWidgets.length === 1) {
+      lineWidgets[0].clear();
     }
   }
-
-  private renderWidgets() {
-    if (!this.codeMirror) { return; }
-
-    for (let lineIndex = 0; lineIndex < this.codeMirror.lineCount(); lineIndex++) {
-      const line = this.codeMirror.getLine(lineIndex);
-      this.renderImages(line, lineIndex);
-      this.renderLinks(line, lineIndex);
-    }
+  private renderLineWidgets(cm: CodeMirror.Editor, line: string, lineIndex: number) {
+    this.renderImages(cm, line, lineIndex);
+    this.renderLinks(cm, line, lineIndex);
   }
-
-  private renderImages(line: string, lineIndex: number) {
-    if (!this.codeMirror) { return; }
-
+  private renderImages(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
     for (const image of images) {
       let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
@@ -250,29 +263,26 @@ export class EditorComponent implements OnInit {
 
         let image: HTMLElement = this.renderer.createElement('img');
         this.renderer.setAttribute(image, 'src', imageUrl);
-        this.renderer.setStyle(image, 'max-height', '480px');
+        this.renderer.setStyle(image, 'max-height', '1024px');
         this.renderer.setStyle(image, 'max-width', '100%');
 
         let imageContainer: HTMLElement = this.renderer.createElement('div');
-        this.renderer.setStyle(imageContainer, 'text-align', 'left');
+        this.renderer.setStyle(imageContainer, 'text-align', 'center');
         imageContainer.appendChild(image);
 
-        const imageWidget = this.codeMirror.addLineWidget(lineIndex, imageContainer);
+        const imageWidget = cm.addLineWidget(lineIndex, imageContainer);
         this.lineWidgets.push(imageWidget);
       }
     }
   }
-
-  private renderLinks(line: string, lineIndex: number) {
-    if (!this.codeMirror) { return; }
-
+  private renderLinks(cm: CodeMirror.Editor, line: string, lineIndex: number) {
     const linkMatches = line.matchAll(/\[\[(\w*\s*\d*)+\]\]/g);
     for (const linkMatch of linkMatches) {
       const linkIndexInLine = linkMatch.index ?? 0;
       const link = linkMatch[0].toString();
       const address = link.slice(2, link.length - 2);
 
-      this.codeMirror.getDoc().markText(
+      cm.markText(
         { line: lineIndex, ch: linkIndexInLine },
         { line: lineIndex, ch: linkIndexInLine + link.length },
         {
@@ -280,50 +290,72 @@ export class EditorComponent implements OnInit {
           attributes: {
             'notePath': link,
             'onClick': `openLink('${address}')`
-          }
+          },
         }
       );
     }
   }
+  private renderMarkdownStyles(cm: CodeMirror.Editor) {
+    // Parse as markdown
+    const mdTokens = marked.lexer(this.note.content);
 
-  public refresh() {
-    setTimeout(() => {
-      if (this.codeMirror) {
-        this.codeMirror.refresh();
+    // Clean up old styles
+    // for (let i = 0; i <= cm.lineCount(); i++) {
+    //   cm.removeLineClass(i, 'text', 'markdown-code');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-1');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-2');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-3');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-4');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-5');
+    //   cm.removeLineClass(i, 'text', 'markdown-heading-6');
+    // }
+
+    // Apply new styles
+    let currentLineIndex = 0;
+    for (const mdToken of mdTokens) {
+      const blockLines = mdToken.raw.trim().split('\n')
+      const startLineIndex = currentLineIndex;
+      const endLineIndex = startLineIndex + blockLines.length - 1;
+
+      switch (mdToken.type) {
+        case 'code': {
+          // Style block background
+          for (let i = startLineIndex; i <= endLineIndex; i++) {
+            cm.addLineClass(i, 'text', 'markdown-code');
+          }
+          // Disable spell-check
+          cm.markText(
+            { line: startLineIndex, ch: 0 },
+            { line: endLineIndex, ch: blockLines[blockLines.length - 1].length },
+            { attributes: { 'spellcheck': 'false' } }
+          );
+          break;
+        }
+        case 'heading': {
+          // for (let i = startLineIndex; i <= endLineIndex; i++) {
+          //   cm.addLineClass(i, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
+          // }
+          break;
+        }
+        default:
+          break;
       }
-    }, 250);
-  }
 
-  close() {
-    if (this.validateUnsavedChanges()) {
-      this.onClose.emit();
+      // Compute line index for next iteration
+      currentLineIndex += (mdToken.raw.match(/\n/g) || []).length;
+    }
+  }
+  private setCodeMirrorCursorPosition(cm: CodeMirror.Editor) {
+    if (this.cursorPosition) {
+      cm.setCursor(this.cursorPosition);
     }
   }
 
-  linkClicked(address: string) {
-    this.noteManagerService.openNotes.next(address);
-  }
-
-  handleCommand(option: string) {
-    if (option && this.codeMirror) {
-      this.codeMirror.replaceSelection(`\`${option}\``);
-      this.codeMirror.focus();
+  // private methods
+  private storeCursorPosition(cm: CodeMirror.Editor) {
+    if (!this.commandService.executionInProgress) {
+      this.cursorPosition = cm.getCursor();
     }
   }
-
-  setName(name: string) {
-    this.note.path = name;
-  }
-
-  private clearLineWidgets() {
-    for (const lineWidget of this.lineWidgets) {
-      lineWidget.clear();
-    }
-    this.lineWidgets = [];
-  }
-
-  private validateUnsavedChanges() {
-    return !this.isDirty || confirm("Are you sure? Changes you made will not be saved.");
-  }
-  //#endregion
 }

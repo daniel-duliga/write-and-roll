@@ -57,6 +57,7 @@ Text editing
 - [CodeMirror](https://github.com/codemirror/CodeMirror)
 - [ngx-codemirror](https://github.com/scttcper/ngx-codemirror)
 - [ngx-easymde](https://github.com/dmcbane/ngx-easymde)
+- [marked](https://github.com/markedjs/marked)
 
 Other
 - [angular-cli-ghpages](https://github.com/angular-schule/angular-cli-ghpages)

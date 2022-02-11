@@ -1,8 +1,0 @@
-<app-auto-complete-field
-    class="commands-input"
-    #autoComplete
-    [message]="'Command'"
-    [options]="this.commands"
-    (onOptionChange)="this.commandsOptionChanged($event)"
-    (keydown.enter)="this.commandsOptionChanged(autoComplete.inputControl.value)"
-></app-auto-complete-field>

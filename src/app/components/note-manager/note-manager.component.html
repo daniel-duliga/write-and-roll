@@ -24,14 +24,12 @@
         class="editor"
         #editorComponent
         *ngFor="let editor of editors; let i = index"
-        [name]="editor.notePath"
-        [mode]="editor.mode"
-        [ngStyle]="{ 'display': i === editors.length - 1 ? 'initial' : 'none' }"
-        (onClose)="closeEditor(editor.id)"
-        (onRename)="renameNote(editor)"
-        (onDelete)="deleteNote(editor)"
+        [notePath]="editor.notePath"
+        (onFocus)="setFocusedEditor(editorComponent)"
     ></app-editor>
+    <app-commands #commands (onCommandResult)="this.handleCommandResult($event)"></app-commands>
+
     <div class="no-content-message" *ngIf="editors.length === 0">
-        <h3 style="color: gray;">Press CTRL + O to open a note.</h3>
+        <button style="color: gray;" mat-stroked-button (click)="showCommands()">Open Commands</button>
     </div>
 </div>

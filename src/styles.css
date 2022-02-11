@@ -33,7 +33,7 @@ img {
   
   z-index: 1;
   
-  font-family: 'JetBrains Mono';
+  font-family: 'Lato';
   font-size: 11pt;
 }
 .CodeMirror-foldmarker {
@@ -41,7 +41,10 @@ img {
   margin-left: 0.5em;
 }
 .CodeMirror-lines {
-  padding-bottom: 40vh;
+  padding-bottom: 90vh;
+  max-width: 1024px;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 /* Angular Material */
@@ -88,9 +91,34 @@ img {
 .shadow-up {
   box-shadow: 0px -3px 3px rgb(0 0 0 / 10%);
 }
-.shadow-left {
-  box-shadow: -3px 0px 3px rgb(0 0 0 / 10%);
-}
+
+/* Markdown */
 .markdown-link {
   cursor: pointer;
+}
+.markdown-heading {
+  padding-bottom: 10px !important;
+  padding-top: 10px !important;
+}
+.markdown-heading-1 {
+  font-size: 17pt !important;
+}
+.markdown-heading-2 {
+  font-size: 16pt !important;
+}
+.markdown-heading-3 {
+  font-size: 15pt !important;
+}
+.markdown-heading-4 {
+  font-size: 14pt !important;
+}
+.markdown-heading-5 {
+  font-size: 13pt !important;
+}
+.markdown-heading-6 {
+  font-size: 12pt !important;
+}
+.markdown-code {
+  font-family: 'JetBrains Mono' !important;
+  background-color: linen !important;
 }

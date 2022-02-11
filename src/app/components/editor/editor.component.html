@@ -1,58 +1,4 @@
 <div class="container">
-    <!-- Header -->
-    <div class="header shadow-down">
-        <!-- Title -->
-        <div class="header-separator"></div>
-        <div class="title">
-            {{ this.formattedName }}
-        </div>
-
-        <!-- Save button -->
-        <span class="buttons-container" *ngIf="this.isDirty">
-            <div class="header-separator"></div>
-            <button
-                class="header-button"
-                mat-button
-                matTooltip="Save (CTRL + S)"
-                [style]="isDirty ? { 'color': 'red' } : {}"
-                (click)="this.save()"
-            >
-                <mat-icon>save</mat-icon>
-            </button>
-        </span>
-
-        <!-- Options Menu -->
-        <button class="header-button" mat-button matTooltip="Options" [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="this.toggleFavorite()">
-                <span *ngIf="!this.note.favorite">
-                    <mat-icon>star</mat-icon>
-                    <span>Favorite</span>
-                </span>
-                <span *ngIf="this.note.favorite">
-                    <mat-icon>star_border</mat-icon>
-                    <span>Unfavorite</span>
-                </span>
-            </button>
-            <button mat-menu-item (click)="this.onRename.emit()">
-                <mat-icon>drive_file_rename_outline</mat-icon>
-                <span>Rename</span>
-            </button>
-            <button mat-menu-item (click)="this.onDelete.emit()">
-                <mat-icon>delete</mat-icon>
-                <span>Delete</span>
-            </button>
-          </mat-menu>
-        
-        <!-- Close button -->
-        <div class="header-separator"></div>
-        <button mat-button class="header-button" matTooltip="Close" (click)="this.close()">
-            <mat-icon class="close-button-icon">close</mat-icon>
-        </button>
-    </div>
-    
     <!-- Editor -->
     <div class="editor">
         <ngx-codemirror
@@ -61,20 +7,22 @@
             [(ngModel)]="this.note.content"
             [options]="{
                 theme: 'default',
-                mode: this.mode,
+                mode: 'markdown',
                 lineWrapping: true,
                 inputStyle: 'contenteditable',
-                lineNumbers: true,
-                foldGutter: true,
-                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
                 autoCloseBrackets: true,
                 spellcheck: true
             }"
+            (focusChange)="focusChanged($event)"
         ></ngx-codemirror>
     </div>
-    
-    <!-- Commands -->
-    <div class="commands shadow-up">
-        <app-commands #commands (onCommandExecuted)="this.handleCommand($event)"></app-commands>
+    <!-- Footer -->
+    <div class="header">
+        <!-- Title -->
+        <div class="header-separator"></div>
+        <div class="title">
+            <span *ngIf="this.isDirty">* &nbsp;</span>
+            {{ this.formattedName }}
+        </div>
     </div>
 </div>
