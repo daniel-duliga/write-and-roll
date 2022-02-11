@@ -174,7 +174,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
   }
   private openEditor(noteId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), noteId, minimized);
+    const newEditor = new Editor(uuidv4(), noteId, minimized, false);
     this.editors.push(newEditor);
     this.noteManagerService.addOpenedEditor(newEditor);
     this.refreshEditors();
