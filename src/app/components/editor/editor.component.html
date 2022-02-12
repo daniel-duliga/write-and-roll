@@ -5,6 +5,7 @@
     <div class="title">
         &nbsp;
         {{ this.formattedName }}
+        <span *ngIf="this.isDirty">&nbsp;*</span>
     </div>
 </div>
 <div class="container">
@@ -41,13 +42,5 @@
                 }"
                 (focusChange)="focusChanged($event)"
             ></ngx-codemirror>
-    </div>
-</div>
-<!-- Footer -->
-<div class="band footer">
-    <!-- Title -->
-    <div class="header-separator"></div>
-    <div class="title title-footer">
-        <span *ngIf="this.isDirty">* Unsaved changes</span>
     </div>
 </div>
