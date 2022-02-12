@@ -1,7 +1,7 @@
 import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Editor } from 'src/app/modules/notes/models/editor';
+import { NoteEditor } from 'src/app/modules/notes/models/note-editor';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { EditorComponent } from '../editor/editor.component';
@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { NoteManagerService } from './note-manager.service';
 import { Subscription } from 'rxjs';
 import { CommandsComponent } from '../commands/commands.component';
+import { BlockService } from 'src/app/modules/blocks/block.service';
 
 @Component({
   selector: 'app-note-manager',
@@ -20,19 +21,19 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  editors: Editor[] = [];
+  editors: NoteEditor[] = [];
   newOption = '+ Add New';
   subscriptions: Subscription[] = [];
   showAttributes = false;
   focusedEditor: EditorComponent | null = null;
 
   constructor(
-    route: ActivatedRoute,
-    public noteService: NoteService,
     private zone: NgZone,
     private dialog: MatDialog,
+    private noteService: NoteService,
     private promptService: PromptService,
-    private noteManagerService: NoteManagerService
+    private noteManagerService: NoteManagerService,
+    private blockService: BlockService,
   ) {
     this.subscriptions.push(this.noteManagerService.requestOpen.subscribe(notePath => this.openNote(notePath)));
     this.subscriptions.push(this.noteManagerService.requestClose.subscribe(_ => this.closeFocusedNote()));
@@ -134,6 +135,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
 
     this.noteService.delete(this.focusedEditor.notePath);
+    this.blockService.removeNoteBlocks(this.focusedEditor.notePath);
     this.closeFocusedNote();
   }
   openLink(address: string) {
@@ -154,7 +156,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
       }
     }
   }
-  toggleEditorMinimized(editor: Editor, minimized: boolean) {
+  toggleEditorMinimized(editor: NoteEditor, minimized: boolean) {
     this.refreshEditors();
     editor.minimized = minimized;
     this.noteManagerService.updateOpenedEditor(editor);
@@ -174,7 +176,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
   }
   private openEditor(noteId: string, minimized: boolean) {
-    const newEditor = new Editor(uuidv4(), noteId, minimized, false);
+    const newEditor = new NoteEditor(uuidv4(), noteId, minimized, false);
     this.editors.push(newEditor);
     this.noteManagerService.addOpenedEditor(newEditor);
     this.refreshEditors();

@@ -1,4 +1,4 @@
-export class Editor {
+export class NoteEditor {
     constructor(
         public id: string,
         public notePath: string,

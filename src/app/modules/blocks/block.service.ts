@@ -20,15 +20,14 @@ export class BlockService {
     this.randomTables = new BlockList();
   }
 
-  //#region public methods
   initialize(notes: Note[]) {
     for (const note of notes) {
-      this.removeBlocksByNote(note.path);
-      this.addBlocksFromNote(note);
+      this.removeNoteBlocks(note.path);
+      this.processNoteContent(note);
     }
   }
-
-  addBlocksFromNote(note: Note) {
+  processNoteContent(note: Note) {
+    this.removeNoteBlocks(note.path);
     const lines = note.content.split('\n');
     for (let index = 0; index < lines.length; index++) {
       const line = lines[index];
@@ -76,10 +75,8 @@ export class BlockService {
       }
     }
   }
-
-  removeBlocksByNote(noteName: string) {
+  removeNoteBlocks(noteName: string) {
     this.actions.removeBlocksByNote(noteName);
-    this.randomTables.removeBlocksByNote(noteName);;
+    this.randomTables.removeBlocksByNote(noteName);
   }
-  //#endregion
 }

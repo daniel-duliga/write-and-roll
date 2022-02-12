@@ -2,12 +2,14 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import * as CodeMirror from 'codemirror';
-import { LineWidget, Pos } from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { CommandService } from '../commands/command.service';
 import { CodeMirrorManager } from 'src/app/modules/code-mirror/code-mirror-manager';
+import { NoteContext } from 'src/app/modules/note-context/note-context';
+import { BlockService } from 'src/app/modules/blocks/block.service';
+import { NoteContextService } from 'src/app/modules/note-context/note-context.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -31,8 +33,11 @@ export class EditorComponent implements OnInit {
     return nameSegments[nameSegments.length - 1];
   }
 
-  // member variables
+  // public members
   public note: Note = new Note();
+  public context: NoteContext = new NoteContext([]);
+  
+  // private members
   private initialContent: string = '';
   private codeMirrorManager!: CodeMirrorManager;
 
@@ -43,6 +48,8 @@ export class EditorComponent implements OnInit {
     private noteService: NoteService,
     private noteManagerService: NoteManagerService,
     private commandService: CommandService,
+    private blockService: BlockService,
+    private noteContextService: NoteContextService,
   ) {
     (window as any).openLink = (notePath: string) => this.openLink(notePath);
   }
@@ -87,10 +94,7 @@ export class EditorComponent implements OnInit {
     }
   }
   save($event: Event | null = null) {
-    // If triggered by key combination, prevent default browser save action
-    if ($event) {
-      $event.preventDefault();
-    }
+    if ($event) { $event.preventDefault(); } // If triggered by key combination, prevent default browser action
 
     // Save
     const existingItem = this.noteService.get(this.formattedName);
@@ -98,6 +102,8 @@ export class EditorComponent implements OnInit {
       this.noteService.create(this.note);
     } else {
       this.noteService.update(this.note);
+      this.blockService.processNoteContent(this.note);
+      this.context = this.noteContextService.processNote(this.note.content);
     }
 
     // Reflect saved data
@@ -146,7 +152,7 @@ export class EditorComponent implements OnInit {
     for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
       const line = cm.getLine(lineIndex);
       if (line) {
-        this.codeMirrorManager.processLine(cm.getLine(lineIndex), lineIndex, null, this.renderer);
+        this.processLineContent(line, lineIndex, null);
       }
     }
   }
@@ -156,10 +162,17 @@ export class EditorComponent implements OnInit {
     const line = cm.getLine(lineIndex);
     if (line) {
       const currentScrollY = cm.getScrollInfo().top;
-      this.codeMirrorManager.processLine(
-        line, lineIndex, changes, this.renderer, () => this.noteService.getAll().map(x => x.path));
+      this.processLineContent(line, lineIndex, changes);
       cm.scrollTo(null, currentScrollY);
     }
+  }
+  private processLineContent(line: string, lineIndex: number, changes: CodeMirror.EditorChange[] | null) {
+    this.codeMirrorManager.processLine(
+      line,
+      lineIndex,
+      changes,
+      this.renderer,
+      () => this.noteService.getAll().map(x => x.path));
   }
   private storeCursorPosition() {
     if (!this.commandService.executionInProgress) {

@@ -18,12 +18,14 @@ export class CodeMirrorManager {
         changes: CodeMirror.EditorChange[] | null,
         renderer: Renderer2,
         getLinkCompletions: () => string[] = () => []
-    ) {
+     ) {
         this.clearLineWidgets(lineIndex);
         this.renderLineImages(line, lineIndex, renderer);
         this.renderLineLinks(line, lineIndex);
         this.renderLineLinkCompletions(line, changes, getLinkCompletions);
     }
+    
+
     private clearLineWidgets(lineIndex: number) {
         const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
         if (lineWidgets.length === 1) {
