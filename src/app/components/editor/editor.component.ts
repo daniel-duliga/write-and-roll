@@ -64,7 +64,7 @@ export class EditorComponent implements OnInit {
     setTimeout(() => {
       if (this.codeMirror) {
         this.configureCodeMirror(this.codeMirror);
-        this.processCodeMirrorContent(this.codeMirror, null);
+        this.processCodeMirrorContent(this.codeMirror);
         this.refresh();
       }
     }, 250);
@@ -131,7 +131,7 @@ export class EditorComponent implements OnInit {
 
   // code mirror
   private configureCodeMirror(cm: CodeMirror.Editor) {
-    cm.on('changes', (cm, changes) => { this.processCodeMirrorContent(cm, changes); });
+    cm.on('changes', (cm, changes) => this.processCodeMirrorChanges(cm, changes));
     cm.on('focus', (cm, focusEvent) => this.setCodeMirrorCursorPosition(cm));
     cm.on('cursorActivity', (cm) => this.storeCursorPosition(cm));
 
@@ -161,33 +161,38 @@ export class EditorComponent implements OnInit {
 
     cm.focus();
   }
-  private processCodeMirrorContent(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
-    // Render widgets
-    if (changes) {
-      // Process only the line that changed
-      const lineIndex = changes[0].to.line
+  private processCodeMirrorContent(cm: CodeMirror.Editor) {
+    const lineCount = cm.lineCount();
+    for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
       const line = cm.getLine(lineIndex);
       if (line) {
-        const currentScrollY = cm.getScrollInfo().top;
-        this.clearLineWidgets(lineIndex);
-        this.showLinkAutoComplete(cm, changes, line);
-        this.renderLineWidgets(cm, line, lineIndex);
-        cm.scrollTo(null, currentScrollY);
-      }
-    } else {
-      // Process the entire content
-      for (let lineIndex = 0; lineIndex < cm.lineCount(); lineIndex++) {
-        const line = cm.getLine(lineIndex)
-        if (line) {
-          this.clearLineWidgets(lineIndex);
-          this.renderLineWidgets(cm, cm.getLine(lineIndex), lineIndex);
-        }
+        this.renderLineWidgets(cm, cm.getLine(lineIndex), lineIndex);
       }
     }
-    // Render styles
+    this.renderMarkdownStyles(cm);
+  }
+  private cmIsProcessing = false;
+  private processCodeMirrorChanges(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
+    if(this.cmIsProcessing) { 
+      return;
+    }
+    
+    this.cmIsProcessing = true;
     setTimeout(() => {
-      this.renderMarkdownStyles(cm);
-    }, changes ? 250 : 0);
+      if (changes) {
+        const lineIndex = changes[0].to.line;
+        const line = cm.getLine(lineIndex);
+        if (line) {
+          const currentScrollY = cm.getScrollInfo().top;
+          this.showLinkAutoComplete(cm, changes, line);
+          this.renderLineWidgets(cm, line, lineIndex);
+          cm.scrollTo(null, currentScrollY);
+        }
+        this.renderMarkdownStyles(cm);
+      }
+      
+      this.cmIsProcessing = false;
+    }, 400);
   }
   private showLinkAutoComplete(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[], line: string) {
     let changeCharIndex = getChangeCharIndex();
@@ -244,13 +249,13 @@ export class EditorComponent implements OnInit {
       }
     }
   }
-  private clearLineWidgets(lineIndex: number) {
+  private renderLineWidgets(cm: CodeMirror.Editor, line: string, lineIndex: number) {
+    // Clear line widgets
     const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
     if (lineWidgets.length === 1) {
       lineWidgets[0].clear();
     }
-  }
-  private renderLineWidgets(cm: CodeMirror.Editor, line: string, lineIndex: number) {
+    
     this.renderImages(cm, line, lineIndex);
     this.renderLinks(cm, line, lineIndex);
   }
@@ -300,16 +305,17 @@ export class EditorComponent implements OnInit {
     const mdTokens = marked.lexer(this.note.content);
 
     // Clean up old styles
-    // for (let i = 0; i <= cm.lineCount(); i++) {
-    //   cm.removeLineClass(i, 'text', 'markdown-code');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading-1');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading-2');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading-3');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading-4');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading-5');
-    //   cm.removeLineClass(i, 'text', 'markdown-heading-6');
-    // }
+    const lineCount = cm.lineCount();
+    for (let i = 0; i <= lineCount; i++) {
+      cm.removeLineClass(i, 'text', 'markdown-code');
+      cm.removeLineClass(i, 'text', 'markdown-heading');
+      cm.removeLineClass(i, 'text', 'markdown-heading-1');
+      cm.removeLineClass(i, 'text', 'markdown-heading-2');
+      cm.removeLineClass(i, 'text', 'markdown-heading-3');
+      cm.removeLineClass(i, 'text', 'markdown-heading-4');
+      cm.removeLineClass(i, 'text', 'markdown-heading-5');
+      cm.removeLineClass(i, 'text', 'markdown-heading-6');
+    }
 
     // Apply new styles
     let currentLineIndex = 0;
@@ -333,9 +339,9 @@ export class EditorComponent implements OnInit {
           break;
         }
         case 'heading': {
-          // for (let i = startLineIndex; i <= endLineIndex; i++) {
-          //   cm.addLineClass(i, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
-          // }
+          for (let i = startLineIndex; i <= endLineIndex; i++) {
+            cm.addLineClass(i, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
+          }
           break;
         }
         default:
