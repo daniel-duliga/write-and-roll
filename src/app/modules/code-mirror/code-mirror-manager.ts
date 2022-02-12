@@ -23,8 +23,6 @@ export class CodeMirrorManager {
         this.renderLineImages(line, lineIndex, renderer);
         this.renderLineLinks(line, lineIndex);
         this.renderLineLinkCompletions(line, changes, getLinkCompletions);
-        this.cm.removeLineClass(lineIndex, 'text');
-        this.renderLineStyles(line, lineIndex);
     }
     private clearLineWidgets(lineIndex: number) {
         const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
@@ -120,60 +118,6 @@ export class CodeMirrorManager {
             const line = this.cm.getLine(change.to.line);
             const bracketsPos = new Pos(change.to.line, line.lastIndexOf('[[', change.to.ch + 1) + 2);
             this.cm.replaceRange('', bracketsPos, change.to);
-        }
-    }
-    private renderLineStyles(line: string, lineIndex: number) {
-        const mdTokens = marked.lexer(line);
-        for (const mdToken of mdTokens) {
-            switch (mdToken.type) {
-                case 'heading': {
-                    this.cm.addLineClass(lineIndex, 'text', `markdown-heading markdown-heading-${mdToken.depth}`);
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-    }
-
-    // block processing
-    public processBlocks() {
-        // Parse entire content as markdown
-        const mdTokens = marked.lexer(this.cm.getValue());
-
-        // Clean up old block styles
-        const lineCount = this.cm.lineCount();
-        for (let i = 0; i <= lineCount; i++) {
-            this.cm.removeLineClass(i, 'text', 'markdown-code');
-        }
-
-        // Apply new styles
-        let currentLineIndex = 0;
-        for (const mdToken of mdTokens) {
-            const blockLines = mdToken.raw.trim().split('\n')
-            const startLineIndex = currentLineIndex;
-            const endLineIndex = startLineIndex + blockLines.length - 1;
-
-            switch (mdToken.type) {
-                case 'code': {
-                    // Set code style on block
-                    for (let i = startLineIndex; i <= endLineIndex; i++) {
-                        this.cm.addLineClass(i, 'text', 'markdown-code');
-                    }
-                    // Disable spell-check
-                    this.cm.markText(
-                        { line: startLineIndex, ch: 0 },
-                        { line: endLineIndex, ch: blockLines[blockLines.length - 1].length },
-                        { attributes: { 'spellcheck': 'false' } }
-                    );
-                    break;
-                }
-                default:
-                    break;
-            }
-
-            // Compute line index for next iteration
-            currentLineIndex += (mdToken.raw.match(/\n/g) || []).length;
         }
     }
 

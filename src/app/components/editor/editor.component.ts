@@ -35,7 +35,6 @@ export class EditorComponent implements OnInit {
   public note: Note = new Note();
   private initialContent: string = '';
   private codeMirrorManager!: CodeMirrorManager;
-  private cmIsProcessing = false;
 
   // constructor
   constructor(
@@ -150,23 +149,17 @@ export class EditorComponent implements OnInit {
         this.codeMirrorManager.processLine(cm.getLine(lineIndex), lineIndex, null, this.renderer);
       }
     }
-    this.codeMirrorManager.processBlocks();
   }
   private processContentChanges(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
-    if (!changes || this.cmIsProcessing) { return; }
-    this.cmIsProcessing = true;
-    setTimeout(() => {
-      const lineIndex = changes[0].to.line;
-      const line = cm.getLine(lineIndex);
-      if (line) {
-        const currentScrollY = cm.getScrollInfo().top;
-        this.codeMirrorManager.processLine(
-          line, lineIndex, changes, this.renderer, () => this.noteService.getAll().map(x => x.path));
-        cm.scrollTo(null, currentScrollY);
-      }
-      this.codeMirrorManager.processBlocks();
-      this.cmIsProcessing = false;
-    }, 400);
+    if (!changes) { return; }
+    const lineIndex = changes[0].to.line;
+    const line = cm.getLine(lineIndex);
+    if (line) {
+      const currentScrollY = cm.getScrollInfo().top;
+      this.codeMirrorManager.processLine(
+        line, lineIndex, changes, this.renderer, () => this.noteService.getAll().map(x => x.path));
+      cm.scrollTo(null, currentScrollY);
+    }
   }
   private storeCursorPosition() {
     if (!this.commandService.executionInProgress) {

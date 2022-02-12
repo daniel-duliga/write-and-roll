@@ -47,6 +47,38 @@ img {
   margin-right: auto !important;
 }
 
+/* CodeMirror Markdown */
+.cm-header {
+  padding-bottom: 10px !important;
+  padding-top: 10px !important;
+
+}
+.cm-header-1 {
+  font-size: 17pt !important;
+}
+.cm-header-2 {
+  font-size: 16pt !important;
+}
+.cm-header-3 {
+  font-size: 15pt !important;
+}
+.cm-header-4 {
+  font-size: 14pt !important;
+}
+.cm-header-5 {
+  font-size: 13pt !important;
+}
+.cm-header-6 {
+  font-size: 12pt !important;
+}
+.cm-comment {
+  font-family: 'JetBrains Mono' !important;
+  /* background-color: linen !important; */
+}
+.cm-link {
+  cursor: pointer;
+}
+
 /* Angular Material */
 .mat-form-field-appearance-outline .mat-form-field-outline {
   color: lightgray;
@@ -90,35 +122,4 @@ img {
 }
 .shadow-up {
   box-shadow: 0px -3px 3px rgb(0 0 0 / 10%);
-}
-
-/* Markdown */
-.markdown-link {
-  cursor: pointer;
-}
-.markdown-heading {
-  padding-bottom: 10px !important;
-  padding-top: 10px !important;
-}
-.markdown-heading-1 {
-  font-size: 17pt !important;
-}
-.markdown-heading-2 {
-  font-size: 16pt !important;
-}
-.markdown-heading-3 {
-  font-size: 15pt !important;
-}
-.markdown-heading-4 {
-  font-size: 14pt !important;
-}
-.markdown-heading-5 {
-  font-size: 13pt !important;
-}
-.markdown-heading-6 {
-  font-size: 12pt !important;
-}
-.markdown-code {
-  font-family: 'JetBrains Mono' !important;
-  background-color: linen !important;
 }

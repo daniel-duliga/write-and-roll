@@ -4,7 +4,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 //#region codemirror
 import 'codemirror/mode/javascript/javascript';
 
-import 'codemirror/mode/markdown/markdown';
+import './app/extensions/markdown';
 import 'codemirror/addon/edit/continuelist';
 
 import 'codemirror/addon/fold/foldcode';
