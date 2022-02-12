@@ -35,6 +35,7 @@ export class EditorComponent implements OnInit {
   public note: Note = new Note();
   private initialContent: string = '';
   private codeMirrorManager!: CodeMirrorManager;
+  private cmIsProcessing = false;
 
   // constructor
   constructor(
@@ -129,9 +130,9 @@ export class EditorComponent implements OnInit {
     this.note.path = name;
   }
 
-  // code mirror
+  // private methods
   private configureCodeMirror(cm: CodeMirror.Editor) {
-    cm.on('changes', (cm, changes) => this.processCodeMirrorChanges(cm, changes));
+    cm.on('changes', (cm, changes) => this.processContentChanges(cm, changes));
     cm.on('cursorActivity', (cm) => this.storeCursorPosition());
     cm.on('focus', (cm, focusEvent) => this.codeMirrorManager.restoreCursorPosition());
     cm.setOption("extraKeys", {
@@ -141,29 +142,6 @@ export class EditorComponent implements OnInit {
     });
     cm.focus();
   }
-  private cmIsProcessing = false;
-  private processCodeMirrorChanges(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
-    if (this.cmIsProcessing) {
-      return;
-    }
-    this.cmIsProcessing = true;
-    setTimeout(() => {
-      if (changes) {
-        const lineIndex = changes[0].to.line;
-        const line = cm.getLine(lineIndex);
-        if (line) {
-          const currentScrollY = cm.getScrollInfo().top;
-          this.codeMirrorManager.processLine(
-            line, lineIndex, changes, this.renderer, () => this.noteService.getAll().map(x => x.path));
-          cm.scrollTo(null, currentScrollY);
-        }
-        this.codeMirrorManager.processDocument();
-      }
-      this.cmIsProcessing = false;
-    }, 400);
-  }
-
-  // private methods
   private processInitialContent(cm: CodeMirror.Editor) {
     const lineCount = cm.lineCount();
     for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
@@ -172,7 +150,23 @@ export class EditorComponent implements OnInit {
         this.codeMirrorManager.processLine(cm.getLine(lineIndex), lineIndex, null, this.renderer);
       }
     }
-    this.codeMirrorManager.processDocument();
+    this.codeMirrorManager.processBlocks();
+  }
+  private processContentChanges(cm: CodeMirror.Editor, changes: CodeMirror.EditorChange[] | null) {
+    if (!changes || this.cmIsProcessing) { return; }
+    this.cmIsProcessing = true;
+    setTimeout(() => {
+      const lineIndex = changes[0].to.line;
+      const line = cm.getLine(lineIndex);
+      if (line) {
+        const currentScrollY = cm.getScrollInfo().top;
+        this.codeMirrorManager.processLine(
+          line, lineIndex, changes, this.renderer, () => this.noteService.getAll().map(x => x.path));
+        cm.scrollTo(null, currentScrollY);
+      }
+      this.codeMirrorManager.processBlocks();
+      this.cmIsProcessing = false;
+    }, 400);
   }
   private storeCursorPosition() {
     if (!this.commandService.executionInProgress) {
