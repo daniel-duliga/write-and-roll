@@ -59,7 +59,9 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   // host listener methods
   @HostListener('window:keydown.control.space', ['$event'])
   showCommands() {
-    this.commands.showCommands();
+    if(this.focusedEditor) {
+      this.commands.showCommands(this.focusedEditor.context);
+    }
   }
 
   // commands

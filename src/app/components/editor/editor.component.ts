@@ -7,9 +7,8 @@ import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { CommandService } from '../commands/command.service';
 import { CodeMirrorManager } from 'src/app/modules/code-mirror/code-mirror-manager';
-import { NoteContext } from 'src/app/modules/note-context/note-context';
 import { BlockService } from 'src/app/modules/blocks/block.service';
-import { NoteContextService } from 'src/app/modules/note-context/note-context.service';
+import { Context } from 'src/app/modules/actions/context';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -35,7 +34,7 @@ export class EditorComponent implements OnInit {
 
   // public members
   public note: Note = new Note();
-  public context: NoteContext = new NoteContext([]);
+  public context: Context = new Context('');
   
   // private members
   private initialContent: string = '';
@@ -49,7 +48,6 @@ export class EditorComponent implements OnInit {
     private noteManagerService: NoteManagerService,
     private commandService: CommandService,
     private blockService: BlockService,
-    private noteContextService: NoteContextService,
   ) {
     (window as any).openLink = (notePath: string) => this.openLink(notePath);
   }
@@ -65,6 +63,7 @@ export class EditorComponent implements OnInit {
     this.note = note;
     this.initialContent = note.content;
     this.note.path = this.notePath;
+    this.context = new Context(this.note.content);
   }
   ngAfterViewInit() {
     setTimeout(() => {
@@ -103,7 +102,7 @@ export class EditorComponent implements OnInit {
     } else {
       this.noteService.update(this.note);
       this.blockService.processNoteContent(this.note);
-      this.context = this.noteContextService.processNote(this.note.content);
+      this.context = new Context(this.note.content);
     }
 
     // Reflect saved data
