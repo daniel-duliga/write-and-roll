@@ -11,9 +11,26 @@ export class Context {
         }
     }
 
+    // static functions
+    public static clone(source: Context): Context {
+        let result = new Context('');
+        for (const attribute of source.attributes) {
+            result.attributes.push(attribute);
+        }
+        return result;
+    }
+
     // public methods
     public getAttribute(key: string): any | null {
-        return this.attributes.find(x => x.key.toLowerCase() === key.toLowerCase())?.value;
+        return this.attributes.find(x => x.key === key)?.value;
+    }
+    public setAttribute(key: string, value: any) {
+        let attribute = this.attributes.find(x => x.key === key);
+        if(attribute) {
+            attribute.value = value;
+        } else {
+            this.attributes.push(new ContextAttribute(key, value));
+        }
     }
 
     // private methods

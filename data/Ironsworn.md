@@ -1,36 +1,36 @@
 ![](https://i.imgur.com/P4BvfKD.png)
 
-https://www.ironswornrpg.com/
+https://www.ironswornrpg.com
 
 *A Tabletop RPG of Perilous Quests for Solo, Co-OP and Guided Play*
 
 # 🥷 Character
 
-Roll on the following table, and assign the +3 value to the result. Then, distribute the remaining stats (+2, +2, +1, +1) as you like.
+Roll on the following table, and assign the `+3` value to the result. Then, distribute the remaining stats (`+2`, `+2`, `+1`, `+1`) as you like.
 
 ``` table Character Stats
 1-20,"You are nimble, fast, and precise: Edge"
 21-40,"You are willful, courageous, and sociable: Heart"
 41-60,"You are strong, forceful, and imposing: Iron"
 61-80,"You cunning, deceptive, and sneaky: Shadow"
-81-00,"You are smart, knowledgeable, and resourceful: Wits"
+81-100,"You are smart, knowledgeable, and resourceful: Wits"
 ```
 
 # ⚔️ Moves
 ## Action Roll
 
-Roll your action die (d6) and challenge dice (2d10). The total of your
-action die, your stat, and any adds is your action score. Your action score is never greater than 10—anything over that is ignored.
+Roll your action die (`d6`) and challenge dice (`2d10`). The total of your action die, your stat, and any adds is your action score. Your action score is never greater than 10—anything over that is ignored.
 
 - Strong hit = Action score is greater than both of the challenge dice
 - Weak Hit = Action score is greater than one of the challenge dice
 - Miss = Action score is not greater than either of the challenge dice
 
 ``` action Action Roll
-const modifier = await api.prompt('Modifier');
+const modifier = await api.getAttribute('baseRoll');
+
 let action = api.rollDice('1d6') + +modifier;
 if (action > 10) {
-  action = 10;
+    action = 10;
 }
 const challenge1 = api.rollDice('1d10');
 const challenge2 = api.rollDice('1d10');
@@ -42,22 +42,32 @@ const opportunityOrComplication = challenge1 === challenge2;
 let result = '';
 
 if (strongHit) {
-  result = result.concat('Strong Hit!');
-  if (opportunityOrComplication) {
-    result = result.concat(' Opportunity!');
-  }
+    result = result.concat('Strong Hit!');
+    if (opportunityOrComplication) {
+        result = result.concat(' Opportunity!');
+    }
 } else if (miss) {
-  result = result.concat('Miss!');
-  if (opportunityOrComplication) {
-    result = result.concat(' Complication!');
-  }
+    result = result.concat('Miss!');
+    if (opportunityOrComplication) {
+        result = result.concat(' Complication!');
+    }
 } else {// weak hit
-  result = result.concat('Weak Hit!');
+    result = result.concat('Weak Hit!');
 }
 
 result = result.concat(` (${action} vs. ${challenge1}, ${challenge2})`);
 
 return result;
+```
+
+## Undertake a Journey
+
+``` action Undertake a Journey
+let wits = await api.getAttribute('Wits');
+const bonus = await api.prompt('Modifier');
+if(bonus) { wits += +bonus; }
+api.setAttribute('baseRoll', wits);
+return await api.rollAction('Action Roll');
 ```
 
 # 🎲 Oracles

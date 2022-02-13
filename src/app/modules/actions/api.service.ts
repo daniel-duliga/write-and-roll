@@ -39,12 +39,15 @@ export class ApiService {
     }
     return value;
   }
+  setAttribute(key: string, value: string) {
+    this.context.setAttribute(key, value);
+  }
 
   async prompt(message: string): Promise<string> {
     return await this.promptService.input(this.dialog, message);
   }
 
-  async runAction(action: string): Promise<string> {
+  async rollAction(action: string): Promise<string> {
     // this is a placeholder meant to be overridden in ActionService
     return '';
   }

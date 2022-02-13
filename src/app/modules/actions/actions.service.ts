@@ -25,8 +25,8 @@ export class ActionsService {
     // Initialize api
     const api = this.api;
     api.dialog = dialog;
-    api.context = context;
-    api.runAction = async (actionName: string): Promise<string> => await this.run(actionName, context, dialog);
+    api.context = Context.clone(context); // context might get modified, we don't want to persist those changes
+    api.rollAction = async (actionName: string): Promise<string> => await this.run(actionName, api.context, dialog);
 
     // Execute action
     const result: string | null = await eval(`(async function() { ${action.content} })()`);
