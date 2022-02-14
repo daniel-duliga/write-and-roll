@@ -1,7 +1,7 @@
 import { Renderer2 } from '@angular/core';
 import * as CodeMirror from 'codemirror';
 import { LineWidget, Pos } from 'codemirror';
-import { marked } from 'marked';
+import { Context } from '../actions/context';
 
 export class CodeMirrorManager {
     cm: CodeMirror.Editor;
@@ -12,19 +12,37 @@ export class CodeMirrorManager {
 
     // line processing
     private lineWidgets: LineWidget[] = [];
+    private lastAutocompletePrefix: string | null = null;
     public processLine(
         line: string,
         lineIndex: number,
         changes: CodeMirror.EditorChange[] | null,
         renderer: Renderer2,
-        getLinkCompletions: () => string[] = () => []
-     ) {
+        allLinks: string[],
+        allAttributes: string[]
+    ) {
         this.clearLineWidgets(lineIndex);
-        this.renderLineImages(line, lineIndex, renderer);
-        this.renderLineLinks(line, lineIndex);
-        this.renderLineLinkCompletions(line, changes, getLinkCompletions);
+        this.renderImages(line, lineIndex, renderer);
+        this.renderLinks(line, lineIndex);
+        this.renderMarkdownHeaders(lineIndex);
+        this.renderContextAttributes(line, lineIndex);
+        if (changes) {
+            this.renderAutocomplete(line, changes, allLinks, '[[');
+            this.renderAutocomplete(line, changes, allAttributes, '@');
+            if(this.lastAutocompletePrefix) {
+                this.handleAutocompleteSelection(changes, this.lastAutocompletePrefix);
+            }
+        }
     }
-    
+    public handleAutocompleteSelection(changes: CodeMirror.EditorChange[], prefix: string) {
+        const change = changes[0];
+        if (change.origin === 'complete') {
+            const line = this.cm.getLine(change.to.line);
+            const prefixPosition = new Pos(change.to.line, line.lastIndexOf(prefix, change.to.ch + 1) + prefix.length);
+            this.cm.replaceRange('', prefixPosition, change.to);
+            this.lastAutocompletePrefix = null;
+        }
+    }
 
     private clearLineWidgets(lineIndex: number) {
         const lineWidgets = this.lineWidgets.splice(lineIndex, 1);
@@ -32,7 +50,7 @@ export class CodeMirrorManager {
             lineWidgets[0].clear();
         }
     }
-    private renderLineImages(line: string, lineIndex: number, renderer: Renderer2) {
+    private renderImages(line: string, lineIndex: number, renderer: Renderer2) {
         const images = line.matchAll(/!\[\w*\]\(\w+\:\/\/[\w\.\/\-]+\)/g);
         for (const image of images) {
             let imageUrl = image.toString().match(/\(.*\)/g)?.toString();
@@ -45,7 +63,7 @@ export class CodeMirrorManager {
                 renderer.setStyle(image, 'max-width', '100%');
 
                 let imageContainer: HTMLElement = renderer.createElement('div');
-                renderer.setStyle(imageContainer, 'text-align', 'center');
+                renderer.setStyle(imageContainer, 'text-align', 'left');
                 imageContainer.appendChild(image);
 
                 const imageWidget = this.cm.addLineWidget(lineIndex, imageContainer);
@@ -53,7 +71,7 @@ export class CodeMirrorManager {
             }
         }
     }
-    private renderLineLinks(line: string, lineIndex: number) {
+    private renderLinks(line: string, lineIndex: number) {
         const linkMatches = line.matchAll(/\[\[(\w*\s*\d*)+\]\]/g);
         for (const linkMatch of linkMatches) {
             const linkIndexInLine = linkMatch.index ?? 0;
@@ -72,54 +90,25 @@ export class CodeMirrorManager {
             );
         }
     }
-    private renderLineLinkCompletions(
-        line: string, changes: CodeMirror.EditorChange[] | null, getOptions: () => string[]) {
-        if (!changes) { return; }
-
-        // compute the index of the first char from the change (varies for insert and delete)
-        let changeCharIndex = -1;
-        if (changes[0].origin === '+input') {
-            changeCharIndex = changes[0].to.ch;
-        } else if (changes[0].origin === '+delete') {
-            changeCharIndex = changes[0].from.ch - 1;
+    private renderMarkdownHeaders(lineIndex: number) {
+        const lineTokens = this.cm.getLineTokens(lineIndex);
+        if (lineTokens.find(x => x.type?.includes('header'))) {
+            this.cm.addLineClass(lineIndex, 'text', 'md-header');
         }
-        if (changeCharIndex == -1) { return; }
-
-        // get the index of the next whitespace after the first char of the change 
-        let whitespaceCharIndex = line.lastIndexOf(' ', changeCharIndex);
-        if (whitespaceCharIndex === -1) {
-            whitespaceCharIndex = 0;
-        };
-
-        const linkBrackets = line.slice(whitespaceCharIndex + 1, whitespaceCharIndex + 3);
-        if (linkBrackets === '[[') {
-            // get and filter completion options
-            const filter = line.slice(whitespaceCharIndex + 3, changeCharIndex + 1);
-            const options = getOptions().filter(x => x.toLowerCase().startsWith(filter.toLowerCase()));
-
-            // show the autocompletion
-            const cursor = this.cm.getCursor();
-            const start = cursor.ch
-            const end = cursor.ch;
-            this.cm.showHint({
-                hint: () => {
-                    return {
-                        list: options,
-                        from: CodeMirror.Pos(cursor.line, start),
-                        to: CodeMirror.Pos(cursor.line, end)
-                    };
-                },
-                completeSingle: false,
-                moveOnOverlap: true
-            });
-        }
-
-        // append the end brackets to the line, if completion occurred
-        const change = changes[0];
-        if (change.origin === 'complete') {
-            const line = this.cm.getLine(change.to.line);
-            const bracketsPos = new Pos(change.to.line, line.lastIndexOf('[[', change.to.ch + 1) + 2);
-            this.cm.replaceRange('', bracketsPos, change.to);
+    }
+    private renderContextAttributes(line: string, lineIndex: number) {
+        const attributes = Context.extractLineContext(line);
+        let startChar = 0;
+        for (const attribute of attributes) {
+            startChar = line.indexOf(attribute, startChar);
+            const endChar = startChar + attribute.length;
+            this.cm.markText(
+                { line: lineIndex, ch: startChar },
+                { line: lineIndex, ch: endChar },
+                {
+                    className: "context-attribute"
+                }
+            );
         }
     }
 
@@ -150,5 +139,59 @@ export class CodeMirrorManager {
         if (this._cursorPosition) {
             this.cm.setCursor(this._cursorPosition);
         }
+    }
+
+    // auto-complete
+    private renderAutocomplete(line: string, changes: CodeMirror.EditorChange[], options: string[], prefix: string) {
+        // compute the index of the first char from the word being changed (varies for insert and delete)
+        let changeCharIndex = -1;
+        if (changes[0].origin === '+input') {
+            changeCharIndex = changes[0].to.ch;
+        } else if (changes[0].origin === '+delete') {
+            changeCharIndex = changes[0].from.ch - 1;
+        }
+        if (changeCharIndex == -1) {
+            return;
+        }
+
+        // get the index of the next whitespace after the first char of the change 
+        let startCharIndex = line.lastIndexOf(' ', changeCharIndex);
+        if (startCharIndex === -1) {
+            startCharIndex = 0;
+        };
+
+        // check if the current word being changed starts with the prefix
+        const possiblePrefix = line.slice(startCharIndex + 1, startCharIndex + 1 + prefix.length);
+        if (possiblePrefix !== prefix) {
+            return;
+        }
+
+        // if the prefix is found, save it
+        this.lastAutocompletePrefix = prefix;
+        
+        // get the filter (the content after the prefix)
+        const filter = line.slice(startCharIndex + 1 + prefix.length, changeCharIndex + 1);
+        if (filter === null) {
+            return;
+        }
+
+        // filter the options
+        options = options.filter(x => x.toLowerCase().startsWith(filter.toLowerCase()));
+
+        // show autocomplete
+        const cursor = this.cm.getCursor();
+        const start = cursor.ch;
+        const end = cursor.ch;
+        this.cm.showHint({
+            hint: () => {
+                return {
+                    list: options,
+                    from: CodeMirror.Pos(cursor.line, start),
+                    to: CodeMirror.Pos(cursor.line, end)
+                };
+            },
+            completeSingle: false,
+            moveOnOverlap: true,
+        });
     }
 }

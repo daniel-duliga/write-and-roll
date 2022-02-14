@@ -166,12 +166,9 @@ export class EditorComponent implements OnInit {
     }
   }
   private processLineContent(line: string, lineIndex: number, changes: CodeMirror.EditorChange[] | null) {
-    this.codeMirrorManager.processLine(
-      line,
-      lineIndex,
-      changes,
-      this.renderer,
-      () => this.noteService.getAll().map(x => x.path));
+    const allLinks = this.noteService.getAll().map(x => x.path);
+    const allAttributes = this.context.attributes.map(x => x.key);
+    this.codeMirrorManager.processLine(line, lineIndex, changes, this.renderer, allLinks, allAttributes);
   }
   private storeCursorPosition() {
     if (!this.commandService.executionInProgress) {

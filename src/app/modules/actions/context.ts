@@ -6,7 +6,7 @@ export class Context {
     constructor(noteContent: string) {
         const lines = noteContent.split('\n');
         for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-            const rawLineContext = this.extractLineContext(lines[lineIndex]);
+            const rawLineContext = Context.extractLineContext(lines[lineIndex]);
             this.addLineContext(rawLineContext);
         }
     }
@@ -18,6 +18,14 @@ export class Context {
             result.attributes.push(attribute);
         }
         return result;
+    }
+    public static extractLineContext(line: string) {
+        const attributes: string[] = [];
+        const matches = line.matchAll(/@\w+\s*[\+\-]*=\s*[\d+\w+]+/g);
+        for (const match of matches) {
+            attributes.push(match.toString());
+        }
+        return attributes;
     }
 
     // public methods
@@ -32,16 +40,8 @@ export class Context {
             this.attributes.push(new ContextAttribute(key, value));
         }
     }
-
+    
     // private methods
-    private extractLineContext(line: string) {
-        const attributes: string[] = [];
-        const matches = line.matchAll(/@\w+\s*[\+\-]*=\s*[\d+\w+]+/g);
-        for (const match of matches) {
-            attributes.push(match.toString());
-        }
-        return attributes;
-    }
     private addLineContext(rawAttributes: string[]) {
         for (const rawAttribute of rawAttributes) {
             const attributeSegments = rawAttribute.split(' ');
