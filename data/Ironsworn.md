@@ -4,7 +4,7 @@ https://www.ironswornrpg.com
 
 *A Tabletop RPG of Perilous Quests for Solo, Co-OP and Guided Play*
 
-# 🥷 Character
+# 🦸 Character
 
 Roll on the following table, and assign the `+3` value to the result. Then, distribute the remaining stats (`+2`, `+2`, `+1`, `+1`) as you like.
 
@@ -16,8 +16,8 @@ Roll on the following table, and assign the `+3` value to the result. Then, dist
 81-100,"You are smart, knowledgeable, and resourceful: Wits"
 ```
 
-# ⚔️ Moves
-## Action Roll
+# 🗡 Moves
+## 🎲 Action Roll
 
 Roll your action die (`d6`) and challenge dice (`2d10`). The total of your action die, your stat, and any adds is your action score. Your action score is never greater than 10—anything over that is ignored.
 
@@ -60,7 +60,27 @@ result = result.concat(` (${action} vs. ${challenge1}, ${challenge2})`);
 return result;
 ```
 
-## Undertake a Journey
+## 🚶 Undertake a Journey
+
+When you travel across hazardous or unfamiliar lands, set the rank of your journey.
+
+- Troublesome journey: 3 progress per waypoint.
+- Dangerous journey: 2 progress per waypoint.
+- Formidable journey: 1 progress per waypoint.
+- Extreme journey: 2 ticks per waypoint.
+- Epic journey: 1 tick per waypoint.
+
+Then, for each segment of your journey, roll +wits. If you are setting off from a community with which you share a bond, add +1 to your initial roll.
+
+On a strong hit, you reach a waypoint. If the waypoint is unknown to you, envision it (Ask the Oracle if unsure). Then, choose one.
+
+- You make good use of your resources: Mark progress.
+- You move at speed: Mark progress and take +1 momentum, but suffer -1 supply.
+
+On a weak hit, you reach a waypoint and mark progress, but suffer -1
+supply.
+
+On a miss, you are waylaid by a perilous event. *Pay the Price*.
 
 ``` action Undertake a Journey
 let wits = await api.getAttribute('Wits');
@@ -70,7 +90,7 @@ api.setAttribute('baseRoll', wits);
 return await api.rollAction('Action Roll');
 ```
 
-# 🎲 Oracles
+# 🎱 Oracles
 ## Fate
 ``` table Fate: 50/50
 1-50,No
@@ -92,6 +112,7 @@ return await api.rollAction('Action Roll');
 1-75,No
 76-100,Yes
 ```
+
 ## Action & Theme
 ``` table Action
 1,Scheme
