@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Editor } from 'src/app/modules/notes/models/editor';
+import { NoteEditor } from 'src/app/modules/notes/models/note-editor';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class NoteManagerService {
 
   constructor() { }
 
-  addOpenedEditor(editor: Editor) {
+  addOpenedEditor(editor: NoteEditor) {
     const openedEditors = this.getOpenedEditors();
     if (!openedEditors.find(x => x.notePath === editor.notePath)) {
       openedEditors.push(editor);
@@ -25,19 +25,19 @@ export class NoteManagerService {
     }
   }
 
-  updateOpenedEditor(editor: Editor) {
+  updateOpenedEditor(editor: NoteEditor) {
     this.removeOpenEditor(editor);
     this.addOpenedEditor(editor);
   }
   
-  removeOpenEditor(editor: Editor) {
+  removeOpenEditor(editor: NoteEditor) {
     let openedEditors = this.getOpenedEditors();
     openedEditors = openedEditors.filter(x => x.notePath !== editor.notePath);
     localStorage.setItem(`${this.collectionName}/openedEditors`, JSON.stringify(openedEditors));
   }
   
-  getOpenedEditors(): Editor[] {
-    let result: Editor[] = [];
+  getOpenedEditors(): NoteEditor[] {
+    let result: NoteEditor[] = [];
     let rawResult = localStorage.getItem(`${this.collectionName}/openedEditors`);
     if (rawResult) {
       result = JSON.parse(rawResult);

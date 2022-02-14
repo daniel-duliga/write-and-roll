@@ -13,7 +13,7 @@ export class PromptService {
 
   constructor() { }
 
-  input(dialog: MatDialog, message: string, initialValue: string = ''): Promise<string> {
+  async input(dialog: MatDialog, message: string, initialValue: string = ''): Promise<string> {
     const openedDialog = dialog.open(
       InputComponent, {
       position: this.promptPosition,
@@ -22,7 +22,7 @@ export class PromptService {
     return openedDialog.afterClosed().toPromise().then(((result: string) => result));
   }
 
-  autocomplete(dialog: MatDialog, message: string, options: string[]): Promise<string> {
+  async autocomplete(dialog: MatDialog, message: string, options: string[]): Promise<string> {
     const openedDialog = dialog.open(
       AutoCompletePromptComponent,
       {

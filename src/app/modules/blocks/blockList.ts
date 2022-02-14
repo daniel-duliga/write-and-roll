@@ -16,6 +16,10 @@ export class BlockList {
             this.blocks.push(block);
         }
     }
+    
+    public getByName(name: string): Block | null {
+        return this.blocks.find(x => x.name === name) ?? null;
+    }
 
     public getByFriendlyName(friendlyName: string): Block | null {
         return this.blocks.filter(x => x.friendlyName === friendlyName)[0];

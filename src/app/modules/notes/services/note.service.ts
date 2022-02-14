@@ -9,10 +9,7 @@ import { HttpClient } from "@angular/common/http";
 export class NoteService {
   collectionName = 'notes';
 
-  constructor(
-    private blockService: BlockService,
-    private httpClient: HttpClient
-  ) { }
+  constructor() { }
 
   create(note: Note) {
     localStorage.setItem(`${this.collectionName}/${note.path}`, JSON.stringify(note));
@@ -53,7 +50,6 @@ export class NoteService {
     let existingNote = this.get(note.path);
     if (existingNote) {
       localStorage.setItem(`${this.collectionName}/${note.path}`, JSON.stringify(note));
-      this.blockService.addBlocksFromNote(note);
     }
   }
   
@@ -69,6 +65,5 @@ export class NoteService {
   
   delete(path: string) {
     localStorage.removeItem(`${this.collectionName}/${path}`);
-    this.blockService.removeBlocksByNote(path);
   }
 }

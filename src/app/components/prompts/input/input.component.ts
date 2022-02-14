@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -17,7 +17,8 @@ export class InputComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { message: string, initialValue: string },
     public dialogRef: MatDialogRef<InputComponent>,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private zone: NgZone
   ) {
     this.message = data.message;
     this.initialValue = data.initialValue;
@@ -34,6 +35,6 @@ export class InputComponent implements OnInit {
   }
   
   onFormSubmit() {
-    this.dialogRef.close(this.form.value.input);
+    this.zone.run(() => this.dialogRef.close(this.form.value.input));
   }
 }

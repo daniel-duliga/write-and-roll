@@ -4,9 +4,8 @@
 @import "~codemirror/addon/hint/show-hint.css";
 @import "~codemirror/addon/fold/foldgutter.css";
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 /* You can add global styles to this file, and also import other style files */
 html {
@@ -20,7 +19,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: "Helvetica Neue", sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: #F7F6F2;
 }
 img {
@@ -33,7 +32,7 @@ img {
   
   z-index: 1;
   
-  font-family: 'Lato';
+  font-family: 'Roboto';
   font-size: 11pt;
 }
 .CodeMirror-foldmarker {
@@ -43,8 +42,36 @@ img {
 .CodeMirror-lines {
   padding-bottom: 90vh;
   max-width: 1024px;
+  padding-right: 20px;
+  padding-left: 20px;
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+/* CodeMirror Markdown */
+.cm-header-1 {
+  font-size: 22pt !important;
+}
+.cm-header-2 {
+  font-size: 20pt !important;
+}
+.cm-header-3 {
+  font-size: 18pt !important;
+}
+.cm-header-4 {
+  font-size: 16pt !important;
+}
+.cm-header-5 {
+  font-size: 14pt !important;
+}
+.cm-header-6 {
+  font-size: 12pt !important;
+}
+.cm-link {
+  cursor: pointer;
+}
+.cm-comment {
+  font-family: 'Roboto Mono';
 }
 
 /* Angular Material */
@@ -91,34 +118,11 @@ img {
 .shadow-up {
   box-shadow: 0px -3px 3px rgb(0 0 0 / 10%);
 }
-
-/* Markdown */
-.markdown-link {
-  cursor: pointer;
+.md-header {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
 }
-.markdown-heading {
-  padding-bottom: 10px !important;
-  padding-top: 10px !important;
-}
-.markdown-heading-1 {
-  font-size: 17pt !important;
-}
-.markdown-heading-2 {
-  font-size: 16pt !important;
-}
-.markdown-heading-3 {
-  font-size: 15pt !important;
-}
-.markdown-heading-4 {
-  font-size: 14pt !important;
-}
-.markdown-heading-5 {
-  font-size: 13pt !important;
-}
-.markdown-heading-6 {
-  font-size: 12pt !important;
-}
-.markdown-code {
-  font-family: 'JetBrains Mono' !important;
-  background-color: linen !important;
+.context-attribute {
+  color: #00c;
+  font-weight: 500;
 }

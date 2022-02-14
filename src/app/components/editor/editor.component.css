@@ -20,14 +20,21 @@
   height: 100%;
   width: 100%;
   display: flex;
-  flex-direction: column;
+  background-color: white;
+}
+
+.band {
+  display: flex;
+  align-items: center;
+  z-index: 3;
 }
 
 .header {
-  display: flex;
-  align-items: center;
+  border-bottom: 1px solid lightgray;
+}
+
+.footer {
   border-top: 1px solid lightgray;
-  z-index: 3;
 }
 
 .header-button {
@@ -53,13 +60,17 @@
 
 .title {
   width: 100%;
-  height: 100%;
+  height: 1.25em;
 
   display: flex;
   align-items: center;
 
   font-weight: 500;
   font-size: 11pt;
+}
+
+.title-footer {
+  font-weight: initial;
 }
 
 .title-edit {
@@ -83,6 +94,13 @@
   overflow: auto;
   display: flex;
   height: 100%;
+  width: 100%;
+}
+
+.context {
+  padding-right: 20px;
+  background-color: white;
+  white-space: nowrap;
 }
 
 .code-mirror {
