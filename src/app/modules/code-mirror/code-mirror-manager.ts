@@ -143,7 +143,7 @@ export class CodeMirrorManager {
         // get the index of the next whitespace after the first char of the change 
         let startCharIndex = line.lastIndexOf(' ', changeCharIndex);
         if (startCharIndex === -1) {
-            startCharIndex = 0;
+            startCharIndex = -1;
         };
 
         // check if the current word being changed starts with the prefix
