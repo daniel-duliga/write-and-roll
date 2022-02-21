@@ -127,20 +127,6 @@ export class CodeMirrorManager {
         }
     }
 
-    // cursor position
-    _cursorPosition: CodeMirror.Position | null = null;
-    public get cursorPosition(): CodeMirror.Position | null {
-        return this._cursorPosition;
-    }
-    public storeCursorPosition() {
-        this._cursorPosition = this.cm.getCursor();
-    }
-    public restoreCursorPosition() {
-        if (this._cursorPosition) {
-            this.cm.setCursor(this._cursorPosition);
-        }
-    }
-
     // auto-complete
     private renderAutocomplete(line: string, changes: CodeMirror.EditorChange[], options: string[], prefix: string) {
         // compute the index of the first char from the word being changed (varies for insert and delete)

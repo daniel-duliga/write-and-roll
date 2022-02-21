@@ -11,7 +11,6 @@ import { RandomTable } from 'src/app/modules/blocks/random-table';
 import { PromptService } from '../prompts/prompt.service';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
-import { CommandService } from './command.service';
 import { Context } from 'src/app/modules/actions/context';
 
 @Component({
@@ -40,15 +39,12 @@ export class CommandsComponent implements OnInit {
     private promptService: PromptService,
     private noteService: NoteService,
     private noteManagerService: NoteManagerService,
-    private commandService: CommandService,
   ) { }
 
   ngOnInit(): void { }
 
   // public methods
   public async showCommands(context: Context | null): Promise<void> {
-    this.commandService.executionInProgress = true;
-
     const command = await this.promptService.autocomplete(
       this.dialog,
       "Command",
@@ -63,8 +59,6 @@ export class CommandsComponent implements OnInit {
         this.commands.rollAction
       ]);
     await this.executeCommand(command, context, this.dialog);
-
-    this.commandService.executionInProgress = false;
   }
 
   // commands execution
@@ -106,6 +100,7 @@ export class CommandsComponent implements OnInit {
         break;
       }
       default: {
+        this.onCommandResult.emit('');
         break;
       }
     }

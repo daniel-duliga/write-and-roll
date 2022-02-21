@@ -5,7 +5,6 @@ import * as CodeMirror from 'codemirror';
 import { Note } from 'src/app/modules/notes/models/note';
 import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
-import { CommandService } from '../commands/command.service';
 import { CodeMirrorManager } from 'src/app/modules/code-mirror/code-mirror-manager';
 import { BlockService } from 'src/app/modules/blocks/block.service';
 import { Context } from 'src/app/modules/actions/context';
@@ -21,9 +20,6 @@ export class EditorComponent implements OnInit {
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
   // properties
-  public get codeMirror(): CodeMirror.EditorFromTextArea | undefined {
-    return this.ngxCodeMirror.codeMirror;
-  }
   public get isDirty(): boolean {
     return this.note.content !== this.initialContent;
   }
@@ -35,10 +31,10 @@ export class EditorComponent implements OnInit {
   // public members
   public note: Note = new Note();
   public context: Context = new Context('');
-  
+
   // private members
   private initialContent: string = '';
-  private codeMirrorManager!: CodeMirrorManager;
+  private cmManager!: CodeMirrorManager;
 
   // constructor
   constructor(
@@ -46,7 +42,6 @@ export class EditorComponent implements OnInit {
     private renderer: Renderer2,
     private noteService: NoteService,
     private noteManagerService: NoteManagerService,
-    private commandService: CommandService,
     private blockService: BlockService,
   ) {
     (window as any).openLink = (notePath: string) => this.openLink(notePath);
@@ -67,10 +62,10 @@ export class EditorComponent implements OnInit {
   }
   ngAfterViewInit() {
     setTimeout(() => {
-      if (this.codeMirror) {
-        this.codeMirrorManager = new CodeMirrorManager(this.codeMirror);
-        this.configureCodeMirror(this.codeMirror);
-        this.processInitialContent(this.codeMirror);
+      if (this.ngxCodeMirror.codeMirror) {
+        this.cmManager = new CodeMirrorManager(this.ngxCodeMirror.codeMirror);
+        this.configureCodeMirror(this.cmManager.cm);
+        this.processInitialContent(this.cmManager.cm);
         this.refresh();
       }
     }, 250);
@@ -88,8 +83,8 @@ export class EditorComponent implements OnInit {
 
   // events
   focusChanged($event: any) {
-    if ($event && this.codeMirror) {
-      this.onFocus.emit(this.codeMirror.getScrollInfo().top);
+    if ($event && this.cmManager.cm) {
+      this.onFocus.emit(this.cmManager.cm.getScrollInfo().top);
     }
   }
   save($event: Event | null = null) {
@@ -113,20 +108,17 @@ export class EditorComponent implements OnInit {
   }
 
   // public methods
-  public replaceSelection(option: string) {
-    if (this.codeMirror && this.codeMirrorManager.cursorPosition) {
-      this.codeMirrorManager.restoreCursorPosition();
-      this.codeMirror.replaceRange(
-        `\`${option}\``,
-        this.codeMirrorManager.cursorPosition,
-        this.codeMirrorManager.cursorPosition,
-      );
+  public replaceSelection(value: string) {
+    if (this.cmManager.cm) {
+      if (value) { value = `\`${value}\``; }
+      const pos = this.cmManager.cm.getCursor();
+      this.cmManager.cm.replaceRange(value, pos, pos);
     }
   }
   public refresh() {
     setTimeout(() => {
-      if (this.codeMirror) {
-        this.codeMirror.refresh();
+      if (this.cmManager.cm) {
+        this.cmManager.cm.refresh();
       }
     }, 250);
   }
@@ -137,12 +129,10 @@ export class EditorComponent implements OnInit {
   // private methods
   private configureCodeMirror(cm: CodeMirror.Editor) {
     cm.on('changes', (cm, changes) => this.processContentChanges(cm, changes));
-    cm.on('cursorActivity', (cm) => this.storeCursorPosition());
-    cm.on('focus', (cm, focusEvent) => this.codeMirrorManager.restoreCursorPosition());
     cm.setOption("extraKeys", {
       Enter: (cm) => cm.execCommand("newlineAndIndentContinueMarkdownList"),
       Tab: (cm) => cm.foldCode(cm.getCursor()),
-      "Shift-Tab": (cm) => this.codeMirrorManager.toggleFoldAllLines(),
+      "Shift-Tab": (cm) => this.cmManager.toggleFoldAllLines(),
     });
     cm.focus();
   }
@@ -168,11 +158,6 @@ export class EditorComponent implements OnInit {
   private processLineContent(line: string, lineIndex: number, changes: CodeMirror.EditorChange[] | null) {
     const allLinks = this.noteService.getAll().map(x => x.path);
     const allAttributes = this.context.attributes.map(x => x.key);
-    this.codeMirrorManager.processLine(line, lineIndex, changes, this.renderer, allLinks, allAttributes);
-  }
-  private storeCursorPosition() {
-    if (!this.commandService.executionInProgress) {
-      this.codeMirrorManager.storeCursorPosition();
-    }
+    this.cmManager.processLine(line, lineIndex, changes, this.renderer, allLinks, allAttributes);
   }
 }
