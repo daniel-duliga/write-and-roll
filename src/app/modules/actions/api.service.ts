@@ -32,12 +32,16 @@ export class ApiService {
     }
   }
 
-  async getAttribute(name: string): Promise<string> {
+  async getAttribute(name: string): Promise<number | string> {
     let value = this.context.getAttribute(name);
     if(!value) {
       value = await this.promptService.input(this.dialog, name);
     }
-    return value;
+    if(isNaN(value)) {
+      return value;
+    } else {
+      return +value;
+    }
   }
   setAttribute(key: string, value: string) {
     this.context.setAttribute(key, value);

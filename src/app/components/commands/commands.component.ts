@@ -46,7 +46,7 @@ export class CommandsComponent implements OnInit {
   ngOnInit(): void { }
 
   // public methods
-  public async showCommands(context: Context): Promise<void> {
+  public async showCommands(context: Context | null): Promise<void> {
     this.commandService.executionInProgress = true;
 
     const command = await this.promptService.autocomplete(
@@ -68,7 +68,7 @@ export class CommandsComponent implements OnInit {
   }
 
   // commands execution
-  private async executeCommand(option: string, context: Context, dialog: MatDialog): Promise<void> {
+  private async executeCommand(option: string, context: Context | null, dialog: MatDialog): Promise<void> {
     switch (option) {
       // Note
       case this.commands.noteOpen: {
@@ -121,7 +121,7 @@ export class CommandsComponent implements OnInit {
       this.noteManagerService.requestOpen.next(noteName);
     }
   }
-  private async executeRollActionCommand(context: Context, dialog: MatDialog): Promise<void> {
+  private async executeRollActionCommand(context: Context | null, dialog: MatDialog): Promise<void> {
     const actionFriendlyName = await this.promptAutoComplete(this.blockService.actions.friendlyNames);
     const action = this.blockService.actions.getByFriendlyName(actionFriendlyName);
     if(!action) {

@@ -14,7 +14,7 @@ export class ActionsService {
     private blockService: BlockService,
   ) { }
 
-  async run(actionName: string, context: Context, dialog: MatDialog): Promise<string> {
+  async run(actionName: string, context: Context | null, dialog: MatDialog): Promise<string> {
     // Get action
     const action = this.blockService.actions.getByName(actionName)?.content as Action | null;
     if (!action) {
@@ -25,7 +25,7 @@ export class ActionsService {
     // Initialize api
     const api = this.api;
     api.dialog = dialog;
-    api.context = Context.clone(context); // context might get modified, we don't want to persist those changes
+    api.context = context ? Context.clone(context) : new Context(''); // context might get modified, we don't want to persist those changes
     api.rollAction = async (actionName: string): Promise<string> => await this.run(actionName, api.context, dialog);
 
     // Execute action
