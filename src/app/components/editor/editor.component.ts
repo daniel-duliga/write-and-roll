@@ -125,6 +125,9 @@ export class EditorComponent implements OnInit {
   public setName(name: string) {
     this.note.path = name;
   }
+  public focus() {
+    this.cmManager.cm.focus();
+  }
 
   // private methods
   private configureCodeMirror(cm: CodeMirror.Editor) {

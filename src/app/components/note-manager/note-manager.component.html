@@ -23,7 +23,11 @@
         ></app-editor>
     </div>
     <div class="no-content-message" *ngIf="editorService.getOpenEditors().length === 0">
-        <button style="color: gray;" mat-stroked-button (click)="showCommands()">Open Commands</button>
+        <h1>✍ 🎲</h1>
     </div>
-    <app-commands #commands (onCommandResult)="this.handleCommandResult($event)"></app-commands>
+    <app-commands
+        #commands
+        (onCommandResult)="this.handleCommandResult($event)"
+        (onAutoShow)="this.showCommands()"
+    ></app-commands>
 </div>

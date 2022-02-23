@@ -8,7 +8,7 @@ import { InputComponent } from './input/input.component';
 })
 export class PromptService {
   private promptPosition = {
-    top: '0'
+    top: '35px'
   };
 
   constructor() { }

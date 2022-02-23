@@ -64,6 +64,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   handleCommandResult(result: string) {
     if (this.focusedEditor) {
       this.focusedEditor.replaceSelection(result);
+      this.focusedEditor.focus();
     }
   }
   async openNote(notePath: string) {

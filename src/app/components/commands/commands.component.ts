@@ -18,7 +18,10 @@ import { NoteService } from 'src/app/modules/notes/note.service';
 })
 export class CommandsComponent implements OnInit {
   @Output() onCommandResult: EventEmitter<string> = new EventEmitter();
+  @Output() onAutoShow: EventEmitter<void> = new EventEmitter();
+  
   @ViewChild('autoComplete') autoComplete!: AutoCompleteFieldComponent;
+  
   commands = {
     noteOpen: 'note/open',
     noteClose: 'note/close',
