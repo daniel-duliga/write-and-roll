@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BlockService } from './modules/blocks/block.service';
-import { NoteService } from './modules/notes/services/note.service';
+import { NoteService } from './modules/notes/note.service';
 
 @Component({
   selector: 'app-root',

@@ -1,17 +1,15 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
 import { ActionsService } from 'src/app/modules/actions/actions.service';
 import { DiceUtil } from 'src/app/modules/trpg/dice/dice.util';
 import { TablesUtil } from 'src/app/modules/trpg/tables.util';
 import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete-field.component';
 import { BlockService } from 'src/app/modules/blocks/block.service';
-import { Action } from 'src/app/modules/blocks/action';
 import { RandomTable } from 'src/app/modules/blocks/random-table';
 import { PromptService } from '../prompts/prompt.service';
-import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { Context } from 'src/app/modules/actions/context';
+import { NoteService } from 'src/app/modules/notes/note.service';
 
 @Component({
   selector: 'app-commands',

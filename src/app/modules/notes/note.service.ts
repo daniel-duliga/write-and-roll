@@ -1,7 +1,5 @@
-import { Note } from "../models/note";
-import { BlockService } from "../../blocks/block.service";
+import { Note } from "./note";
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'

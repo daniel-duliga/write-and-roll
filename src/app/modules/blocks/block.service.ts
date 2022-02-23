@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { RandomTable } from './random-table';
 import { Action } from './action';
-import { Note } from '../../modules/notes/models/note';
+import { Note } from '../notes/note';
 import { Block } from './block';
 import { BlockList } from './blockList';
 

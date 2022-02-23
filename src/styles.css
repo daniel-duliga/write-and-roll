@@ -28,7 +28,7 @@ img {
 
 /* CodeMirror */
 .CodeMirror {
-  height: 100%;
+  height: calc(100vh - 30px);
   
   z-index: 1;
   

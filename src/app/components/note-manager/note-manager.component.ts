@@ -1,16 +1,14 @@
 import { Component, HostListener, NgZone, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { NoteEditor } from 'src/app/modules/notes/models/note-editor';
-import { Note } from 'src/app/modules/notes/models/note';
-import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { EditorComponent } from '../editor/editor.component';
 import { PromptService } from '../prompts/prompt.service';
-import { v4 as uuidv4 } from 'uuid';
 import { NoteManagerService } from './note-manager.service';
 import { Subscription } from 'rxjs';
 import { CommandsComponent } from '../commands/commands.component';
 import { BlockService } from 'src/app/modules/blocks/block.service';
+import { NoteService } from 'src/app/modules/notes/note.service';
+import { EditorService } from 'src/app/modules/editor/editor.service';
+import { Note } from 'src/app/modules/notes/note';
 
 @Component({
   selector: 'app-note-manager',
@@ -21,13 +19,13 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  editors: NoteEditor[] = [];
   newOption = '+ Add New';
   subscriptions: Subscription[] = [];
   showAttributes = false;
   focusedEditor: EditorComponent | null = null;
 
   constructor(
+    public editorService: EditorService,
     private zone: NgZone,
     private dialog: MatDialog,
     private noteService: NoteService,
@@ -45,10 +43,10 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   // lifecycle events
   ngOnInit(): void {
-    const openedEditors = this.noteManagerService.getOpenedEditors();
-    for (const editor of openedEditors) {
-      this.openEditor(editor.notePath, editor.minimized);
+    for (const editor of this.editorService.getOpenEditors()) {
+      this.openEditor(editor, false);
     }
+    this.focusEditor(this.editorService.getFocusedEditor());
   }
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
@@ -69,103 +67,73 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
   }
   async openNote(notePath: string) {
-    let openEditorIndex = this.editors.findIndex(x => x.notePath === notePath);
-    if (openEditorIndex !== -1) {
-      const editor = this.editors.splice(openEditorIndex, 1)[0];
-      this.editors.push(editor);
+    if (this.editorService.openEditorExists(notePath)) {
+      this.focusEditor(notePath);
     } else {
       const allNotes = this.noteService.getAll().sort((a, b) => a.compareTo(b));
       if (!allNotes.find(x => x.path === notePath)) {
         this.noteService.create(new Note(notePath, ''));
       }
-      this.openEditor(notePath, false);
+      this.openEditor(notePath);
     }
   }
   closeFocusedNote() {
     if (!this.focusedEditor) { return; }
-
-    const notePath = this.focusedEditor.notePath;
-
-    let editor = this.editors.find(x => x.notePath === notePath);
-    if (!editor) { return; }
-
-    let editorComponent = this.editorComponents.find(x => x.notePath === notePath);
-    if (!editorComponent) { return; }
-
-    if (editorComponent.isDirty && !confirm("Are you sure? Changes you made will not be saved.")) {
-      return;
-    }
-
-    this.editors = this.editors.filter(x => x.id !== editor?.id);
-    this.noteManagerService.removeOpenEditor(editor);
-    if (this.editors.length > 0) {
-      this.refreshEditors();
-    }
+    this.closeEditor(this.focusedEditor.notePath);
   }
   async renameFocusedNote() {
-    if (!this.focusedEditor) { return; }
-
-    const editor = this.editors.find(x => x.notePath === this.focusedEditor?.notePath);
-    if (!editor) { return; }
-
+    if (!this.focusedEditor || !this.editorService.openEditorExists(this.focusedEditor.notePath)) {
+      return;
+    }
     const oldName = this.focusedEditor.notePath;
     const newName = await this.promptService.input(this.dialog, 'New Name', oldName);
     if (newName) {
       this.noteService.rename(oldName, newName);
-      
       this.focusedEditor.setName(newName);
       this.focusedEditor.notePath = newName;
-      
-      this.noteManagerService.removeOpenEditor(editor);
-      editor.notePath = newName;
-      this.noteManagerService.addOpenedEditor(editor);
+      this.editorService.updateOpenedEditor(oldName, newName);
     }
   }
   favoriteFocusedNote() {
     if (!this.focusedEditor) { return; }
-
     this.focusedEditor.note.favorite = !this.focusedEditor.note.favorite;
     this.focusedEditor.save();
   }
   deleteFocusedNote() {
-    if (!this.focusedEditor) { return; }
-
-    if (!confirm(`Are you sure you want to delete ${this.focusedEditor.notePath}?`)) {
+    if (!this.focusedEditor || !confirm(`Are you sure you want to delete ${this.focusedEditor.notePath}?`)) {
       return;
     }
-
     this.noteService.delete(this.focusedEditor.notePath);
     this.blockService.removeNoteBlocks(this.focusedEditor.notePath);
     this.closeFocusedNote();
   }
   openLink(address: string) {
-    this.zone.run(() => this.openEditor(address, false));
+    this.zone.run(() => this.openEditor(address));
   }
 
   // editor management
-  moveEditor(id: string, direction: "left" | "right") {
-    const editorIndex = this.editors.findIndex(x => x.id === id);
-    if (editorIndex !== -1) {
-      const editor = this.editors[editorIndex];
-      if (direction === "left" && editorIndex !== 0) {
-        this.editors.splice(editorIndex, 1);
-        this.editors.splice(editorIndex - 1, 0, editor);
-      } else if (direction === "right" && editorIndex !== this.editors.length - 1) {
-        this.editors.splice(editorIndex, 1);
-        this.editors.splice(editorIndex + 1, 0, editor);
-      }
-    }
+  private openEditor(notePath: string, focus = true) {
+    this.editorService.addOpenedEditor(notePath);
+    if (focus) { this.focusEditor(notePath); }
   }
-  toggleEditorMinimized(editor: NoteEditor, minimized: boolean) {
+  closeEditor(notePath: string) {
+    if (!this.editorService.openEditorExists(notePath)) { return; }
+
+    let editorComponent = this.editorComponents.find(x => x.notePath === notePath);
+    if (!editorComponent || (editorComponent.isDirty && !confirm("Are you sure? Changes you made will not be saved."))) {
+      return;
+    }
+
+    this.editorService.removeOpenedEditor(notePath);
     this.refreshEditors();
-    editor.minimized = minimized;
-    this.noteManagerService.updateOpenedEditor(editor);
+  }
+  focusEditor(notePath: string) {
+    this.editorService.setFocusedEditor(notePath);
+    this.refreshEditors();
   }
   setFocusedEditor(editor: EditorComponent) {
     this.focusedEditor = editor;
   }
-
-  // private methods
   private refreshEditors() {
     if (!this.editorComponents) {
       return;
@@ -174,11 +142,5 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     for (const editor of this.editorComponents) {
       editor.refresh();
     }
-  }
-  private openEditor(noteId: string, minimized: boolean) {
-    const newEditor = new NoteEditor(uuidv4(), noteId, minimized, false);
-    this.editors.push(newEditor);
-    this.noteManagerService.addOpenedEditor(newEditor);
-    this.refreshEditors();
   }
 }

@@ -2,12 +2,12 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import * as CodeMirror from 'codemirror';
-import { Note } from 'src/app/modules/notes/models/note';
-import { NoteService } from 'src/app/modules/notes/services/note.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { CodeMirrorManager } from 'src/app/modules/code-mirror/code-mirror-manager';
 import { BlockService } from 'src/app/modules/blocks/block.service';
 import { Context } from 'src/app/modules/actions/context';
+import { Note } from 'src/app/modules/notes/note';
+import { NoteService } from 'src/app/modules/notes/note.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',

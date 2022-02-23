@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { Note } from 'src/app/modules/notes/models/note';
-import { NoteService } from 'src/app/modules/notes/services/note.service';
+import { Note } from 'src/app/modules/notes/note';
+import { NoteService } from 'src/app/modules/notes/note.service';
 
 @Component({
   selector: 'app-import-export',

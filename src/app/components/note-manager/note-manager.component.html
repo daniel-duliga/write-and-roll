@@ -1,14 +1,29 @@
 <div class="container">
-    <app-editor
-        class="editor"
-        #editorComponent
-        *ngFor="let editor of editors; let i = index"
-        [notePath]="editor.notePath"
-        (onFocus)="setFocusedEditor(editorComponent)"
-    ></app-editor>
-    <app-commands #commands (onCommandResult)="this.handleCommandResult($event)"></app-commands>
-
-    <div class="no-content-message" *ngIf="editors.length === 0">
+    <div class="tabs">
+        <div
+            class="tab shadow-right"
+            *ngFor="let tab of editorService.getOpenEditors()"
+            [ngClass]="[ tab === editorService.getFocusedEditor() ? 'tab-focused' : '' ]"
+            (click)="focusEditor(tab)"
+        >
+            {{tab}}
+            <button class="tab-close-button" (click)="closeEditor(tab)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="editor-container" *ngIf="editorService.getOpenEditors().length > 0">
+        <app-editor
+            class="editor"
+            #editorComponent
+            *ngFor="let editor of editorService.getOpenEditors();"
+            [ngStyle]="{ 'display': editor === editorService.getFocusedEditor() ? 'initial' : 'none' }"
+            [notePath]="editor"
+            (onFocus)="setFocusedEditor(editorComponent)"
+        ></app-editor>
+    </div>
+    <div class="no-content-message" *ngIf="editorService.getOpenEditors().length === 0">
         <button style="color: gray;" mat-stroked-button (click)="showCommands()">Open Commands</button>
     </div>
+    <app-commands #commands (onCommandResult)="this.handleCommandResult($event)"></app-commands>
 </div>
