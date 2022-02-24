@@ -30,4 +30,8 @@
             (focusChange)="focusChanged($event)"
         ></ngx-codemirror>
     </div>
+    <!-- Save button -->
+    <button *ngIf="isDirty" class="save-button" mat-fab (click)="save()" matTooltip="Save" matTooltipPosition="left">
+        <mat-icon>save</mat-icon>
+    </button>
 </div>

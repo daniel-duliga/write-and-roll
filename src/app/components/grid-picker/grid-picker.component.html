@@ -10,7 +10,7 @@
     </mat-selection-list>
     <button
         mat-stroked-button
-        *ngIf="filteredOptions.length === 0"
+        *ngIf="filteredOptions.length === 0 && filter"
         (click)="onSelect.emit(filter)"
     >Create</button>
 </div>

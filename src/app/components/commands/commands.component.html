@@ -1,3 +1,10 @@
-<button class="commands-button" mat-fab (click)="onAutoShow.emit()">
-    <mat-icon>rocket_launch</mat-icon>
-  </button>
+<button 
+  class="commands-button"
+  mat-fab
+  color="primary"
+  (click)="onAutoShow.emit()"
+  matTooltip="Commands"
+  matTooltipPosition="left"
+>
+  <mat-icon>rocket_launch</mat-icon>
+</button>
