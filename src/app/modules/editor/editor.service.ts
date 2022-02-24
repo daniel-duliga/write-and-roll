@@ -31,17 +31,21 @@ export class EditorService {
   removeOpenedEditor(name: string) {
     const index = this.openEditors.indexOf(name);
     if (index === -1) { return; }
-    
+
     this.openEditors = this.openEditors.filter(x => x !== name);
     this.persistOpenEditors();
 
     // set the next editor as the focused one
-    if(name === this.getFocusedEditor() && this.openEditors.length > 0) {
-      if(index === this.openEditors.length) {
-        this.setFocusedEditor(this.openEditors[index - 1]);
-      } else {
-        this.setFocusedEditor(this.openEditors[index]);
+    if (this.openEditors.length > 0) {
+      if (name === this.getFocusedEditor()) {
+        if (index === this.openEditors.length) {
+          this.setFocusedEditor(this.openEditors[index - 1]);
+        } else {
+          this.setFocusedEditor(this.openEditors[index]);
+        }
       }
+    } else {
+      this.setFocusedEditor('');
     }
   }
   updateOpenedEditor(oldName: string, newName: string) {

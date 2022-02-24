@@ -1,4 +1,7 @@
 <div class="container">
+    <button mat-icon-button [routerLink]="'..'">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
     <div class="separator"></div>
     <button class="button" mat-stroked-button (click)="this.export()">Export</button>
     <input type="file" id="file" (change)="import($event)" #importFileUpload style="display: none;">

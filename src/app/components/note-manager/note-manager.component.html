@@ -1,47 +1,42 @@
 <div class="container">
-    <span *ngIf="editorService.getOpenEditors().length > 0">
-        <div class="tabs">
-            <div
-                class="tab shadow-right-faint"
-                *ngFor="let tab of editorService.getOpenEditors()"
-                [ngClass]="[ tab === editorService.getFocusedEditor() ? 'tab-focused' : '' ]"
-                (click)="focusEditor(tab)"
-                matRipple
-            >
-                {{tab}}
-                <button class="tab-button tab-close-button" (click)="closeEditor(tab)">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
-            <button class="tab-button" (click)="this.editorService.setFocusedEditor('')">
-                <mat-icon>add</mat-icon>
+    <!-- Tabs -->
+    <div *ngIf="this.editorService.getOpenEditors().length > 0" class="tabs">
+        <div
+            class="tab shadow-right-faint"
+            *ngFor="let tab of editorService.getOpenEditors()"
+            [ngClass]="[ tab === editorService.getFocusedEditor() ? 'tab-focused' : '' ]"
+            (click)="focusEditor(tab)"
+            matRipple
+        >
+            {{tab}}
+            <button class="tab-button tab-close-button" (click)="closeEditor(tab)">
+                <mat-icon>close</mat-icon>
             </button>
         </div>
-        <div class="editor-container" *ngIf="this.editorService.getFocusedEditor()">
-            <app-editor
-                class="editor"
-                #editorComponent
-                *ngFor="let editor of editorService.getOpenEditors();"
-                [ngStyle]="{ 'display': editor === editorService.getFocusedEditor() ? 'initial' : 'none' }"
-                [notePath]="editor"
-                (onFocus)="setFocusedEditor(editorComponent)"
-            ></app-editor>
-            <app-commands
-                #commands
-                (onCommandResult)="this.handleCommandResult($event)"
-                (onAutoShow)="this.showCommands()"
-            ></app-commands>
-        </div>
-        <app-grid-picker
-            *ngIf="!this.editorService.getFocusedEditor()"
-            [options]="this.noteStorageService.getAllNames()"
-            (onSelect)="this.openNote($event)"
-        ></app-grid-picker>
-    </span>
-    <span *ngIf="editorService.getOpenEditors().length === 0">
-        <app-grid-picker
-            [options]="this.noteStorageService.getAllNames()"
-            (onSelect)="this.openNote($event)"
-        ></app-grid-picker>
-    </span>
+        <button class="tab-button" (click)="this.editorService.setFocusedEditor('')">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+    <!-- Grid Picker -->
+    <app-grid-picker
+        *ngIf="!this.editorService.getFocusedEditor()"
+        [options]="this.noteStorageService.getAllNames()"
+        (onSelect)="this.openNote($event)"
+    ></app-grid-picker>
+    <!-- Editor & Commands -->
+    <div class="editor-container" *ngIf="this.editorService.getFocusedEditor()">
+        <app-editor
+            class="editor"
+            #editorComponent
+            *ngFor="let editor of editorService.getOpenEditors();"
+            [ngStyle]="{ 'display': editor === editorService.getFocusedEditor() ? 'initial' : 'none' }"
+            [notePath]="editor"
+            (onFocus)="setFocusedEditor(editorComponent)"
+        ></app-editor>
+        <app-commands
+            #commands
+            (onCommandResult)="this.handleCommandResult($event)"
+            (onAutoShow)="this.showCommands()"
+        ></app-commands>
+    </div>
 </div>
