@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BlockService } from './modules/blocks/block.service';
-import { NoteService } from './modules/notes/note.service';
+import { NoteStorageService } from './modules/storage/notes/note-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -12,11 +12,11 @@ export class AppComponent implements OnInit {
 
   constructor(
     private blockService: BlockService,
-    private noteService: NoteService,
+    private noteStorageService: NoteStorageService,
   ) { }
 
   ngOnInit(): void {
-    const notes = this.noteService.getAll();
+    const notes = this.noteStorageService.getAll();
     this.blockService.initialize(notes);
   }
 }

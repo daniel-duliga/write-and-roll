@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as FileSaver from 'file-saver';
-import { Note } from 'src/app/modules/notes/note';
-import { NoteService } from 'src/app/modules/notes/note.service';
+import { Note } from 'src/app/modules/storage/notes/note';
+import { NoteStorageService } from 'src/app/modules/storage/notes/note-storage.service';
 
 @Component({
   selector: 'app-import-export',
@@ -12,13 +12,13 @@ export class ImportExportComponent implements OnInit {
   importLogs: string[] = [];
 
   constructor(
-    private noteService: NoteService
+    private noteStorageService: NoteStorageService
   ) { }
 
   ngOnInit(): void { }
 
   export() {
-    const notes = this.noteService.getAll();
+    const notes = this.noteStorageService.getAll();
     const blob = new Blob([JSON.stringify(notes)], { type: "application/json" });
     FileSaver.saveAs(blob, "data.json");
   }
@@ -27,18 +27,18 @@ export class ImportExportComponent implements OnInit {
     if (event.target?.files) {
       const importFile = event.target.files[0];
       const fileReader = new FileReader();
-      fileReader.onload = () => processImportFile(fileReader, this.noteService);
+      fileReader.onload = () => processImportFile(fileReader, this.noteStorageService);
       fileReader.readAsText(importFile);
 
-      const processImportFile = (fileReader: FileReader, noteService: NoteService) => {
+      const processImportFile = (fileReader: FileReader, noteStorageService: NoteStorageService) => {
         if (fileReader.result && typeof fileReader.result === "string") {
           const notes: Note[] = JSON.parse(fileReader.result);
           for (const note of notes) {
-            const existingNote = noteService.get(note.path);
+            const existingNote = noteStorageService.get(note.name);
             if(existingNote) {
-              this.importLogs.push(`Note '${note.path}' already exists and has not been imported.`);
+              this.importLogs.push(`Note '${note.name}' already exists and has not been imported.`);
             } else {
-              noteService.create(note);
+              noteStorageService.create(note);
             }
           }
           this.importLogs.push('Import ended.');

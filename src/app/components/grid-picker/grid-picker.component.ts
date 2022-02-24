@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class GridPickerComponent implements OnInit {
   @Input() options: string[] = [];
-  @Output() optionSelected: EventEmitter<string> = new EventEmitter();
+  @Output() onSelect: EventEmitter<string> = new EventEmitter();
 
   filteredOptions: string[] = [];
   filter: string = '';
@@ -15,10 +15,12 @@ export class GridPickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.filteredOptions = this.options;
+    this.filteredOptions = this.options.sort((a, b) => a.localeCompare(b));
   }
 
   filterOptions() {
-    this.filteredOptions = this.options.filter(x => x.toLowerCase().startsWith(this.filter.toLowerCase()));
+    this.filteredOptions = this.options
+      .filter(x => x.toLowerCase().startsWith(this.filter.toLowerCase()))
+      .sort((a, b) => a.localeCompare(b));
   }
 }

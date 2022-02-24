@@ -1,6 +1,8 @@
-export class Note {
+import { IEntity } from "../entity";
+
+export class Note implements IEntity {
     constructor(
-        public path: string = '',
+        public name: string = '',
         public content: string = '',
         public favorite: boolean = false,
     ) { }

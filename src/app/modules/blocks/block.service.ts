@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { RandomTable } from './random-table';
 import { Action } from './action';
-import { Note } from '../notes/note';
+import { Note } from '../storage/notes/note';
 import { Block } from './block';
 import { BlockList } from './blockList';
 
@@ -22,12 +22,12 @@ export class BlockService {
 
   initialize(notes: Note[]) {
     for (const note of notes) {
-      this.removeNoteBlocks(note.path);
+      this.removeNoteBlocks(note.name);
       this.processNoteContent(note);
     }
   }
   processNoteContent(note: Note) {
-    this.removeNoteBlocks(note.path);
+    this.removeNoteBlocks(note.name);
     const lines = note.content.split('\n');
     for (let index = 0; index < lines.length; index++) {
       const line = lines[index];
@@ -62,11 +62,11 @@ export class BlockService {
       
       switch (type) {
         case "action": {
-          this.actions.addBlock(new Block(note.path, new Action(name, content)));
+          this.actions.addBlock(new Block(note.name, new Action(name, content)));
           break;
         }
         case "table": {
-          this.randomTables.addBlock(new Block(note.path, new RandomTable(name, this.papa.parse(content).data)));
+          this.randomTables.addBlock(new Block(note.name, new RandomTable(name, this.papa.parse(content).data)));
           break;
         }
         default: {

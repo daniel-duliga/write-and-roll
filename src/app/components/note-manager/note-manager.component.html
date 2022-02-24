@@ -34,11 +34,14 @@
         </div>
         <app-grid-picker
             *ngIf="!this.editorService.getFocusedEditor()"
-            [options]="this.allNotePaths"
-            (optionSelected)="this.openNote($event)">
-        </app-grid-picker>
+            [options]="this.noteStorageService.getAllNames()"
+            (onSelect)="this.openNote($event)"
+        ></app-grid-picker>
     </span>
     <span *ngIf="editorService.getOpenEditors().length === 0">
-        <app-grid-picker [options]="this.allNotePaths" (optionSelected)="this.openNote($event)"></app-grid-picker>
+        <app-grid-picker
+            [options]="this.noteStorageService.getAllNames()"
+            (onSelect)="this.openNote($event)"
+        ></app-grid-picker>
     </span>
 </div>

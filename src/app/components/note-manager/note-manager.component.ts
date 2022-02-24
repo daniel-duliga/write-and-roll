@@ -6,9 +6,9 @@ import { NoteManagerService } from './note-manager.service';
 import { Subscription } from 'rxjs';
 import { CommandsComponent } from '../commands/commands.component';
 import { BlockService } from 'src/app/modules/blocks/block.service';
-import { NoteService } from 'src/app/modules/notes/note.service';
 import { EditorService } from 'src/app/modules/editor/editor.service';
-import { Note } from 'src/app/modules/notes/note';
+import { Note } from 'src/app/modules/storage/notes/note';
+import { NoteStorageService } from 'src/app/modules/storage/notes/note-storage.service';
 
 @Component({
   selector: 'app-note-manager',
@@ -21,11 +21,10 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   subscriptions: Subscription[] = [];
   focusedEditor: EditorComponent | null = null;
-  allNotePaths: string[] = [];
 
   constructor(
     public editorService: EditorService,
-    public noteService: NoteService,
+    public noteStorageService: NoteStorageService,
     private zone: NgZone,
     private dialog: MatDialog,
     private promptService: PromptService,
@@ -42,8 +41,6 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   // lifecycle events
   ngOnInit(): void {
-    // Get all notes
-    this.allNotePaths = this.noteService.getAll().map(x => x.path);
     // Open previously opened editors
     for (const editor of this.editorService.getOpenEditors()) {
       this.openEditor(editor, false);
@@ -73,9 +70,9 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     if (this.editorService.openEditorExists(notePath)) {
       this.focusEditor(notePath);
     } else {
-      const allNotes = this.noteService.getAll().sort((a, b) => a.compareTo(b));
-      if (!allNotes.find(x => x.path === notePath)) {
-        this.noteService.create(new Note(notePath, ''));
+      const allNotes = this.noteStorageService.getAll().sort((a, b) => a.name.localeCompare(b.name));
+      if (!allNotes.find(x => x.name === notePath)) {
+        this.noteStorageService.create(new Note(notePath, ''));
       }
       this.openEditor(notePath);
     }
@@ -91,7 +88,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     const oldName = this.focusedEditor.notePath;
     const newName = await this.promptService.input(this.dialog, 'New Name', oldName);
     if (newName) {
-      this.noteService.rename(oldName, newName);
+      this.noteStorageService.rename(oldName, newName);
       this.focusedEditor.setName(newName);
       this.focusedEditor.notePath = newName;
       this.editorService.updateOpenedEditor(oldName, newName);
@@ -106,7 +103,7 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     if (!this.focusedEditor || !confirm(`Are you sure you want to delete ${this.focusedEditor.notePath}?`)) {
       return;
     }
-    this.noteService.delete(this.focusedEditor.notePath);
+    this.noteStorageService.delete(this.focusedEditor.notePath);
     this.blockService.removeNoteBlocks(this.focusedEditor.notePath);
     this.closeFocusedNote();
   }

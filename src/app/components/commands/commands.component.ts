@@ -9,7 +9,6 @@ import { RandomTable } from 'src/app/modules/blocks/random-table';
 import { PromptService } from '../prompts/prompt.service';
 import { NoteManagerService } from '../note-manager/note-manager.service';
 import { Context } from 'src/app/modules/actions/context';
-import { NoteService } from 'src/app/modules/notes/note.service';
 
 @Component({
   selector: 'app-commands',
@@ -37,7 +36,6 @@ export class CommandsComponent implements OnInit {
     private actionService: ActionsService,
     private blockService: BlockService,
     private promptService: PromptService,
-    private noteService: NoteService,
     private noteManagerService: NoteManagerService,
   ) { }
 

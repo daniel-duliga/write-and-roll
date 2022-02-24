@@ -6,8 +6,8 @@ import { NoteManagerService } from '../note-manager/note-manager.service';
 import { CodeMirrorManager } from 'src/app/modules/code-mirror/code-mirror-manager';
 import { BlockService } from 'src/app/modules/blocks/block.service';
 import { Context } from 'src/app/modules/actions/context';
-import { Note } from 'src/app/modules/notes/note';
-import { NoteService } from 'src/app/modules/notes/note.service';
+import { Note } from 'src/app/modules/storage/notes/note';
+import { NoteStorageService } from 'src/app/modules/storage/notes/note-storage.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -24,7 +24,7 @@ export class EditorComponent implements OnInit {
     return this.note.content !== this.initialContent;
   }
   public get formattedName(): string {
-    const nameSegments = this.note.path.split('/');
+    const nameSegments = this.note.name.split('/');
     return nameSegments[nameSegments.length - 1];
   }
 
@@ -40,7 +40,7 @@ export class EditorComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private renderer: Renderer2,
-    private noteService: NoteService,
+    private noteStorageService: NoteStorageService,
     private noteManagerService: NoteManagerService,
     private blockService: BlockService,
   ) {
@@ -49,15 +49,15 @@ export class EditorComponent implements OnInit {
 
   // lifecycle events
   ngOnInit(): void {
-    let note = this.noteService.get(this.notePath);
+    let note = this.noteStorageService.get(this.notePath);
     if (!note) {
       note = new Note(this.notePath, '');
-      this.noteService.create(note);
+      this.noteStorageService.create(note);
     }
 
     this.note = note;
     this.initialContent = note.content;
-    this.note.path = this.notePath;
+    this.note.name = this.notePath;
     this.context = new Context(this.note.content);
   }
   ngAfterViewInit() {
@@ -91,11 +91,11 @@ export class EditorComponent implements OnInit {
     if ($event) { $event.preventDefault(); } // If triggered by key combination, prevent default browser action
 
     // Save
-    const existingItem = this.noteService.get(this.formattedName);
+    const existingItem = this.noteStorageService.get(this.formattedName);
     if (!existingItem) {
-      this.noteService.create(this.note);
+      this.noteStorageService.create(this.note);
     } else {
-      this.noteService.update(this.note);
+      this.noteStorageService.update(this.note);
       this.blockService.processNoteContent(this.note);
       this.context = new Context(this.note.content);
     }
@@ -123,7 +123,7 @@ export class EditorComponent implements OnInit {
     }, 250);
   }
   public setName(name: string) {
-    this.note.path = name;
+    this.note.name = name;
   }
   public focus() {
     this.cmManager.cm.focus();
@@ -159,7 +159,7 @@ export class EditorComponent implements OnInit {
     }
   }
   private processLineContent(line: string, lineIndex: number, changes: CodeMirror.EditorChange[] | null) {
-    const allLinks = this.noteService.getAll().map(x => x.path);
+    const allLinks = this.noteStorageService.getAll().map(x => x.name);
     const allAttributes = this.context.attributes.map(x => x.key);
     this.cmManager.processLine(line, lineIndex, changes, this.renderer, allLinks, allAttributes);
   }
