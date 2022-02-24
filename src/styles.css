@@ -15,12 +15,12 @@ html,
 body {
   height: 100%;
   overflow-y: hidden;
-  font-family: 'Roboto'
+  font-family: 'Roboto';
+  background-color: #f7f6f2;
 }
 body {
   margin: 0;
   font-family: "Roboto", sans-serif;
-  background-color: #F7F6F2;
 }
 img {
   min-width: unset !important;
@@ -28,7 +28,7 @@ img {
 
 /* CodeMirror */
 .CodeMirror {
-  height: calc(100vh - 30px);
+  height: calc(100vh - 80px);
   
   z-index: 1;
   
@@ -75,12 +75,6 @@ img {
 }
 
 /* Angular Material */
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: lightgray;
-}
-.mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: 0.2em 0 0.5em 0;
-}
 .mat-option {
   height: 33px !important;
   font-size: 14px !important;
@@ -88,32 +82,30 @@ img {
 .active-link {
   background-color: rgba(0, 0, 0, 0.15) !important;
 }
-.mat-form-field-wrapper {
-  padding-bottom: 0;
-}
-.form-field .mat-form-field-wrapper {
-  margin: 0 !important;
-  padding: 0 !important;
-  background-color: white;
-}
-.mat-form-field-outline-start, .mat-form-field-outline-end {
-  border-radius: 0 !important;
-}
 .mat-autocomplete-panel-above .mat-autocomplete-panel {
   border: 1px solid lightgray;
   border-radius: 0 !important;
   transform: translateY(5px);
 }
-.aside-button .mat-icon {
-  margin-right: 0 !important;
-}
 .cdk-global-scrollblock {
   overflow-y: initial;
+}
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  box-shadow: none;
+}
+.mat-form-field-wrapper {
+  padding-bottom: initial;
+}
+.mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: .5em 0;
 }
 
 /* Custom */
 .shadow-right {
   box-shadow: 3px 0px 3px rgb(0 0 0 / 10%);
+}
+.shadow-right-faint {
+  box-shadow: 3px 0px 3px rgb(0 0 0 / 5%);
 }
 .shadow-down {
   box-shadow: 0px 3px 3px rgb(0 0 0 / 10%);

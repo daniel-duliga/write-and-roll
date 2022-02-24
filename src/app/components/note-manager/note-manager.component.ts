@@ -19,16 +19,15 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   @ViewChildren('editorComponent') editorComponents!: QueryList<EditorComponent>;
   @ViewChild('commands') commands!: CommandsComponent;
 
-  newOption = '+ Add New';
   subscriptions: Subscription[] = [];
-  showAttributes = false;
   focusedEditor: EditorComponent | null = null;
+  allNotePaths: string[] = [];
 
   constructor(
     public editorService: EditorService,
+    public noteService: NoteService,
     private zone: NgZone,
     private dialog: MatDialog,
-    private noteService: NoteService,
     private promptService: PromptService,
     private noteManagerService: NoteManagerService,
     private blockService: BlockService,
@@ -43,6 +42,9 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
 
   // lifecycle events
   ngOnInit(): void {
+    // Get all notes
+    this.allNotePaths = this.noteService.getAll().map(x => x.path);
+    // Open previously opened editors
     for (const editor of this.editorService.getOpenEditors()) {
       this.openEditor(editor, false);
     }

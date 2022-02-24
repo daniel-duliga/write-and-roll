@@ -1,25 +1,21 @@
 .container {
   height: 100%;
   width: 100%;
-  background-color: #f7f6f2;
 }
-
 .content {
   height: 100%;
   display: flex;
 }
-
 .sidebar {
-  z-index: 3;
-  top: 0;
-  height: 100%;
+  width: 100px;
+  border-right: 1px solid lightgray;
+  background-color: white;
 }
-
 .pages {
   height: 100%;
   width: 100%;
 }
-
-.icon {
-  transform: scale(0.75);
+.header {
+  height: 40px;
+  border-bottom: 1px solid lightgray;
 }

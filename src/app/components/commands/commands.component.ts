@@ -23,7 +23,6 @@ export class CommandsComponent implements OnInit {
   @ViewChild('autoComplete') autoComplete!: AutoCompleteFieldComponent;
   
   commands = {
-    noteOpen: 'note/open',
     noteClose: 'note/close',
     noteRename: 'note/rename',
     noteFavorite: 'note/favorite',
@@ -50,8 +49,6 @@ export class CommandsComponent implements OnInit {
       this.dialog,
       "Command",
       [
-        this.commands.noteOpen,
-        this.commands.noteClose,
         this.commands.noteRename,
         this.commands.noteFavorite,
         this.commands.noteDelete,
@@ -66,14 +63,6 @@ export class CommandsComponent implements OnInit {
   private async executeCommand(option: string, context: Context | null, dialog: MatDialog): Promise<void> {
     switch (option) {
       // Note
-      case this.commands.noteOpen: {
-        await this.executeOpenNoteCommand();
-        break;
-      }
-      case this.commands.noteClose: {
-        this.noteManagerService.requestClose.next();
-        break;
-      }
       case this.commands.noteRename: {
         this.noteManagerService.requestRename.next();
         break;
@@ -104,17 +93,6 @@ export class CommandsComponent implements OnInit {
         this.onCommandResult.emit('');
         break;
       }
-    }
-  }
-  private async executeOpenNoteCommand(): Promise<void> {
-    const allNotes = this.noteService.getAll().sort((a, b) => a.compareTo(b));
-    const allNoteNames = allNotes.map(x => x.favorite ? `${x.path} *` : x.path);
-    let noteName = await this.promptService.autocomplete(this.dialog, "Note", allNoteNames);
-    if (noteName) {
-      if (noteName.endsWith(' *')) {
-        noteName = noteName.slice(0, noteName.length - 2);
-      }
-      this.noteManagerService.requestOpen.next(noteName);
     }
   }
   private async executeRollActionCommand(context: Context | null, dialog: MatDialog): Promise<void> {

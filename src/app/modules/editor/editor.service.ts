@@ -57,9 +57,7 @@ export class EditorService {
 
   // focused editor
   setFocusedEditor(name: string) {
-    if (name) {
-      localStorage.setItem(`${this.collectionName}/focusedEditor`, name);
-    }
+    localStorage.setItem(`${this.collectionName}/focusedEditor`, name);
   }
   getFocusedEditor(): string {
     return localStorage.getItem(`${this.collectionName}/focusedEditor`) ?? '';

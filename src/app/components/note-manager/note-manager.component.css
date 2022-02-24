@@ -1,6 +1,5 @@
 .container {
   display: flex;
-  height: 100%;
   flex-direction: column;
 }
 .aside-buttons {
@@ -22,7 +21,6 @@
 }
 .editor {
   flex: 1;
-  border-left: 1px solid lightgray;
 }
 .editor-container {
   display: flex;
@@ -33,6 +31,7 @@
   width: 100%;
   display: flex;
   align-items: center;
+  border-bottom: 1px solid lightgray;
 }
 .tab {
   padding-left: 10px;
@@ -46,19 +45,22 @@
 .tab:hover {
   background-color: white;
 }
-.tab-close-button {
-  margin-left: 10px;
+.tab-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  transform: scale(0.75);
   border: initial;
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0);
 }
-.tab-close-button:hover {
+.tab-button:hover {
   background-color: rgb(239, 239, 239);
+}
+.tab-close-button {
+  margin-left: 10px;
+  transform: scale(0.75);
 }
 .tab-focused {
   background-color: white;
+  border-bottom: none;
 }

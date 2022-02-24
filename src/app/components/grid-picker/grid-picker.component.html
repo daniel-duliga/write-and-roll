@@ -1,0 +1,10 @@
+<div class="container">
+    <mat-form-field appearance="outline" class="search">
+        <input matInput placeholder="Filter" [(ngModel)]="filter" (ngModelChange)="filterOptions()">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-selection-list role="list" [multiple]="false">
+        <mat-list-option *ngFor="let option of filteredOptions" (click)="optionSelected.emit(option)">{{ option }}
+        </mat-list-option>
+    </mat-selection-list>
+</div>

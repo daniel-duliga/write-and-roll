@@ -1,7 +1,36 @@
 <div class="container">
     <div class="content">
-        <div class="pages">
-            <router-outlet></router-outlet>
-        </div>
+        <mat-tab-group mat-stretch-tabs class="pages">
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">description</mat-icon>
+                    &nbsp;
+                    Notes
+                </ng-template>
+                <app-note-manager></app-note-manager>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">table_rows</mat-icon>
+                    &nbsp;
+                    Tables
+                </ng-template>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">electric_bolt</mat-icon>
+                    &nbsp;
+                    Actions
+                </ng-template>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">sync</mat-icon>
+                    &nbsp;
+                    Import/Export
+                </ng-template>
+                <app-import-export></app-import-export>
+            </mat-tab>
+        </mat-tab-group>
     </div>
 </div>

@@ -18,6 +18,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatRippleModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -34,6 +36,7 @@ import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { HttpClientModule } from '@angular/common/http';
+import { GridPickerComponent } from './components/grid-picker/grid-picker.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,7 @@ import { HttpClientModule } from '@angular/common/http';
     ImportExportComponent,
     EditorComponent,
     CommandsComponent,
+    GridPickerComponent,
   ],
   imports: [
     // Core
@@ -74,6 +78,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatSnackBarModule,
     MatCheckboxModule,
     MatMenuModule,
+    MatRippleModule,
+    MatTabsModule,
 
     // Third-party
     CodemirrorModule,
