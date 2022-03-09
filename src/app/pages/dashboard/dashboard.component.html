@@ -1,0 +1,11 @@
+<div class="container">
+    <app-list
+        [title]="'🌍 Campaigns'"
+        [options]="campaignNames ?? []"
+        (onCreate)="createCampaign($event)"
+    ></app-list>
+    <app-list
+        [title]="'🎲 Systems'"
+        [options]="[]"
+    ></app-list>
+</div>

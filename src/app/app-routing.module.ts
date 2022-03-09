@@ -2,16 +2,17 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { NoteManagerComponent } from './components/note-manager/note-manager.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'notes',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
   },
   {
-    path: 'notes',
-    component: NoteManagerComponent,
+    path: 'dashboard',
+    component: DashboardComponent,
   },
   {
     path: 'import-export',

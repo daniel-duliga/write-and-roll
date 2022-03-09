@@ -63,3 +63,10 @@ import 'zone.js';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+// Required by PouchDB
+// Source: https://rxdb.info/install.html#:~:text=When%20you%20use%20RxDB%20with,own%2C%20like%20we%20do%20here.
+(window as any).global = window;
+(window as any).process = {
+    env: { DEBUG: undefined },
+};

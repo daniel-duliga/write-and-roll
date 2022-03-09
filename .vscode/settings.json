@@ -5,6 +5,7 @@
         "codemirror",
         "continuelist",
         "Easymde",
+        "endkey",
         "foldcode",
         "foldgutter",
         "foldmarker",
@@ -13,6 +14,7 @@
         "papaparse",
         "preconnect",
         "sidenav",
+        "startkey",
         "trpg",
         "unparse",
         "uuidv"

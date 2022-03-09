@@ -18,11 +18,12 @@
         </button>
     </div>
     <!-- Grid Picker -->
-    <app-grid-picker
+    <app-list
         *ngIf="!this.editorService.getFocusedEditor()"
         [options]="this.noteStorageService.getAllNames()"
         (onSelect)="this.openNote($event)"
-    ></app-grid-picker>
+        (onCreate)="this.openNote($event)"
+    ></app-list>
     <!-- Editor & Commands -->
     <div class="editor-container" *ngIf="this.editorService.getFocusedEditor()">
         <app-editor

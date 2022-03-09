@@ -36,7 +36,8 @@ import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { HttpClientModule } from '@angular/common/http';
-import { GridPickerComponent } from './components/grid-picker/grid-picker.component';
+import { ListComponent } from './components/list/list.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { GridPickerComponent } from './components/grid-picker/grid-picker.compon
     ImportExportComponent,
     EditorComponent,
     CommandsComponent,
-    GridPickerComponent,
+    ListComponent,
+    DashboardComponent,
   ],
   imports: [
     // Core

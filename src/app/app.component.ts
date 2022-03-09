@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Blocks
     const notes = this.noteStorageService.getAll();
     this.blockService.initialize(notes);
   }

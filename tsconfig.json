@@ -21,7 +21,8 @@
       "es2018",
       "es2019.string",
       "es2020.string"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true,
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
