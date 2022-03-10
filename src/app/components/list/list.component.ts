@@ -6,20 +6,22 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnInit, Outp
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  @Input() options: string[] = [];
   @Input() title: string = '';
-  @Output() onSelect: EventEmitter<string> = new EventEmitter();
+  @Input() options: any[] = [];
+  @Input() displayProperty: string = '';
+  @Input() valueProperty: string = '';
+  
+  @Output() onSelect: EventEmitter<any> = new EventEmitter();
   @Output() onCreate: EventEmitter<string> = new EventEmitter();
 
-  filteredOptions: string[] = [];
+  filteredOptions: any[] = [];
   filter: string = '';
 
-  constructor(
-    private cdRef: ChangeDetectorRef
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.filteredOptions = this.options.sort((a, b) => a.localeCompare(b));
+    this.filteredOptions = this.options.sort(
+      (a, b) => a[this.displayProperty].localeCompare(b[this.displayProperty]));
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -28,13 +30,11 @@ export class ListComponent implements OnInit {
 
   filterOptions() {
     this.filteredOptions = this.options
-      .filter(x => x.toLowerCase().startsWith(this.filter.toLowerCase()))
-      .sort((a, b) => a.localeCompare(b));
+      .filter(x => x[this.displayProperty].toLowerCase().startsWith(this.filter.toLowerCase()))
+      .sort((a, b) => a[this.displayProperty].localeCompare(b[this.displayProperty]));
   }
 
-  addItem() {
+  add() {
     this.onCreate.emit(this.filter);
-    this.options.push(this.filter);
-    this.filterOptions();
   }
 }

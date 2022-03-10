@@ -1,11 +1,17 @@
 <div class="container">
     <app-list
         [title]="'🌍 Campaigns'"
-        [options]="campaignNames ?? []"
+        [options]="campaigns"
+        [displayProperty]="'name'"
+        [valueProperty]="'id'"
         (onCreate)="createCampaign($event)"
     ></app-list>
     <app-list
         [title]="'🎲 Systems'"
-        [options]="[]"
+        [options]="systems"
+        [displayProperty]="'name'"
+        [valueProperty]="'_id'"
+        (onCreate)="createSystem($event)"
+        (onSelect)="this.router.navigate(['systems', encodeURI($event)])"
     ></app-list>
 </div>

@@ -1,0 +1,21 @@
+<div class="container">
+    <app-list
+        [title]="'🗒 Notes'"
+        [options]="this.notes"
+        [displayProperty]="'name'"
+        [valueProperty]="'_id'"
+        (onCreate)="createNote($event)"
+    ></app-list>
+    <app-list
+        [title]="'🎱 Random Tables'"
+        [options]="[]"
+        [displayProperty]="'name'"
+        [valueProperty]="'_id'"
+    ></app-list>
+    <app-list
+        [title]="'🗡 Actions'"
+        [options]="[]"
+        [displayProperty]="'name'"
+        [valueProperty]="'_id'"
+    ></app-list>
+</div>

@@ -38,6 +38,8 @@ import { InputComponent } from './components/prompts/input/input.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ListComponent } from './components/list/list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { SystemComponent } from './pages/system/system.component';
+import { NoteComponent } from './pages/note/note.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     CommandsComponent,
     ListComponent,
     DashboardComponent,
+    SystemComponent,
+    NoteComponent,
   ],
   imports: [
     // Core

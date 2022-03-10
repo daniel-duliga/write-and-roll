@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ImportExportComponent } from './components/import-export/import-export.component';
-import { NoteManagerComponent } from './components/note-manager/note-manager.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { SystemComponent } from './pages/system/system.component';
 
 const routes: Routes = [
   {
@@ -15,9 +15,17 @@ const routes: Routes = [
     component: DashboardComponent,
   },
   {
+    path: 'systems/:id',
+    component: SystemComponent,
+  },
+  {
+    path: 'notes/:systemId/:noteId',
+    component: SystemComponent,
+  },
+  {
     path: 'import-export',
-    component: ImportExportComponent
-  }
+    component: ImportExportComponent,
+  },
 ];
 
 @NgModule({

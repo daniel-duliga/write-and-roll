@@ -1,14 +1,12 @@
-import { ModelInterface } from "./models/model-interface";
-import PouchDB from 'pouchdb';
+import { PouchDbModelInterface } from '../../models/pouchdb-model-interface';
 
-export class Repository<T extends ModelInterface> {
+export class Repository<T extends PouchDbModelInterface> {
     constructor(
-        private db: PouchDB.Database,
-        private prefix: string
+        private db: PouchDB.Database
     ) { }
 
-    async create(entity: T): Promise<T> {
-        entity._id = `${this.prefix}/${new Date().toISOString()}`;
+    async create(entity: T, prefix: string): Promise<T> {
+        entity._id = `${prefix}/${new Date().toISOString()}`;
         const response = await this.db.put(entity);
         entity._rev = response.rev;
         return entity;
@@ -16,11 +14,11 @@ export class Repository<T extends ModelInterface> {
     async get(id: string): Promise<T> {
         return this.db.get(id);
     }
-    async getAll(): Promise<T[]> {
+    async getAll(prefix: string): Promise<T[]> {
         const foo = await this.db.allDocs({
             include_docs: true,
-            startkey: this.prefix,
-            endkey: `${this.prefix}\ufff0`
+            startkey: prefix,
+            endkey: `${prefix}\ufff0`
         });
         if (foo.rows.length > 0) {
             return foo.rows.map(x => (x.doc as T));

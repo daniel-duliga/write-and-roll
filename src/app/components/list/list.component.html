@@ -5,13 +5,13 @@
         <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
     <mat-selection-list role="list" [multiple]="false">
-        <mat-list-option *ngFor="let option of filteredOptions" (click)="onSelect.emit(option)">
-            {{ option }}
+        <mat-list-option *ngFor="let option of filteredOptions" (click)="onSelect.emit(option[valueProperty])">
+            {{ option[displayProperty] }}
         </mat-list-option>
     </mat-selection-list>
     <button
         mat-stroked-button
         *ngIf="filteredOptions.length === 0 && filter"
-        (click)="addItem()"
+        (click)="add()"
     >Add</button>
 </div>
