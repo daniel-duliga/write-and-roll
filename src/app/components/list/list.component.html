@@ -1,6 +1,6 @@
 <div class="container">
     <h1 *ngIf="this.title">{{ this.title }}</h1>
-    <mat-form-field appearance="outline" class="search">
+    <mat-form-field class="search">
         <input matInput placeholder="Filter" [(ngModel)]="filter" (ngModelChange)="filterOptions()">
         <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>

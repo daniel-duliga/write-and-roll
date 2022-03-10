@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EditorComponent } from 'src/app/components/editor/editor.component';
 import { DbService } from 'src/app/database/db.service';
 import { Note } from 'src/app/database/models/note';
 
@@ -9,10 +10,13 @@ import { Note } from 'src/app/database/models/note';
   styleUrls: ['./note.component.css']
 })
 export class NoteComponent implements OnInit {
+  @ViewChild('editor') private readonly editor!: EditorComponent;
+  
   noteId: string = '';
   note: Note = new Note();
 
   constructor(
+    public router: Router,
     private db: DbService,
     private route: ActivatedRoute,
   ) { }
@@ -28,8 +32,8 @@ export class NoteComponent implements OnInit {
     }
   }
 
-  save(content: string) {
-    this.note.content = content;
+  save() {
+    this.note.content = this.editor.content;
     this.db.systemNotes.update(this.note);
   }
 
