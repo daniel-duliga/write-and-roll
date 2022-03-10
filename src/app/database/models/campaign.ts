@@ -5,6 +5,6 @@ export class Campaign implements PouchDbModelInterface {
     _rev: string = '';
 
     constructor(
-        public name: string
+        public name: string = ''
     ) { }
 }

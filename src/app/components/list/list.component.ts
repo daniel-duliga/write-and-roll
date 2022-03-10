@@ -11,7 +11,7 @@ export class ListComponent implements OnInit {
   @Input() displayProperty: string = '';
   @Input() valueProperty: string = '';
   
-  @Output() onSelect: EventEmitter<any> = new EventEmitter();
+  @Output() onSelect: EventEmitter<string> = new EventEmitter();
   @Output() onCreate: EventEmitter<string> = new EventEmitter();
 
   filteredOptions: any[] = [];

@@ -12,6 +12,6 @@
         [displayProperty]="'name'"
         [valueProperty]="'_id'"
         (onCreate)="createSystem($event)"
-        (onSelect)="this.router.navigate(['systems', encodeURI($event)])"
+        (onSelect)="this.router.navigate(['systems', $event])"
     ></app-list>
 </div>

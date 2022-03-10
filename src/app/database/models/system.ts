@@ -1,3 +1,4 @@
+import { Note } from "./note";
 import { PouchDbModelInterface } from "./pouchdb-model-interface";
 
 export class System implements PouchDbModelInterface {
@@ -5,6 +6,6 @@ export class System implements PouchDbModelInterface {
     _rev: string = '';
 
     constructor(
-        public name: string
+        public name: string = '',
     ) { }
 }

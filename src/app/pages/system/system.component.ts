@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DbService } from 'src/app/database/db.service';
 import { Note } from 'src/app/database/models/note';
+import { System } from 'src/app/database/models/system';
 
 @Component({
   selector: 'app-system',
@@ -20,7 +21,7 @@ export class SystemComponent implements OnInit {
 
   async ngOnInit() {
     const routeParams = this.route.snapshot.paramMap;
-    const systemId = routeParams.get('id');
+    const systemId = routeParams.get('systemId');
     
     if(systemId) {
       this.systemId = systemId;
@@ -36,6 +37,6 @@ export class SystemComponent implements OnInit {
   }
 
   async createNote(name: string) {
-    await this.db.systemNotes.create(new Note(name), this.systemId);
+    this.db.systemNotes.create(new Note(name), this.systemId);
   }
 }

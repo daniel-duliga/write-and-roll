@@ -15,11 +15,11 @@ const routes: Routes = [
     component: DashboardComponent,
   },
   {
-    path: 'systems/:id',
+    path: 'systems/:systemId',
     component: SystemComponent,
   },
   {
-    path: 'notes/:systemId/:noteId',
+    path: 'systems/:systemId/notes/:noteId',
     component: SystemComponent,
   },
   {

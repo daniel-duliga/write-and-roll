@@ -33,12 +33,9 @@ export class DashboardComponent implements OnInit {
     await this.db.systems.create(new System(name));
   }
 
-  // unsorted
+  // private methods
   async loadData() {
     this.campaigns = await this.db.campaigns.getAll();
     this.systems = await this.db.systems.getAll();
-  }
-  encodeURI(uri: string): string {
-    return encodeURI(uri);
   }
 }
