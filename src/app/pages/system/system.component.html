@@ -5,7 +5,7 @@
         [displayProperty]="'name'"
         [valueProperty]="'_id'"
         (onCreate)="createNote($event)"
-        (onSelect)="this.router.navigate(['systems/notes/', ])"
+        (onSelect)="this.router.navigate(['system-notes', $event])"
     ></app-list>
     <app-list
         [title]="'🎱 Random Tables'"

@@ -1,12 +1,4 @@
 <!-- Header -->
-<!-- <div class="band header">
-    <div class="header-separator"></div>
-    <div class="title">
-        &nbsp;
-        {{ this.formattedName }}
-        <span *ngIf="this.isDirty">&nbsp;*</span>
-    </div>
-</div> -->
 <div class="container">
     <!-- Context -->
     <div *ngIf="context.attributes.length > 0" class="context">
@@ -19,7 +11,7 @@
         <ngx-codemirror
             class="code-mirror"
             #ngxCodeMirror
-            [(ngModel)]="this.note.content"
+            [(ngModel)]="this.content"
             [options]="{
                 theme: 'default',
                 mode: 'markdown',
@@ -30,8 +22,4 @@
             (focusChange)="focusChanged($event)"
         ></ngx-codemirror>
     </div>
-    <!-- Save button -->
-    <button *ngIf="isDirty" class="save-button" mat-fab (click)="save()" matTooltip="Save" matTooltipPosition="left">
-        <mat-icon>save</mat-icon>
-    </button>
 </div>

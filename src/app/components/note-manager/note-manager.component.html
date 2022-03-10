@@ -31,7 +31,6 @@
             #editorComponent
             *ngFor="let editor of editorService.getOpenEditors();"
             [ngStyle]="{ 'display': editor === editorService.getFocusedEditor() ? 'initial' : 'none' }"
-            [notePath]="editor"
             (onFocus)="setFocusedEditor(editorComponent)"
         ></app-editor>
         <app-commands

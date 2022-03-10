@@ -5,6 +5,7 @@ export class Note implements PouchDbModelInterface {
     _rev: string = '';
 
     constructor(
-        public name: string = ''
+        public name: string = '',
+        public content: string = '',
     ) { }
 }

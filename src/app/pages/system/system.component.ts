@@ -20,15 +20,13 @@ export class SystemComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    const routeParams = this.route.snapshot.paramMap;
-    const systemId = routeParams.get('systemId');
-    
+    const systemId = this.route.snapshot.paramMap.get('systemId');
     if(systemId) {
       this.systemId = systemId;
       await this.loadData();
       await this.db.onChanges().on('change', _ => this.loadData());
     } else {
-      // ?
+      // todo: error handling
     }
   }
 

@@ -1,1 +1,4 @@
-<p>note works!</p>
+<app-editor
+    [content]="this.note.content"
+    (onSave)="this.save($event)"
+></app-editor>

@@ -78,34 +78,34 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
     }
   }
   closeFocusedNote() {
-    if (!this.focusedEditor) { return; }
-    this.closeEditor(this.focusedEditor.notePath);
+    // if (!this.focusedEditor) { return; }
+    // this.closeEditor(this.focusedEditor.notePath);
   }
   async renameFocusedNote() {
-    if (!this.focusedEditor || !this.editorService.openEditorExists(this.focusedEditor.notePath)) {
-      return;
-    }
-    const oldName = this.focusedEditor.notePath;
-    const newName = await this.promptService.input(this.dialog, 'New Name', oldName);
-    if (newName) {
-      this.noteStorageService.rename(oldName, newName);
-      this.focusedEditor.setName(newName);
-      this.focusedEditor.notePath = newName;
-      this.editorService.updateOpenedEditor(oldName, newName);
-    }
+    // if (!this.focusedEditor || !this.editorService.openEditorExists(this.focusedEditor.notePath)) {
+    //   return;
+    // }
+    // const oldName = this.focusedEditor.notePath;
+    // const newName = await this.promptService.input(this.dialog, 'New Name', oldName);
+    // if (newName) {
+    //   this.noteStorageService.rename(oldName, newName);
+    //   this.focusedEditor.setName(newName);
+    //   this.focusedEditor.notePath = newName;
+    //   this.editorService.updateOpenedEditor(oldName, newName);
+    // }
   }
   favoriteFocusedNote() {
-    if (!this.focusedEditor) { return; }
-    this.focusedEditor.note.favorite = !this.focusedEditor.note.favorite;
-    this.focusedEditor.save();
+    // if (!this.focusedEditor) { return; }
+    // this.focusedEditor.note.favorite = !this.focusedEditor.note.favorite;
+    // this.focusedEditor.save();
   }
   deleteFocusedNote() {
-    if (!this.focusedEditor || !confirm(`Are you sure you want to delete ${this.focusedEditor.notePath}?`)) {
-      return;
-    }
-    this.noteStorageService.delete(this.focusedEditor.notePath);
-    this.blockService.removeNoteBlocks(this.focusedEditor.notePath);
-    this.closeFocusedNote();
+    // if (!this.focusedEditor || !confirm(`Are you sure you want to delete ${this.focusedEditor.notePath}?`)) {
+    //   return;
+    // }
+    // this.noteStorageService.delete(this.focusedEditor.notePath);
+    // this.blockService.removeNoteBlocks(this.focusedEditor.notePath);
+    // this.closeFocusedNote();
   }
   openLink(address: string) {
     this.zone.run(() => this.openEditor(address));
@@ -119,10 +119,10 @@ export class NoteManagerComponent implements OnInit, OnDestroy {
   closeEditor(notePath: string) {
     if (!this.editorService.openEditorExists(notePath)) { return; }
 
-    let editorComponent = this.editorComponents.find(x => x.notePath === notePath);
-    if (!editorComponent || (editorComponent.isDirty && !confirm("Are you sure? Changes you made will not be saved."))) {
-      return;
-    }
+    // let editorComponent = this.editorComponents.find(x => x.notePath === notePath);
+    // if (!editorComponent || (editorComponent.isDirty && !confirm("Are you sure? Changes you made will not be saved."))) {
+    //   return;
+    // }
 
     this.editorService.removeOpenedEditor(notePath);
     this.refreshEditors();
