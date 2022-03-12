@@ -4,11 +4,10 @@ import { ActionsService } from 'src/app/modules/actions/actions.service';
 import { DiceUtil } from 'src/app/modules/trpg/dice/dice.util';
 import { TablesUtil } from 'src/app/modules/trpg/tables.util';
 import { AutoCompleteFieldComponent } from '../auto-complete-field/auto-complete-field.component';
-import { BlockService } from 'src/app/modules/blocks/block.service';
-import { RandomTable } from 'src/app/modules/blocks/random-table';
 import { PromptService } from '../prompts/prompt.service';
-import { NoteManagerService } from '../note-manager/note-manager.service';
 import { Context } from 'src/app/modules/actions/context';
+import { DbService } from 'src/app/database/db.service';
+import { RandomTableService } from 'src/app/services/random-table.service';
 
 @Component({
   selector: 'app-commands',
@@ -22,21 +21,17 @@ export class CommandsComponent implements OnInit {
   @ViewChild('autoComplete') autoComplete!: AutoCompleteFieldComponent;
   
   commands = {
-    noteClose: 'note/close',
-    noteRename: 'note/rename',
-    noteFavorite: 'note/favorite',
-    noteDelete: 'note/delete',
-    rollTable: 'roll/table',
-    rollAction: 'roll/action',
-    rollDice: 'roll/dice',
+    rollAction: 'Roll Action',
+    rollDice: 'Roll Dice',
+    rollTable: 'Roll Table',
   };
 
   constructor(
     public dialog: MatDialog,
     private actionService: ActionsService,
-    private blockService: BlockService,
     private promptService: PromptService,
-    private noteManagerService: NoteManagerService,
+    private db: DbService,
+    private randomTableService: RandomTableService
   ) { }
 
   ngOnInit(): void { }
@@ -47,9 +42,6 @@ export class CommandsComponent implements OnInit {
       this.dialog,
       "Command",
       [
-        this.commands.noteRename,
-        this.commands.noteFavorite,
-        this.commands.noteDelete,
         this.commands.rollDice,
         this.commands.rollTable,
         this.commands.rollAction
@@ -60,20 +52,6 @@ export class CommandsComponent implements OnInit {
   // commands execution
   private async executeCommand(option: string, context: Context | null, dialog: MatDialog): Promise<void> {
     switch (option) {
-      // Note
-      case this.commands.noteRename: {
-        this.noteManagerService.requestRename.next();
-        break;
-      }
-      case this.commands.noteFavorite: {
-        this.noteManagerService.requestFavorite.next();
-        break;
-      }
-      case this.commands.noteDelete: {
-        this.noteManagerService.requestDelete.next();
-        break;
-      }
-
       // Roll
       case this.commands.rollAction: {
         await this.executeRollActionCommand(context, dialog);
@@ -94,12 +72,20 @@ export class CommandsComponent implements OnInit {
     }
   }
   private async executeRollActionCommand(context: Context | null, dialog: MatDialog): Promise<void> {
-    const actionFriendlyName = await this.promptAutoComplete(this.blockService.actions.friendlyNames);
-    const action = this.blockService.actions.getByFriendlyName(actionFriendlyName);
+    const actions = await this.db.notes.where({ type: "action" });
+    
+    const selectedActionId = await this.promptAutoComplete(actions.map(x => x._id));
+    if(!selectedActionId) {
+      this.onCommandResult.emit('');
+      return;
+    }
+    
+    const action = actions.find(x => x._id === selectedActionId);
     if(!action) {
       this.onCommandResult.emit('');
       return;
     }
+
     const result = await this.actionService.run(action.name, context, dialog);
     this.onCommandResult.emit(`${action.name}: ${result}`);
   }
@@ -109,13 +95,14 @@ export class CommandsComponent implements OnInit {
     this.onCommandResult.emit(result);
   }
   private async executeRollTableCommand(): Promise<void> {
-    const tableName = await this.promptAutoComplete(this.blockService.randomTables.friendlyNames);
-    const table = this.blockService.randomTables.getByFriendlyName(tableName)?.content as RandomTable | null;
+    const allTables = await this.db.notes.where({ type: "random-table" });
+    const tableId = await this.promptAutoComplete(allTables.map(x => x._id));
+    const table = await this.randomTableService.get(tableId);
     if (table) {
       const result = TablesUtil.rollOnTable(table.content);
       this.onCommandResult.emit(result);
     } else {
-      console.log(`Random table '${tableName}' not found.`);
+      console.log(`Random table '${tableId}' not found.`);
     }
   }
 

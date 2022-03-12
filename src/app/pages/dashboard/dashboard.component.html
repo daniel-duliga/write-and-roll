@@ -1,17 +1,12 @@
 <div class="container">
-    <app-list
-        [title]="'🌍 Campaigns'"
-        [options]="campaigns"
-        [displayProperty]="'name'"
-        [valueProperty]="'id'"
-        (onCreate)="createCampaign($event)"
-    ></app-list>
-    <app-list
-        [title]="'🎲 Systems'"
-        [options]="systems"
-        [displayProperty]="'name'"
-        [valueProperty]="'_id'"
-        (onCreate)="createSystem($event)"
-        (onSelect)="this.router.navigate(['systems', $event])"
-    ></app-list>
+    <div class="picker" *ngIf="openNotes.length === 0">
+        <app-note-list #noteList (onSelect)="openNote($event)"></app-note-list>
+    </div>
+    <div class="editor-container" *ngFor="let note of openNotes">
+        <app-editor
+            class="editor"
+            [note]="note"
+            (onClose)="this.closeNote(note)"
+        ></app-editor>
+    </div>
 </div>

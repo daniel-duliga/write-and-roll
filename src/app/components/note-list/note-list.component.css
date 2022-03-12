@@ -1,0 +1,28 @@
+.container {
+    height: 100%;
+    padding: 10px;
+}
+.search {
+    width: 100%;
+}
+.buttons-container {
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+}
+.filter-selected {
+    background-color: gainsboro;
+}
+.add-button {
+    /* background-color: aliceblue; */
+}
+.note-item {
+    display: flex;
+}
+.note-type {
+    font-style: italic;
+    font-weight: 500;
+    color: gray;
+    font-size: 12px;
+    margin-left: auto;
+}

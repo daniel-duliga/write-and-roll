@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DbService } from 'src/app/database/db.service';
+import { RandomTableService } from 'src/app/services/random-table.service';
 import { PromptService } from '../../components/prompts/prompt.service';
-import { BlockService } from '../blocks/block.service';
-import { RandomTable } from '../blocks/random-table';
 import { DiceUtil } from '../trpg/dice/dice.util';
 import { TablesUtil } from '../trpg/tables.util';
 import { Context } from './context';
@@ -15,20 +15,20 @@ export class ApiService {
   context: Context = new Context('');
 
   constructor(
-    private blockService: BlockService,
     private promptService: PromptService,
+    private randomTableService: RandomTableService,
   ) { }
 
   rollDice(formula: string): number {
     return DiceUtil.rollDiceFormula(formula).sum;
   }
 
-  rollTable(tableName: string): string {
-    const table = this.blockService.randomTables.getByFriendlyName(tableName)?.content as RandomTable | null;
+  async rollTable(id: string): Promise<string> {
+    const table = await this.randomTableService.get(id);
     if (table) {
       return TablesUtil.rollOnTable(table.content);
     } else {
-      return `Table ${tableName} not found`;
+      return `Table ${id} not found`;
     }
   }
 

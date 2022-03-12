@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Action } from '../blocks/action';
-import { BlockService } from '../blocks/block.service';
+import { DbService } from 'src/app/database/db.service';
 import { ApiService } from './api.service';
 import { Context } from './context';
 
@@ -11,14 +10,14 @@ import { Context } from './context';
 export class ActionsService {
   constructor(
     private api: ApiService,
-    private blockService: BlockService,
+    private db: DbService,
   ) { }
 
-  async run(actionName: string, context: Context | null, dialog: MatDialog): Promise<string> {
+  async run(id: string, context: Context | null, dialog: MatDialog): Promise<string> {
     // Get action
-    const action = this.blockService.actions.getByName(actionName)?.content as Action | null;
+    const action = await this.db.notes.get(id);
     if (!action) {
-      console.log(`Action '${actionName}' not found.`);
+      console.log(`Action '${id}' not found.`);
       return "";
     }
 

@@ -2,11 +2,10 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output, Renderer2
 import { MatDialog } from '@angular/material/dialog';
 import { CodemirrorComponent } from '@ctrl/ngx-codemirror/codemirror.component';
 import * as CodeMirror from 'codemirror';
-import { NoteManagerService } from '../note-manager/note-manager.service';
 import { CodeMirrorManager } from 'src/app/modules/code-mirror/code-mirror-manager';
 import { Context } from 'src/app/modules/actions/context';
-import { NoteStorageService } from 'src/app/modules/storage/notes/note-storage.service';
-import { saveAs } from 'file-saver';
+import { DbService } from 'src/app/database/db.service';
+import { Note } from 'src/app/database/models/note';
 
 @Component({
   selector: 'app-editor',
@@ -15,14 +14,14 @@ import { saveAs } from 'file-saver';
 })
 export class EditorComponent implements OnInit {
   // input, output, view children
-  @Input() content: string = '';
+  @Input() note: Note = new Note();
+  @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onFocus: EventEmitter<number> = new EventEmitter();
-  @Output() onSave: EventEmitter<string> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
 
   // properties
   public get isDirty(): boolean {
-    return this.content !== this.initialContent;
+    return this.note.content !== this.initialContent;
   }
 
   // public members
@@ -36,16 +35,15 @@ export class EditorComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private renderer: Renderer2,
-    private noteStorageService: NoteStorageService,
-    private noteManagerService: NoteManagerService,
+    private db: DbService,
   ) {
     (window as any).openLink = (notePath: string) => this.openLink(notePath);
   }
 
   // lifecycle events
-  ngOnInit(): void {
-    this.initialContent = this.content;
-    this.context = new Context(this.content);
+  ngOnInit() {
+    this.initialContent = this.note.content;
+    this.context = new Context(this.note.content);
   }
   ngAfterViewInit() {
     setTimeout(() => {
@@ -57,8 +55,8 @@ export class EditorComponent implements OnInit {
       }
     }, 250);
   }
-  ngOnChanges(changes: SimpleChanges) {
-    this.initialContent = this.content;
+  ngOnChanges(_: SimpleChanges) {
+    this.initialContent = this.note.content;
   }
 
   // host listener events
@@ -74,7 +72,8 @@ export class EditorComponent implements OnInit {
   // events
   save(e: Event | null) {
     if (e) { e.preventDefault(); } // If triggered by key combination, prevent default browser action
-    this.onSave.emit(this.content);
+    this.db.notes.update(this.note);
+    this.initialContent = this.note.content;
   }
   focusChanged($event: any) {
     if ($event && this.cmManager.cm) {
@@ -82,7 +81,7 @@ export class EditorComponent implements OnInit {
     }
   }
   openLink(address: string) {
-    this.noteManagerService.requestOpenLink.next(address);
+    // this.noteManagerService.requestOpenLink.next(address);
   }
 
   // public methods
@@ -133,8 +132,8 @@ export class EditorComponent implements OnInit {
       cm.scrollTo(null, currentScrollY);
     }
   }
-  private processLineContent(line: string, lineIndex: number, changes: CodeMirror.EditorChange[] | null) {
-    const allLinks = this.noteStorageService.getAll().map(x => x.name);
+  private async processLineContent(line: string, lineIndex: number, changes: CodeMirror.EditorChange[] | null) {
+    const allLinks = (await this.db.notes.getAll()).map(x => x.name);
     const allAttributes = this.context.attributes.map(x => x.key);
     this.cmManager.processLine(line, lineIndex, changes, this.renderer, allLinks, allAttributes);
   }

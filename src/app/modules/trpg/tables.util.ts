@@ -11,7 +11,6 @@ export class TablesUtil {
             return '';
         }
     }
-
     private static getMaxIndex(tableData: string[][]): number {
         let result = 0;
 
@@ -28,7 +27,6 @@ export class TablesUtil {
 
         return result;
     }
-
     private static checkMatch(index: string, roll: number): boolean {
         if (index.includes('-')) {
             const ranges = index.split('-').map(x => +x)

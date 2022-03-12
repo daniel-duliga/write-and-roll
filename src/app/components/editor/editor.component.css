@@ -2,7 +2,32 @@
   height: 100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
   background-color: white;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  border-bottom: 1px solid lightgray;
+}
+.more-button {
+  position: absolute;
+  left: -5px;
+}
+.title {
+  font-weight: 500;
+}
+.title-editable {
+  width: 100%;
+  margin-right: 120px;
+  margin-left: 30px;
+  text-align: center;
+}
+.header-buttons-container {
+  position: absolute;
+  right: 0;
 }
 .editor {
   overflow: auto;

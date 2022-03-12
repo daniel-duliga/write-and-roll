@@ -30,16 +30,13 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AutoCompleteFieldComponent } from './components/auto-complete-field/auto-complete-field.component';
 import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
-import { NoteManagerComponent } from './components/note-manager/note-manager.component';
 import { CommandsComponent } from './components/commands/commands.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ImportExportComponent } from './components/import-export/import-export.component';
 import { InputComponent } from './components/prompts/input/input.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ListComponent } from './components/list/list.component';
+import { NoteListComponent } from './components/note-list/note-list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { SystemComponent } from './pages/system/system.component';
-import { NoteComponent } from './pages/note/note.component';
 
 @NgModule({
   declarations: [
@@ -47,14 +44,11 @@ import { NoteComponent } from './pages/note/note.component';
     AutoCompletePromptComponent,
     InputComponent,
     AutoCompleteFieldComponent,
-    NoteManagerComponent,
     ImportExportComponent,
     EditorComponent,
     CommandsComponent,
-    ListComponent,
+    NoteListComponent,
     DashboardComponent,
-    SystemComponent,
-    NoteComponent,
   ],
   imports: [
     // Core

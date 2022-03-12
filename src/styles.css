@@ -16,7 +16,6 @@ body {
   height: 100%;
   overflow-y: hidden;
   font-family: 'Roboto';
-  background-color: #f7f6f2;
 }
 body {
   margin: 0;
@@ -28,7 +27,7 @@ img {
 
 /* CodeMirror */
 .CodeMirror {
-  height: 100%;
+  height: calc(100vh - 30px);
   
   z-index: 1;
   
@@ -38,9 +37,6 @@ img {
 .CodeMirror-foldmarker {
   text-shadow: none;
   margin-left: 0.5em;
-}
-.CodeMirror-lines {
-  padding-bottom: calc(100vh - 127px);
 }
 
 /* CodeMirror Markdown */
@@ -87,6 +83,9 @@ img {
 }
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
   box-shadow: none;
+}
+.editor-container .header .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding-bottom: 7px !important;
 }
 
 /* Custom */
