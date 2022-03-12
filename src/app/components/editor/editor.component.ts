@@ -14,7 +14,7 @@ import { Note } from 'src/app/database/models/note';
 })
 export class EditorComponent implements OnInit {
   // input, output, view children
-  @Input() note: Note = new Note();
+  @Input() noteId: string = '';
   @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onFocus: EventEmitter<number> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
@@ -25,6 +25,7 @@ export class EditorComponent implements OnInit {
   }
 
   // public members
+  public note: Note = new Note();
   public context: Context = new Context('');
 
   // private members
@@ -41,7 +42,8 @@ export class EditorComponent implements OnInit {
   }
 
   // lifecycle events
-  ngOnInit() {
+  async ngOnInit() {
+    this.note = await this.db.notes.get(this.noteId);
     this.initialContent = this.note.content;
     this.context = new Context(this.note.content);
   }
@@ -62,7 +64,8 @@ export class EditorComponent implements OnInit {
   // host listener events
   @HostListener('keydown.control.s', ['$event'])
   keydown_ControlS(e: Event) {
-    this.save(e);
+    if (e) { e.preventDefault(); } // If triggered by key combination, prevent default browser action
+    this.save();
   }
   @HostListener('window:beforeunload', ['$event'])
   window_BeforeUnload(e: Event): boolean | undefined {
@@ -70,8 +73,7 @@ export class EditorComponent implements OnInit {
   }
 
   // events
-  save(e: Event | null) {
-    if (e) { e.preventDefault(); } // If triggered by key combination, prevent default browser action
+  save() {
     this.db.notes.update(this.note);
     this.initialContent = this.note.content;
   }

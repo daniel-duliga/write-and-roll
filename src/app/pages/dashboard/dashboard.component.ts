@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DbService } from 'src/app/database/db.service';
 import { Note } from 'src/app/database/models/note';
 import { NoteListComponent } from 'src/app/components/note-list/note-list.component';
+import { Editor } from 'src/app/database/models/editor';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,22 +13,38 @@ import { NoteListComponent } from 'src/app/components/note-list/note-list.compon
 export class DashboardComponent implements OnInit {
   @ViewChild('noteList') noteList!: NoteListComponent;
   
-  openNotes: Note[] = [];
+  showPicker = false;
+  editors: Editor[] = [];
 
   constructor(
+    public router: Router,
     private db: DbService,
-    public router: Router
   ) { }
 
   // lifecycle
-  ngOnInit() { }
+  async ngOnInit() {
+    this.editors = await this.db.editors.getAll();
+  }
   ngAfterViewInit() { }
 
-  // events
-  openNote(note: Note) {
-    this.openNotes.unshift(note);
+  // host listener events
+  @HostListener('keydown.control.o', ['$event'])
+  keydown_ControlS(e: Event) {
+    if (e) { e.preventDefault(); } // If triggered by key combination, prevent default browser action
+    this.showPicker = true;
   }
-  closeNote(note: Note) {
-    this.openNotes = this.openNotes.filter(x => x !== note);
+
+  // events
+  async openEditor(noteId: string) {
+    const editor = await this.db.editors.create(new Editor(noteId));
+    this.editors.push(editor);
+    this.showPicker = false;
+  }
+  closeEditor(noteId: string) {
+    const editor = this.editors.find(x => x.noteId === noteId);
+    if(editor) {
+      this.editors = this.editors.filter(x => x._id !== editor._id);
+      this.db.editors.delete(editor);
+    }
   }
 }
