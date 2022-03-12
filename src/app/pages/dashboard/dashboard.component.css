@@ -1,7 +1,6 @@
 .container {
     height: 100%;
     display: grid;
-    max-width: 1024px;
     margin: auto;
 }
 .picker {
