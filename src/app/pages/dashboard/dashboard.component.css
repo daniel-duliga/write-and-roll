@@ -6,7 +6,7 @@
     grid-template-columns: 1fr;
 }
 .container-with-editors {
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 1fr 4fr;
 }
 .picker {
     max-width: 1024px;
