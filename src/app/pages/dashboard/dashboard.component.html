@@ -1,5 +1,5 @@
 <div class="container" [ngClass]="editors.length > 0 ? ['container-with-editors'] : []">
-    <div class="picker shadow-right-faint" [ngClass]="editors.length > 0 ? ['picker-collapsed'] : []">
+    <div class="picker" [ngClass]="editors.length > 0 ? ['picker-collapsed', 'shadow-right-faint'] : []">
         <app-note-list
             #noteList
             (onSelect)="openEditor($event._id)"

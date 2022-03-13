@@ -32,21 +32,24 @@ export class DashboardComponent implements OnInit {
 
   // lifecycle
   async ngOnInit() {
-    this.editors = await this.db.editors.getAll();
+    // this.editors = await this.db.editors.getAll();
   }
   ngAfterViewInit() { }
 
-  // host listener events
-  @HostListener('keydown.control.o', ['$event'])
-  keydown_ControlS(e: Event) {
-    if (e) { e.preventDefault(); } // If triggered by key combination, prevent default browser action
-  }
-
   // events
   async openEditor(noteId: string) {
-    const editor = await this.db.editors.create(new Editor(noteId));
-    this.editors.push(editor);
+    let editor = new Editor(noteId);
+    // editor = await this.db.editors.create(editor);
+    this.editors = [editor];
     this.refreshEditors();
+  }
+  closeEditor(editorId: string) {
+    const editor = this.editors.find(x => x._id === editorId);
+    if (editor) {
+      this.editors = this.editors.filter(x => x._id !== editor._id);
+      this.db.editors.delete(editor);
+      this.refreshEditors();
+    }
   }
   focusEditor(editor: Editor) {
     this.focusedEditor = editor;
@@ -74,14 +77,6 @@ export class DashboardComponent implements OnInit {
     
     editorComponent.replaceSelection(rollResult);
     editorComponent.refresh();
-  }
-  closeEditor(editorId: string) {
-    const editor = this.editors.find(x => x._id === editorId);
-    if (editor) {
-      this.editors = this.editors.filter(x => x._id !== editor._id);
-      this.db.editors.delete(editor);
-      this.refreshEditors();
-    }
   }
 
   // private methods

@@ -69,7 +69,7 @@ img {
 .cm-link {
   cursor: pointer;
 }
-.cm-comment, .cm-variable-2 {
+.cm-comment, .cm-variable-2, .cm-variable-3, .cm-keyword {
   font-family: 'Roboto Mono';
 }
 
