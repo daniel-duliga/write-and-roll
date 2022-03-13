@@ -1,0 +1,24 @@
+.container {
+    height: 100%;
+    display: grid;
+    margin: auto;
+}
+.picker {
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.buttons-container {
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+}
+.editors-container {
+    display: flex;
+}
+.editor {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+}

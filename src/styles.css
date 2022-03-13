@@ -16,7 +16,6 @@ body {
   height: 100%;
   overflow-y: hidden;
   font-family: 'Roboto';
-  background-color: #f7f6f2;
 }
 body {
   margin: 0;
@@ -40,12 +39,7 @@ img {
   margin-left: 0.5em;
 }
 .CodeMirror-lines {
-  padding-bottom: 90vh;
-  max-width: 1024px;
-  padding-right: 20px;
-  padding-left: 20px;
-  margin-left: auto !important;
-  margin-right: auto !important;
+  padding-bottom: calc(100vh - 50px);
 }
 
 /* CodeMirror Markdown */
@@ -93,11 +87,8 @@ img {
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
   box-shadow: none;
 }
-.mat-form-field-wrapper {
-  padding-bottom: initial;
-}
-.mat-form-field-appearance-outline .mat-form-field-infix {
-  padding: .5em 0;
+.editor-container .header .mat-form-field-appearance-fill .mat-form-field-infix {
+  padding-bottom: 7px !important;
 }
 
 /* Custom */

@@ -1,13 +1,15 @@
 <!-- Header -->
-<!-- <div class="band header">
-    <div class="header-separator"></div>
-    <div class="title">
-        &nbsp;
-        {{ this.formattedName }}
-        <span *ngIf="this.isDirty">&nbsp;*</span>
-    </div>
-</div> -->
 <div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-spacer"></div>
+        <span class="title">{{ note.name }}{{ isDirty ? ' *' : '' }}</span>
+        <div class="header-buttons-container">
+            <button mat-icon-button (click)="this.onClose.emit()" matTooltip="Close">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
     <!-- Context -->
     <div *ngIf="context.attributes.length > 0" class="context">
         <ul style="font-family: Roboto Mono;">
@@ -25,13 +27,10 @@
                 mode: 'markdown',
                 lineWrapping: true,
                 inputStyle: 'textarea',
-                autoCloseBrackets: true
+                autoCloseBrackets: true,
+                lineNumbers: true
             }"
             (focusChange)="focusChanged($event)"
         ></ngx-codemirror>
     </div>
-    <!-- Save button -->
-    <button *ngIf="isDirty" class="save-button" mat-fab (click)="save()" matTooltip="Save" matTooltipPosition="left">
-        <mat-icon>save</mat-icon>
-    </button>
 </div>

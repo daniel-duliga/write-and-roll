@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BlockService } from './modules/blocks/block.service';
-import { NoteStorageService } from './modules/storage/notes/note-storage.service';
+import PouchDB from 'pouchdb';
+import PouchDBFind from 'pouchdb-find';
 
 @Component({
   selector: 'app-root',
@@ -10,13 +10,11 @@ import { NoteStorageService } from './modules/storage/notes/note-storage.service
 export class AppComponent implements OnInit {
   title = 'write-and-roll';
 
-  constructor(
-    private blockService: BlockService,
-    private noteStorageService: NoteStorageService,
-  ) { }
+  constructor() {
+    PouchDB.plugin(PouchDBFind);
+  }
 
   ngOnInit(): void {
-    const notes = this.noteStorageService.getAll();
-    this.blockService.initialize(notes);
+    
   }
 }

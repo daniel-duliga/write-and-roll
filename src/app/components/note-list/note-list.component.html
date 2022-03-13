@@ -1,0 +1,38 @@
+<div class="container">
+    <mat-form-field class="search">
+        <input matInput placeholder="Filter" [(ngModel)]="textFilter" (ngModelChange)="filter()">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <div class="buttons-container" *ngIf="!showAddButtons">
+        <button mat-stroked-button [ngClass]="notesFilter ? ['filter-selected'] : []" (click)="filterNotes()">
+            Notes
+        </button>
+        <button mat-stroked-button [ngClass]="randomTablesFilter ? ['filter-selected'] : []" (click)="filterRandomTables()">
+            Random Tables
+        </button>
+        <button mat-stroked-button [ngClass]="actionsFilter ? ['filter-selected'] : []" (click)="filterActions()">
+            Actions
+        </button>
+    </div>
+    <div class="buttons-container" *ngIf="showAddButtons">
+        <button mat-stroked-button class="add-button" (click)="addNote('note')">+ Note</button>
+        <button mat-stroked-button class="add-button" (click)="addNote('random-table')">+ Random Table</button>
+        <button mat-stroked-button class="add-button" (click)="addNote('action')">+ Action</button>
+    </div>
+    <mat-selection-list role="list" [multiple]="false">
+        <mat-list-option *ngFor="let note of filteredNotes" (click)="onSelect.emit(note)">
+            <div class="note-item">
+                <span>{{ note.name }}</span>
+                <span class="note-type">{{ note.type }}</span>
+                <button
+                    style="color: lightcoral;"
+                    mat-icon-button
+                    matTooltip="Delete"
+                    (click)="deleteNote($event, note._id)"
+                >
+                    <mat-icon>delete_forever</mat-icon>
+                </button>
+            </div>
+        </mat-list-option>
+    </mat-selection-list>
+</div>
