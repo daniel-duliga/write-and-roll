@@ -27,7 +27,7 @@ img {
 
 /* CodeMirror */
 .CodeMirror {
-  height: calc(100vh - 46px);
+  height: calc(100vh - 47px);
   z-index: 1;
   font-family: 'Roboto';
   font-size: 11pt;
@@ -41,7 +41,7 @@ img {
   margin-left: 0.5em;
 }
 .CodeMirror-lines {
-  padding-bottom: calc(100vh - 55px);
+  padding-bottom: calc(100vh - 65px);
 }
 
 /* CodeMirror Markdown */
@@ -69,11 +69,8 @@ img {
 .cm-link {
   cursor: pointer;
 }
-.cm-comment {
+.cm-comment, .cm-variable-2 {
   font-family: 'Roboto Mono';
-}
-.cm-quote {
-  font-style: italic;
 }
 
 /* Angular Material */

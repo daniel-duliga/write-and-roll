@@ -15,6 +15,7 @@
     margin-right: auto;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 .picker-collapsed {
     border-right: 1px solid lightgray !important;
@@ -28,5 +29,5 @@
     height: 100%;
     width: 100%;
     border-right: 1px solid lightgray;
-    min-width: 640px;
+    min-width: 30%;
 }
