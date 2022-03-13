@@ -24,6 +24,14 @@
             <div class="note-item">
                 <span>{{ note.name }}</span>
                 <span class="note-type">{{ note.type }}</span>
+                <button
+                    style="color: lightcoral;"
+                    mat-icon-button
+                    matTooltip="Delete"
+                    (click)="deleteNote($event, note._id)"
+                >
+                    <mat-icon>delete_forever</mat-icon>
+                </button>
             </div>
         </mat-list-option>
     </mat-selection-list>

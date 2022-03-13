@@ -29,8 +29,7 @@ export class NoteListComponent implements OnInit {
   // lifecycle
   async ngOnInit() {
     await this.loadData();
-    this.filteredNotes = this.allNotes.sort((a, b) => a.name.localeCompare(b.name));
-    this.db.onChanges().on('change', _ => this.loadData());
+    await this.db.onChanges().on('change', _ => this.loadData());
   }
   ngOnChanges(_: SimpleChanges) {
     this.filter();
@@ -70,8 +69,17 @@ export class NoteListComponent implements OnInit {
   // private methods
   async loadData() {
     this.allNotes = await this.db.notes.getAll();
+    this.filter();
   }
   async addNote(type: NoteType) {
     await this.db.notes.create(new Note(type, this.textFilter, ""));
+  }
+  async deleteNote(e: Event, id: string) {
+    e.stopPropagation();
+    e.preventDefault();
+    if(confirm("Are you sure?")) {
+      const note = await this.db.notes.get(id);
+      await this.db.notes.delete(note);
+    }
   }
 }

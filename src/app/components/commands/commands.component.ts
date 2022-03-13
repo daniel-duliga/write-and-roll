@@ -86,8 +86,8 @@ export class CommandsComponent implements OnInit {
       return;
     }
 
-    const result = await this.actionService.run(action.name, context, dialog);
-    this.onCommandResult.emit(`${action.name}: ${result}`);
+    const result = await this.actionService.run(action._id, context, dialog);
+    this.onCommandResult.emit(result);
   }
   private async executeRollDiceCommand(): Promise<void> {
     const formula = await this.promptInput();
