@@ -15,6 +15,7 @@ import { Note } from 'src/app/database/models/note';
 export class EditorComponent implements OnInit {
   // input, output, view children
   @Input() noteId: string = '';
+  @Input() editorId: string = '';
   @Output() onClose: EventEmitter<void> = new EventEmitter();
   @Output() onFocus: EventEmitter<number> = new EventEmitter();
   @ViewChild('ngxCodeMirror', { static: true }) private readonly ngxCodeMirror!: CodemirrorComponent;
@@ -89,7 +90,7 @@ export class EditorComponent implements OnInit {
   // public methods
   public replaceSelection(value: string) {
     if (this.cmManager.cm) {
-      if (value) { value = `\`${value}\``; }
+      // if (value) { value = `\`${value}\``; }
       const pos = this.cmManager.cm.getCursor();
       this.cmManager.cm.replaceRange(value, pos, pos);
     }
@@ -110,8 +111,8 @@ export class EditorComponent implements OnInit {
     cm.on('changes', (cm, changes) => this.processContentChanges(cm, changes));
     cm.setOption("extraKeys", {
       Enter: (cm) => cm.execCommand("newlineAndIndentContinueMarkdownList"),
-      Tab: (cm) => cm.foldCode(cm.getCursor()),
-      "Shift-Tab": (cm) => this.cmManager.toggleFoldAllLines(),
+      "Ctrl-Q": (cm) => cm.foldCode(cm.getCursor()),
+      "Ctrl-Shift-Q": (cm) => this.cmManager.toggleFoldAllLines(),
     });
     cm.focus();
   }

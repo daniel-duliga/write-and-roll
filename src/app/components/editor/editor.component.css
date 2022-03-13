@@ -4,7 +4,6 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  border-left: 1px solid lightgray;
 }
 .header {
   display: flex;
@@ -25,10 +24,10 @@
   margin-left: auto;
 }
 .editor {
-  overflow: auto;
   display: flex;
   height: 100%;
   width: 100%;
+  background-color: #f7f7f7;
 }
 .context {
   padding-right: 20px;

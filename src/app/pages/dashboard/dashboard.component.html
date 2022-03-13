@@ -1,16 +1,19 @@
-<div class="container">
-    <div class="picker" *ngIf="editors.length === 0 || showPicker">
-        <app-note-list #noteList (onSelect)="openEditor($event._id)"></app-note-list>
+<div class="container" [ngClass]="editors.length > 0 ? ['container-with-editors'] : []">
+    <div class="picker" [ngClass]="editors.length > 0 ? ['picker-collapsed'] : []">
+        <app-note-list
+            #noteList
+            (onSelect)="openEditor($event._id)"
+            (onRoll)="roll($event)"
+        ></app-note-list>
     </div>
-    <div
-        class="editors-container"
-        *ngIf="editors.length > 0"
-        [ngStyle]="showPicker ? { 'display': 'none' } : { 'display': 'flex' }"
-    >
+    <div class="editors-container" *ngIf="editors.length > 0">
         <app-editor
+            #editor
             *ngFor="let editor of editors"
             class="editor"
             [noteId]="editor.noteId"
+            [editorId]="editor._id"
+            (onFocus)="focusEditor(editor)"
             (onClose)="this.closeEditor(editor._id)"
         ></app-editor>
     </div>

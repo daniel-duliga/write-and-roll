@@ -11,7 +11,8 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/indent-fold';
-import './app/extensions/markdown-fold';
+import 'codemirror/addon/fold/markdown-fold';
+// import './app/extensions/markdown-fold';
 
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/hint/show-hint';

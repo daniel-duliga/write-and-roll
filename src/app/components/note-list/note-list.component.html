@@ -1,29 +1,46 @@
 <div class="container">
+    <!-- Search -->
     <mat-form-field class="search">
         <input matInput placeholder="Filter" [(ngModel)]="textFilter" (ngModelChange)="filter()">
         <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
+    <!-- Filter buttons -->
     <div class="buttons-container" *ngIf="!showAddButtons">
-        <button mat-stroked-button [ngClass]="notesFilter ? ['filter-selected'] : []" (click)="filterNotes()">
+        <button
+            mat-stroked-button
+            class="filter-button"
+            [ngClass]="notesFilter ? ['filter-button-selected'] : []"
+            (click)="filterNotes()"
+        >
             Notes
         </button>
-        <button mat-stroked-button [ngClass]="randomTablesFilter ? ['filter-selected'] : []" (click)="filterRandomTables()">
+        <button
+            mat-stroked-button
+            class="filter-button"
+            [ngClass]="randomTablesFilter ? ['filter-button-selected'] : []"
+            (click)="filterRandomTables()"
+        >
             Random Tables
         </button>
-        <button mat-stroked-button [ngClass]="actionsFilter ? ['filter-selected'] : []" (click)="filterActions()">
+        <button
+            mat-stroked-button
+            class="filter-button"
+            [ngClass]="actionsFilter ? ['filter-button-selected'] : []"
+            (click)="filterActions()"
+        >
             Actions
         </button>
     </div>
+    <!-- Add buttons -->
     <div class="buttons-container" *ngIf="showAddButtons">
         <button mat-stroked-button class="add-button" (click)="addNote('note')">+ Note</button>
         <button mat-stroked-button class="add-button" (click)="addNote('random-table')">+ Random Table</button>
         <button mat-stroked-button class="add-button" (click)="addNote('action')">+ Action</button>
     </div>
+    <!-- Items list -->
     <mat-selection-list role="list" [multiple]="false">
         <mat-list-option *ngFor="let note of filteredNotes" (click)="onSelect.emit(note)">
             <div class="note-item">
-                <span>{{ note.name }}</span>
-                <span class="note-type">{{ note.type }}</span>
                 <button
                     style="color: lightcoral;"
                     mat-icon-button
@@ -32,6 +49,17 @@
                 >
                     <mat-icon>delete_forever</mat-icon>
                 </button>
+                <span class="note-name">{{ note.name }}</span>
+                <span class="note-type">{{ note.type }}</span>
+                <button
+                    *ngIf="note.type === 'random-table' || note.type === 'action'"
+                    mat-icon-button
+                    matTooltip="Roll"
+                    (click)="roll($event, note)"
+                >
+                    <img style="height: 30px;" src="assets/icons/dice-twenty-faces-twenty.png">
+                </button>
+                <div *ngIf="note.type !== 'random-table' && note.type !== 'action'" style="width: 40px;"></div>
             </div>
         </mat-list-option>
     </mat-selection-list>

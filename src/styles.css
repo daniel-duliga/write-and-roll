@@ -27,22 +27,28 @@ img {
 
 /* CodeMirror */
 .CodeMirror {
-  height: calc(100vh - 30px);
+  height: calc(100vh - 46px);
   
   z-index: 1;
   
   font-family: 'Roboto';
   font-size: 11pt;
 }
+.code .CodeMirror {
+  font-family: 'Roboto Mono';
+}
 .CodeMirror-foldmarker {
   text-shadow: none;
   margin-left: 0.5em;
 }
 .CodeMirror-lines {
-  padding-bottom: calc(100vh - 50px);
+  padding-bottom: calc(100vh - 55px);
 }
 
 /* CodeMirror Markdown */
+.cm-header {
+  color: black !important;
+}
 .cm-header-1 {
   font-size: 22pt !important;
 }
@@ -89,6 +95,15 @@ img {
 }
 .editor-container .header .mat-form-field-appearance-fill .mat-form-field-infix {
   padding-bottom: 7px !important;
+}
+.mat-list-text {
+  padding-right: 0 !important;
+}
+.mat-list-base .mat-list-item .mat-list-item-content-reverse, .mat-list-base .mat-list-option .mat-list-item-content-reverse {
+  padding-right: 0 !important;
+}
+.mat-list-item-content {
+  padding-left: 0 !important;
 }
 
 /* Custom */

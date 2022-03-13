@@ -31,7 +31,7 @@ export class CommandsComponent implements OnInit {
     private actionService: ActionsService,
     private promptService: PromptService,
     private db: DbService,
-    private randomTableService: RandomTableService
+    private randomTableService: RandomTableService,
   ) { }
 
   ngOnInit(): void { }

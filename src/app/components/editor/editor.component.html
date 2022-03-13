@@ -20,15 +20,18 @@
     <div class="editor">
         <ngx-codemirror
             class="code-mirror"
+            [ngClass]="note.type !== 'note' ? ['code'] : []"
             #ngxCodeMirror
             [(ngModel)]="this.note.content"
             [options]="{
                 theme: 'default',
-                mode: 'markdown',
+                mode: note.type !== 'note' ? 'javascript' : 'markdown',
                 lineWrapping: true,
                 inputStyle: 'textarea',
                 autoCloseBrackets: true,
-                lineNumbers: true
+                lineNumbers: true,
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
             }"
             (focusChange)="focusChanged($event)"
         ></ngx-codemirror>

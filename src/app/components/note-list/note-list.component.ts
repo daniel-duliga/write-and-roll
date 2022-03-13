@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, NgZone, OnInit, Output, SimpleChanges } from '@angular/core';
 import { DbService } from 'src/app/database/db.service';
 import { Note, NoteType } from 'src/app/database/models/note';
+import { EventUtil } from 'src/app/utils/event-util';
 
 @Component({
   selector: 'app-note-list',
@@ -9,6 +10,7 @@ import { Note, NoteType } from 'src/app/database/models/note';
 })
 export class NoteListComponent implements OnInit {
   @Output() onSelect: EventEmitter<any> = new EventEmitter();
+  @Output() onRoll: EventEmitter<Note> = new EventEmitter();
 
   allNotes: Note[] = [];
   filteredNotes: any[] = [];
@@ -35,7 +37,7 @@ export class NoteListComponent implements OnInit {
     this.filter();
   }
 
-  // events
+  // filtering
   filterActions() {
     this.actionsFilter = !this.actionsFilter;
     this.filter();
@@ -66,6 +68,12 @@ export class NoteListComponent implements OnInit {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
+  // events
+  roll(e: Event, note: Note) {
+    EventUtil.stopEvent(e);
+    this.onRoll.emit(note);
+  }
+
   // private methods
   async loadData() {
     this.allNotes = await this.db.notes.getAll();
@@ -75,8 +83,7 @@ export class NoteListComponent implements OnInit {
     await this.db.notes.create(new Note(type, this.textFilter, ""));
   }
   async deleteNote(e: Event, id: string) {
-    e.stopPropagation();
-    e.preventDefault();
+    EventUtil.stopEvent(e);
     if(confirm("Are you sure?")) {
       const note = await this.db.notes.get(id);
       await this.db.notes.delete(note);
