@@ -38,6 +38,9 @@ img {
   text-shadow: none;
   margin-left: 0.5em;
 }
+.CodeMirror-lines {
+  padding-bottom: calc(100vh - 50px);
+}
 
 /* CodeMirror Markdown */
 .cm-header-1 {
