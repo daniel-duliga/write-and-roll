@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   background-color: white;
+  border-left: 1px solid lightgray;
 }
 .header {
   display: flex;
@@ -13,22 +14,15 @@
   border-bottom: 1px solid lightgray;
   background-color: #f7f7f7;
 }
-.more-button {
-  position: absolute;
-  left: -5px;
+.header-spacer {
+  width: 40px;
 }
 .title {
   font-weight: 500;
-}
-.title-editable {
-  width: 100%;
-  margin-right: 120px;
-  margin-left: 30px;
-  text-align: center;
+  margin-left: auto;
 }
 .header-buttons-container {
-  position: absolute;
-  right: 0;
+  margin-left: auto;
 }
 .editor {
   overflow: auto;

@@ -2,15 +2,12 @@
 <div class="container">
     <!-- Header -->
     <div class="header">
-        <!-- <button mat-icon-button class="more-button"><mat-icon>more_vert</mat-icon></button> -->
+        <div class="header-spacer"></div>
         <span class="title">{{ note.name }}{{ isDirty ? ' *' : '' }}</span>
-        <!-- <mat-form-field class="title-editable" appearance="fill">
-            <input matInput [(ngModel)]="note.name">
-        </mat-form-field> -->
         <div class="header-buttons-container">
-            <!-- <button mat-icon-button><mat-icon>minimize</mat-icon></button>
-            <button mat-icon-button><mat-icon>fullscreen</mat-icon></button> -->
-            <button mat-icon-button (click)="this.onClose.emit()"><mat-icon>close</mat-icon></button>
+            <button mat-icon-button (click)="this.onClose.emit()" matTooltip="Close">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
     </div>
     <!-- Context -->

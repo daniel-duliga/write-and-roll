@@ -40,8 +40,8 @@ export class DashboardComponent implements OnInit {
     this.editors.push(editor);
     this.showPicker = false;
   }
-  closeEditor(noteId: string) {
-    const editor = this.editors.find(x => x.noteId === noteId);
+  closeEditor(editorId: string) {
+    const editor = this.editors.find(x => x._id === editorId);
     if(editor) {
       this.editors = this.editors.filter(x => x._id !== editor._id);
       this.db.editors.delete(editor);
