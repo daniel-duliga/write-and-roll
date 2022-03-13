@@ -16,9 +16,6 @@
 .filter-button-selected {
     background-color: gainsboro;
 }
-.add-button {
-    /* background-color: aliceblue; */
-}
 .note-item {
     display: flex;
     justify-content: center;
@@ -30,8 +27,8 @@
     color: gray;
     font-size: 9pt;
     margin-left: auto;
+    margin-right: 10px;
 }
 .note-name {
-    margin-left: 10px;
     font-size: 10pt;
 }

@@ -28,11 +28,10 @@ img {
 /* CodeMirror */
 .CodeMirror {
   height: calc(100vh - 46px);
-  
   z-index: 1;
-  
   font-family: 'Roboto';
   font-size: 11pt;
+  border-bottom: 1px solid lightgray;
 }
 .code .CodeMirror {
   font-family: 'Roboto Mono';
@@ -72,6 +71,9 @@ img {
 }
 .cm-comment {
   font-family: 'Roboto Mono';
+}
+.cm-quote {
+  font-style: italic;
 }
 
 /* Angular Material */

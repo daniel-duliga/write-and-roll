@@ -19,7 +19,6 @@ export class DashboardComponent implements OnInit {
   @ViewChild('noteList') noteList!: NoteListComponent;
   @ViewChildren('editor') editorComponents!: QueryList<EditorComponent>;
 
-  showPicker = false;
   editors: Editor[] = [];
   focusedEditor: Editor | null = null;
 
@@ -41,14 +40,13 @@ export class DashboardComponent implements OnInit {
   @HostListener('keydown.control.o', ['$event'])
   keydown_ControlS(e: Event) {
     if (e) { e.preventDefault(); } // If triggered by key combination, prevent default browser action
-    this.showPicker = true;
   }
 
   // events
   async openEditor(noteId: string) {
     const editor = await this.db.editors.create(new Editor(noteId));
     this.editors.push(editor);
-    this.showPicker = false;
+    this.refreshEditors();
   }
   focusEditor(editor: Editor) {
     this.focusedEditor = editor;
@@ -82,6 +80,14 @@ export class DashboardComponent implements OnInit {
     if (editor) {
       this.editors = this.editors.filter(x => x._id !== editor._id);
       this.db.editors.delete(editor);
+      this.refreshEditors();
+    }
+  }
+
+  // private methods
+  refreshEditors() {
+    for (const editorComponent of this.editorComponents) {
+      editorComponent.refresh();
     }
   }
 }
