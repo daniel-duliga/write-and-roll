@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
-import { NotRepository } from './repositories/note-repository';
 import PouchDb from 'pouchdb';
 import { Repository } from './core/repository';
-import { Editor } from './models/editor';
+import { RandomTable } from './models/random-table';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DbService {
-  private db = new PouchDb('write-and-roll-db');
   
-  notes: NotRepository = new NotRepository(this.db, 'notes');
-  editors: Repository<Editor> = new Repository(this.db, 'openEditors');
+  private db = new PouchDb('write-and-roll-db');
+  randomTables: Repository<RandomTable> = new Repository(this.db, 'randomTables');
 
   constructor() {
     this.db.createIndex({
-      index: {fields: ['name', 'type']}
+      index: {fields: ['name']}
     });
   }
 
@@ -25,4 +23,5 @@ export class DbService {
       live: true,
     });
   }
+
 }

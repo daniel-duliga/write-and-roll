@@ -18,8 +18,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Third-party
@@ -29,32 +32,18 @@ import { EasymdeModule } from 'ngx-easymde';
 // Internal
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { AutoCompleteFieldComponent } from './components/auto-complete-field/auto-complete-field.component';
-import { AutoCompletePromptComponent } from './components/prompts/auto-complete-prompt/auto-complete-prompt.component';
-import { CommandsComponent } from './components/commands/commands.component';
-import { EditorComponent } from './components/editor/editor.component';
-import { ImportExportComponent } from './components/import-export/import-export.component';
-import { InputComponent } from './components/prompts/input/input.component';
-import { HttpClientModule } from '@angular/common/http';
-import { NoteListComponent } from './components/note-list/note-list.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
+import { HttpClientModule } from '@angular/common/http';
+import { RandomTablesAddEditComponent } from './pages/random-tables/random-tables-add-edit/random-tables-add-edit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AutoCompletePromptComponent,
-    InputComponent,
-    AutoCompleteFieldComponent,
-    ImportExportComponent,
-    EditorComponent,
-    CommandsComponent,
-    NoteListComponent,
-    DashboardComponent,
     HomeComponent,
+    RandomTablesComponent,
+    RandomTablesAddEditComponent,
   ],
   imports: [
     // Core
@@ -85,6 +74,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatRippleModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatTableModule,
     MatTabsModule,
     MatTooltipModule,
 

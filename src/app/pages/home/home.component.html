@@ -17,7 +17,7 @@
       <a mat-list-item class="nav-item" href="#">Notes</a>
       <hr>
       <a mat-list-item class="nav-item" href="#">Templates</a>
-      <a mat-list-item class="nav-item" href="#">Random Tables</a>
+      <a mat-list-item class="nav-item" [routerLink]="['/app/random-tables']">Random Tables</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -32,6 +32,8 @@
       </button>
       <span>write-and-roll</span>
     </mat-toolbar>
-    <!-- Add Content Here -->
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

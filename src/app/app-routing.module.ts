@@ -1,23 +1,34 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ImportExportComponent } from './components/import-export/import-export.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomeComponent } from './pages/home/home.component';
+import { RandomTablesAddEditComponent } from './pages/random-tables/random-tables-add-edit/random-tables-add-edit.component';
+import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'app',
     pathMatch: 'full'
   },
   {
-    path: 'home',
+    path: 'app',
     component: HomeComponent,
-  },
-  {
-    path: 'import-export',
-    component: ImportExportComponent,
-  },
+    children: [
+      {
+        path: '',
+        redirectTo: 'random-tables',
+        pathMatch: 'full',
+      },
+      {
+        path: 'random-tables',
+        component: RandomTablesComponent,
+      },
+      {
+        path: 'random-tables/add',
+        component: RandomTablesAddEditComponent,
+      },
+    ]
+  }
 ];
 
 @NgModule({

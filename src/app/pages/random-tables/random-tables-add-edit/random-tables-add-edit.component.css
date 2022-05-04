@@ -1,0 +1,14 @@
+.name {
+    width: 100%;
+}
+.line {
+    display: flex;
+    width: 100%;
+}
+.index {
+    margin-right: 10px;
+}
+.value {
+    flex-grow: 1;
+    margin-right: 10px;
+}
