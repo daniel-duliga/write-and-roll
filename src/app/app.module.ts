@@ -15,11 +15,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRippleModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -37,6 +38,10 @@ import { InputComponent } from './components/prompts/input/input.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NoteListComponent } from './components/note-list/note-list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { HomeComponent } from './pages/home/home.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -49,6 +54,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     CommandsComponent,
     NoteListComponent,
     DashboardComponent,
+    HomeComponent,
   ],
   imports: [
     // Core
@@ -66,24 +72,28 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     }),
 
     // Angular Material
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatAutocompleteModule,
-    MatListModule,
-    MatIconModule,
-    MatTooltipModule,
     CdkTreeModule,
-    MatSnackBarModule,
+    MatAutocompleteModule,
+    MatButtonModule,
     MatCheckboxModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
     MatMenuModule,
     MatRippleModule,
+    MatSelectModule,
+    MatSnackBarModule,
     MatTabsModule,
+    MatTooltipModule,
 
     // Third-party
     CodemirrorModule,
     EasymdeModule.forRoot(),
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
