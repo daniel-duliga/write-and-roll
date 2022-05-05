@@ -1,6 +1,15 @@
 <div class="actions-container">
     <button mat-stroked-button [routerLink]="['/app/random-tables']">Back</button>
-    <button mat-stroked-button class="save-button" (click)="save()">Save</button>
+    <div class="save-button">
+        <button mat-button (click)="addLine()">
+            <mat-icon>add</mat-icon>
+            Add Line
+        </button>
+        &nbsp;
+        <button mat-button (click)="roll()">Roll</button>
+        &nbsp;
+        <button mat-stroked-button (click)="save()">Save</button>
+    </div>
 </div>
 <br>
 <div>
@@ -8,17 +17,15 @@
         <mat-label>Name</mat-label>
         <input [(ngModel)]="this.randomTable.name" matInput>
     </mat-form-field>
-    <div *ngFor="let randomTableLine of randomTable.lines" class="line">
+    <div *ngFor="let line of randomTable.lines" class="line">
         <mat-form-field class="index">
             <mat-label>Index</mat-label>
-            <input matInput>
+            <input [(ngModel)]="line.index" matInput>
         </mat-form-field>
         <mat-form-field class="value">
             <mat-label>Value</mat-label>
-            <input matInput>
+            <input [(ngModel)]="line.value" matInput>
         </mat-form-field>
-        <button mat-button>
-            <mat-icon>add</mat-icon>
-        </button>
+        <button mat-button (click)="deleteLine(line)">Delete</button>
     </div>
 </div>

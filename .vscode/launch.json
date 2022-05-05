@@ -10,11 +10,6 @@
             "name": "Chrome",
             "url": "http://localhost:4200",
             "webRoot": "${workspaceFolder}",
-            "resolveSourceMapLocations": [
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            ]
         }
     ],
-    
 }

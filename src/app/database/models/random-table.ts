@@ -15,8 +15,8 @@ export class RandomTable implements PouchDbModelInterface {
 export class RandomTableLine {
     
     constructor(
-        index: string,
-        value: string
+        public index: string,
+        public value: string
     ) { }
 
 }

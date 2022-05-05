@@ -1,8 +1,13 @@
 .table {
     width: 100%;
 }
-
 .actions-container {
     display: flex;
     justify-content: end;
+}
+.mat-column-name {
+    width: 100%;
+}
+.actions-container {
+    display: flex;
 }

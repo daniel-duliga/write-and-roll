@@ -10,10 +10,12 @@
     </ng-container>
     <!-- Actions -->
     <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let randomTable">
-            <button mat-button (click)="edit(randomTable)">Edit</button>
-            <button mat-button>Delete</button>
+            <div class="actions-container">
+                <button mat-button (click)="edit(randomTable)">Edit</button>
+                <button mat-button>Delete</button>
+            </div>
         </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

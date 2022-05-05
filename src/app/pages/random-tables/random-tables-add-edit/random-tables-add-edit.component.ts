@@ -29,12 +29,27 @@ export class RandomTablesAddEditComponent implements OnInit {
     });
   }
 
+  addLine() {
+    this.randomTable.lines.push(new RandomTableLine('', ''));
+  }
+
+  deleteLine(line: RandomTableLine) {
+    const index = this.randomTable.lines.findIndex(x => x.index == line.index);
+    if (index !== -1) {
+      this.randomTable.lines.splice(index, 1);
+    }
+  }
+
   async save() {
-    if(!this.randomTable._id) {
+    if (!this.randomTable._id) {
       await this.randomTableService.create(this.randomTable);
     } else {
       await this.randomTableService.update(this.randomTable);
     }
     this.router.navigate(['/app/random-tables']);
+  }
+
+  roll() {
+    
   }
 }
