@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DbService } from 'src/app/database/db.service';
 import { RandomTableService } from 'src/app/services/random-table.service';
-import { PromptService } from '../../components/prompts/prompt.service';
-import { DiceUtil } from '../trpg/dice/dice.util';
-import { TablesUtil } from '../trpg/tables.util';
+import { DiceUtil } from '../dice/dice.util';
 import { Context } from './context';
 
 @Injectable({
@@ -15,7 +12,7 @@ export class ApiService {
   context: Context = new Context('');
 
   constructor(
-    private promptService: PromptService,
+    // private promptService: PromptService,
     private randomTableService: RandomTableService,
   ) { }
 
@@ -26,7 +23,7 @@ export class ApiService {
   async rollTable(id: string): Promise<string> {
     const table = await this.randomTableService.get(id);
     if (table) {
-      return TablesUtil.rollOnTable(table.content);
+      return ''; // TablesUtil.rollOnTable(table.content);
     } else {
       return `Table ${id} not found`;
     }
@@ -35,7 +32,7 @@ export class ApiService {
   async getAttribute(name: string): Promise<number | string> {
     let value = this.context.getAttribute(name);
     if(!value) {
-      value = await this.promptService.input(this.dialog, name);
+      // value = await this.promptService.input(this.dialog, name);
     }
     if(isNaN(value)) {
       return value;
@@ -48,7 +45,7 @@ export class ApiService {
   }
 
   async prompt(message: string): Promise<string> {
-    return await this.promptService.input(this.dialog, message);
+    return ''; // await this.promptService.input(this.dialog, message);
   }
 
   async rollAction(action: string): Promise<string> {

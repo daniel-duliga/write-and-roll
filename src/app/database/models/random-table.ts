@@ -1,3 +1,4 @@
+import { DiceUtil } from "src/app/modules/dice/dice.util";
 import { PouchDbModelInterface } from "../core/pouchdb-model-interface";
 
 export class RandomTable implements PouchDbModelInterface {

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RandomTable, RandomTableLine } from 'src/app/database/models/random-table';
 import { RandomTableService } from 'src/app/services/random-table.service';
@@ -16,6 +17,7 @@ export class RandomTablesAddEditComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private randomTableService: RandomTableService,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -50,6 +52,6 @@ export class RandomTablesAddEditComponent implements OnInit {
   }
 
   roll() {
-    
+    this.snackBar.open(this.randomTableService.roll(this.randomTable), 'Close');
   }
 }
