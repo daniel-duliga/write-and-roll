@@ -104,6 +104,9 @@ img {
 .mat-list-item-content {
   padding-left: 0 !important;
 }
+.mat-drawer-inner-container {
+  overflow: hidden !important;
+}
 
 /* Custom */
 .shadow-right {

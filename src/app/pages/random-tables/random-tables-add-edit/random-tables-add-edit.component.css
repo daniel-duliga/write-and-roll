@@ -12,3 +12,9 @@
     flex-grow: 1;
     margin-right: 10px;
 }
+.actions-container {
+    display: flex;
+}
+.save-button {
+    margin-left: auto;
+}

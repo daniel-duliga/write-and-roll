@@ -24,7 +24,7 @@ const routes: Routes = [
         component: RandomTablesComponent,
       },
       {
-        path: 'random-tables/add',
+        path: 'random-tables/:id',
         component: RandomTablesAddEditComponent,
       },
     ]

@@ -1,13 +1,14 @@
-<div>
+<div class="actions-container">
     <button mat-stroked-button [routerLink]="['/app/random-tables']">Back</button>
+    <button mat-stroked-button class="save-button" (click)="save()">Save</button>
 </div>
 <br>
 <div>
     <mat-form-field class="name">
         <mat-label>Name</mat-label>
-        <input matInput>
+        <input [(ngModel)]="this.randomTable.name" matInput>
     </mat-form-field>
-    <div class="line">
+    <div *ngFor="let randomTableLine of randomTable.lines" class="line">
         <mat-form-field class="index">
             <mat-label>Index</mat-label>
             <input matInput>

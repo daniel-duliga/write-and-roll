@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { RandomTable } from 'src/app/database/models/random-table';
 import { RandomTableService } from 'src/app/services/random-table.service';
 
@@ -9,15 +10,20 @@ import { RandomTableService } from 'src/app/services/random-table.service';
 })
 export class RandomTablesComponent implements OnInit {
 
-  public dataSource: RandomTable[] = [];
-  displayedColumns: string[] = ['name'];
+  public randomTables: RandomTable[] = [];
+  displayedColumns: string[] = ['name', 'actions'];
 
   constructor(
+    private router: Router,
     private randomTableService: RandomTableService
   ) { }
 
   async ngOnInit() {
-    this.dataSource = await this.randomTableService.getAll();
+    this.randomTables = await this.randomTableService.getAll();
+  }
+
+  edit(randomTable: RandomTable) {
+    this.router.navigate(['/app/random-tables', randomTable._id]);
   }
 
 }

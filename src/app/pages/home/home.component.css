@@ -23,3 +23,7 @@
 .content {
   padding: 30px;
 }
+
+.mat-drawer-inner-container {
+  overflow: hidden;
+}

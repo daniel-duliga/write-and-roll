@@ -7,12 +7,25 @@ import { RandomTable } from '../database/models/random-table';
   providedIn: 'root'
 })
 export class RandomTableService {
+  
   constructor(
     private db: DbService,
-    private papa: Papa,
   ) { }
+
+  async create(randomTable: RandomTable): Promise<RandomTable> {
+    return this.db.randomTables.create(randomTable);
+  }
 
   async getAll(): Promise<RandomTable[]> {
     return this.db.randomTables.getAll();
   }
+
+  async get(id: string): Promise<RandomTable> {
+    return this.db.randomTables.get(id);
+  }
+
+  async update(randomTable: RandomTable): Promise<RandomTable> {
+    return this.db.randomTables.update(randomTable);
+  }
+
 }
