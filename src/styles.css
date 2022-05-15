@@ -1,9 +1,4 @@
 /* Imports */
-@import "~codemirror/theme/material";
-@import "~codemirror/lib/codemirror";
-@import "~codemirror/addon/hint/show-hint.css";
-@import "~codemirror/addon/fold/foldgutter.css";
-
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
@@ -25,107 +20,11 @@ img {
   min-width: unset !important;
 }
 
-/* CodeMirror */
-.CodeMirror {
-  height: calc(100vh - 47px);
-  z-index: 1;
-  font-family: 'Roboto';
-  font-size: 11pt;
-  border-bottom: 1px solid lightgray;
+/* Theme */
+.actions-container {
+  display: flex;
+  justify-content: end;
 }
-.code .CodeMirror {
-  font-family: 'Roboto Mono';
-}
-.CodeMirror-foldmarker {
-  text-shadow: none;
-  margin-left: 0.5em;
-}
-.CodeMirror-lines {
-  padding-bottom: calc(100vh - 65px);
-}
-
-/* CodeMirror Markdown */
-.cm-header {
-  color: black !important;
-}
-.cm-header-1 {
-  font-size: 22pt !important;
-}
-.cm-header-2 {
-  font-size: 20pt !important;
-}
-.cm-header-3 {
-  font-size: 18pt !important;
-}
-.cm-header-4 {
-  font-size: 16pt !important;
-}
-.cm-header-5 {
-  font-size: 14pt !important;
-}
-.cm-header-6 {
-  font-size: 12pt !important;
-}
-.cm-link {
-  cursor: pointer;
-}
-.cm-comment, .cm-variable-2, .cm-variable-3, .cm-keyword {
-  font-family: 'Roboto Mono';
-}
-
-/* Angular Material */
-.mat-option {
-  height: 33px !important;
-  font-size: 14px !important;
-}
-.active-link {
-  background-color: rgba(0, 0, 0, 0.15) !important;
-}
-.mat-autocomplete-panel-above .mat-autocomplete-panel {
-  border: 1px solid lightgray;
-  border-radius: 0 !important;
-  transform: translateY(5px);
-}
-.cdk-global-scrollblock {
-  overflow-y: initial;
-}
-.mat-expansion-panel:not([class*=mat-elevation-z]) {
-  box-shadow: none;
-}
-.editor-container .header .mat-form-field-appearance-fill .mat-form-field-infix {
-  padding-bottom: 7px !important;
-}
-.mat-list-text {
-  padding-right: 0 !important;
-}
-.mat-list-base .mat-list-item .mat-list-item-content-reverse, .mat-list-base .mat-list-option .mat-list-item-content-reverse {
-  padding-right: 0 !important;
-}
-.mat-list-item-content {
-  padding-left: 0 !important;
-}
-.mat-drawer-inner-container {
-  overflow: hidden !important;
-}
-
-/* Custom */
-.shadow-right {
-  box-shadow: 3px 0px 3px rgb(0 0 0 / 10%);
-}
-.shadow-right-faint {
-  box-shadow: 3px 0px 3px rgb(0 0 0 / 5%);
-}
-.shadow-down {
-  box-shadow: 0px 3px 3px rgb(0 0 0 / 10%);
-}
-.shadow-up {
-  box-shadow: 0px -3px 3px rgb(0 0 0 / 10%);
-}
-.md-header {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
-.context-attribute {
-  color: #00c;
-  font-weight: 500;
+.full-width {
+  width: 100%;
 }

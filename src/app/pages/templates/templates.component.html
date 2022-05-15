@@ -1,19 +1,19 @@
 <div class="actions-container">
-    <button mat-stroked-button [routerLink]="['/app/random-tables/add']">Add</button>
+    <button mat-stroked-button [routerLink]="['/app/templates/add']">Add</button>
 </div>
 <br>
-<table mat-table [dataSource]="randomTables" class="full-width">
+<table mat-table [dataSource]="templates" class="full-width">
     <!-- Name -->
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let randomTable"> {{randomTable.name}} </td>
+        <td mat-cell *matCellDef="let template"> {{template.name}} </td>
     </ng-container>
     <!-- Actions -->
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let randomTable">
+        <td mat-cell *matCellDef="let template">
             <div class="actions-container">
-                <button mat-button (click)="edit(randomTable)">Edit</button>
+                <button mat-button (click)="edit(template)">Edit</button>
                 <button mat-button>Delete</button>
             </div>
         </td>

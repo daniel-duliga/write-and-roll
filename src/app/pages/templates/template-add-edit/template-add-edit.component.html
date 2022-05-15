@@ -1,0 +1,15 @@
+<div class="actions-container">
+    <div class="back-button">
+        <button mat-stroked-button [routerLink]="['/app/random-tables']">Back</button>
+    </div>
+    <button mat-stroked-button (click)="save()">Save</button>
+</div>
+<br>
+<div>
+    <mat-form-field class="full-width">
+        <mat-label>Name</mat-label>
+        <input [(ngModel)]="this.template.name" matInput>
+    </mat-form-field>
+
+    <div #codemirrorhost class="codemirrorhost"></div>
+</div>

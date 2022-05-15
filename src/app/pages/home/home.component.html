@@ -5,8 +5,8 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item class="nav-item" href="#">Notes</a>
-      <a mat-list-item class="nav-item" href="#">Templates</a>
+      <a mat-list-item class="nav-item" [routerLink]="['/app/notes']">Notes</a>
+      <a mat-list-item class="nav-item" [routerLink]="['/app/templates']">Templates</a>
       <a mat-list-item class="nav-item" [routerLink]="['/app/random-tables']">Random Tables</a>
     </mat-nav-list>
   </mat-sidenav>

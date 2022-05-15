@@ -25,9 +25,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// Third-party
-import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-
 // Internal
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -36,6 +33,10 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { RandomTablesComponent } from './pages/random-tables/random-tables.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RandomTablesAddEditComponent } from './pages/random-tables/random-tables-add-edit/random-tables-add-edit.component';
+import { TemplatesComponent } from './pages/templates/templates.component';
+import { NotesComponent } from './pages/notes/notes.component';
+import { TemplateAddEditComponent } from './pages/templates/template-add-edit/template-add-edit.component';
+import { NoteAddEditComponent } from './pages/notes/note-add-edit/note-add-edit.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,10 @@ import { RandomTablesAddEditComponent } from './pages/random-tables/random-table
     HomeComponent,
     RandomTablesComponent,
     RandomTablesAddEditComponent,
+    TemplatesComponent,
+    NotesComponent,
+    TemplateAddEditComponent,
+    NoteAddEditComponent,
   ],
   imports: [
     // Core
@@ -78,7 +83,6 @@ import { RandomTablesAddEditComponent } from './pages/random-tables/random-table
     MatTooltipModule,
 
     // Third-party
-    CodemirrorModule,
     LayoutModule,
     MatToolbarModule,
     MatSidenavModule,
