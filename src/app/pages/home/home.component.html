@@ -5,17 +5,7 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <mat-form-field class="nav-item">
-        <mat-label>Campaign</mat-label>
-        <mat-select [(ngModel)]="selectedCampaignId">
-          <mat-option *ngFor="let campaign of campaigns" [value]="campaign.id">
-            {{campaign.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <a mat-list-item class="nav-item" href="#">NPCs</a>
       <a mat-list-item class="nav-item" href="#">Notes</a>
-      <hr>
       <a mat-list-item class="nav-item" href="#">Templates</a>
       <a mat-list-item class="nav-item" [routerLink]="['/app/random-tables']">Random Tables</a>
     </mat-nav-list>

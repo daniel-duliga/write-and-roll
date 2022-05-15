@@ -27,7 +27,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Third-party
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
-import { EasymdeModule } from 'ngx-easymde';
 
 // Internal
 import { AppComponent } from './app.component';
@@ -80,7 +79,6 @@ import { RandomTablesAddEditComponent } from './pages/random-tables/random-table
 
     // Third-party
     CodemirrorModule,
-    EasymdeModule.forRoot(),
     LayoutModule,
     MatToolbarModule,
     MatSidenavModule,
